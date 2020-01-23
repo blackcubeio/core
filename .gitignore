@@ -1,0 +1,28 @@
+
+## IDE
+.idea
+*.iml
+
+## OK
+.DS_Store
+Thumbs.db
+
+## Ignore build stuff
+node_modules
+vendor/*
+
+## Ignore runtime stuff
+console/runtime/*
+webapp/runtime/*
+www/assets/*
+
+## Ignore .env file
+.env
+.env*
+!conf/.env*
+
+## Ignore Testing stuff
+tests/_output
+
+## Keep directories
+!.gitkeep
