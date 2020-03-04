@@ -49,6 +49,8 @@ use yii\db\Expression;
  */
 class Tag extends \yii\db\ActiveRecord
 {
+    public const TYPE = 'tag';
+
     /**
      * {@inheritdoc}
      */
@@ -70,6 +72,16 @@ class Tag extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%tags}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new FilterActiveQuery(static::class);
     }
 
     /**

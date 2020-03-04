@@ -14,9 +14,12 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\traits\ElasticTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\Expression;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "{{%blocs}}".
@@ -46,10 +49,12 @@ use yii\db\Expression;
  */
 class Bloc extends \yii\db\ActiveRecord
 {
+    use ElasticTrait;
+
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors():array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -64,7 +69,7 @@ class Bloc extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName():string
     {
         return '{{%blocs}}';
     }
@@ -72,7 +77,7 @@ class Bloc extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules():array
     {
         return [
             [['blocTypeId'], 'required'],
@@ -86,7 +91,7 @@ class Bloc extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels():array
     {
         return [
             'id' => Yii::t('blackcube.core', 'ID'),
@@ -102,7 +107,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBlocType()
+    public function getBlocType():ActiveQuery
     {
         return $this->hasOne(BlocType::class, ['id' => 'blocTypeId']);
     }
@@ -112,7 +117,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategoriesBlocs()
+    public function getCategoriesBlocs():ActiveQuery
     {
         return $this->hasMany(CategoryBloc::class, ['blocId' => 'id']);
     }
@@ -122,7 +127,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategories()
+    public function getCategories():ActiveQuery
     {
         return $this->hasMany(Category::class, ['id' => 'categoryId'])->viaTable('{{%categories_blocs}}', ['blocId' => 'id']);
     }
@@ -132,7 +137,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCompositesBlocs()
+    public function getCompositesBlocs():ActiveQuery
     {
         return $this->hasMany(CompositeBloc::class, ['blocId' => 'id']);
     }
@@ -142,7 +147,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getComposites()
+    public function getComposites():ActiveQuery
     {
         return $this->hasMany(Composite::class, ['id' => 'compositeId'])->viaTable('{{%composites_blocs}}', ['blocId' => 'id']);
     }
@@ -152,7 +157,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNodesBlocs()
+    public function getNodesBlocs():ActiveQuery
     {
         return $this->hasMany(NodeBloc::class, ['blocId' => 'id']);
     }
@@ -162,7 +167,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNodes()
+    public function getNodes():ActiveQuery
     {
         return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable('{{%nodes_blocs}}', ['blocId' => 'id']);
     }
@@ -172,7 +177,7 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTagsBlocs()
+    public function getTagsBlocs():ActiveQuery
     {
         return $this->hasMany(TagBloc::class, ['blocId' => 'id']);
     }
@@ -182,8 +187,10 @@ class Bloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTags()
+    public function getTags():ActiveQuery
     {
         return $this->hasMany(Tag::class, ['id' => 'tagId'])->viaTable('{{%tags_blocs}}', ['blocId' => 'id']);
     }
+
+
 }

@@ -43,7 +43,7 @@ class Administrator extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors():array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -58,7 +58,7 @@ class Administrator extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName():string
     {
         return '{{%administrators}}';
     }
@@ -66,7 +66,7 @@ class Administrator extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules():array
     {
         return [
             [['email'], 'required'],
@@ -80,7 +80,7 @@ class Administrator extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels():array
     {
         return [
             'id' => Yii::t('blackcube.core', 'ID'),

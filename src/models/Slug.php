@@ -14,9 +14,12 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\components\PreviewManager;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * This is the model class for table "{{%slugs}}".
@@ -37,6 +40,7 @@ use yii\db\Expression;
  * @property string $dateCreate
  * @property string|null $dateUpdate
  *
+ * @property Composite|Node|Category|Tag $element
  * @property Category $category
  * @property Composite $composite
  * @property Node $node
@@ -45,6 +49,11 @@ use yii\db\Expression;
  */
 class Slug extends \yii\db\ActiveRecord
 {
+    public const TYPE_COMPOSITE = 'composite';
+    public const TYPE_NODE = 'node';
+    public const TYPE_CATEGORY = 'category';
+    public const TYPE_TAG = 'tag';
+
     /**
      * {@inheritdoc}
      */
@@ -66,6 +75,16 @@ class Slug extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%slugs}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new FilterActiveQuery(static::class);
     }
 
     /**
@@ -102,7 +121,7 @@ class Slug extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Category]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getCategory()
     {
@@ -112,7 +131,7 @@ class Slug extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Composite]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getComposite()
     {
@@ -122,7 +141,7 @@ class Slug extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Node]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getNode()
     {
@@ -132,7 +151,7 @@ class Slug extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Sitemap]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getSitemap()
     {
@@ -142,10 +161,121 @@ class Slug extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tag]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getTag()
     {
         return $this->hasOne(Tag::class, ['slugId' => 'id']);
+    }
+
+    /**
+     * @return array|null
+     */
+    protected function findTargetElementInfo()
+    {
+        $compositeQuery = Composite::find();
+        $compositeQuery->select([
+            new Expression('"'.Composite::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['slugId' => $this->id])
+            ->active();
+
+        $nodeQuery = Node::find();
+        $nodeQuery->select([
+            new Expression('"'.Node::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['slugId' => $this->id])
+            ->active();
+
+        $tagQuery = Tag::find();
+        $tagQuery->select([
+            new Expression('"'.Tag::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['slugId' => $this->id])
+            ->active();
+
+        $categoryQuery = Category::find();
+        $categoryQuery->select([
+            new Expression('"'.Category::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['slugId' => $this->id])
+            ->active();
+
+        $compositeQuery->union($nodeQuery)
+            ->union($tagQuery)
+            ->union($categoryQuery);
+        $result = $compositeQuery->asArray()->one();
+
+        $targetElement = null;
+        if ($result !== false && isset($result['type'], $result['id']) ) {
+            $targetElement = [
+                'type' => $result['type'],
+                'id' => $result['id']
+            ];
+        }
+        return $targetElement;
+
+    }
+    /**
+     * Get target element type TYPE|null
+     *
+     * @return string|null
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getTargetElementType()
+    {
+        $result = $this->findTargetElementInfo();
+        return ($result === null) ? null : $result['type'];
+    }
+
+    /**
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getElement()
+    {
+        $result = $this->findTargetElementInfo();
+        if ($result !== null && is_array($result)) {
+            switch ($result['type']) {
+                case Node::TYPE:
+                    $query = Node::find();
+                    break;
+                case Composite::TYPE:
+                    $query = Composite::find();
+                    break;
+                case Category::TYPE:
+                    $query = Category::find();
+                    break;
+                case Tag::TYPE:
+                    $query = Tag::find();
+                    break;
+                default:
+                    throw new InvalidArgumentException();
+                    break;
+            }
+            $query->where(['id' => $result['id']])->active();
+        } else {
+            // fake query to allow the active query trick
+            $query = static::find()->where('1 = 0');
+        }
+        return $query;
+    }
+
+    public static function findOneByPathinfoAndHostname($pathInfo, $hostname = null)
+    {
+        $slugQuery = static::find()->where([
+            'path' => $pathInfo,
+        ])
+            ->andWhere(['OR',
+                ['host' => $hostname],
+                ['IS', 'host', null]
+            ])
+            ->active();
+        $slugQuery->orderBy(['host' => SORT_DESC])
+            ->limit(1);
+        return $slugQuery->one();
     }
 }

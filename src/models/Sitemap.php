@@ -65,6 +65,16 @@ class Sitemap extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new FilterActiveQuery(static::class);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -99,7 +109,7 @@ class Sitemap extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Slug]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getSlug()
     {

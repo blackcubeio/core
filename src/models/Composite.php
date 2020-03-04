@@ -17,6 +17,7 @@ namespace blackcube\core\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * This is the model class for table "{{%composites}}".
@@ -51,6 +52,8 @@ use yii\db\Expression;
  */
 class Composite extends \yii\db\ActiveRecord
 {
+    public const TYPE = 'composite';
+
     /**
      * {@inheritdoc}
      */
@@ -72,6 +75,16 @@ class Composite extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%composites}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new FilterActiveQuery(static::class);
     }
 
     /**
@@ -125,7 +138,7 @@ class Composite extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Slug]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getSlug()
     {
@@ -178,7 +191,7 @@ class Composite extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tags]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getTags()
     {
@@ -192,16 +205,143 @@ class Composite extends \yii\db\ActiveRecord
      */
     public function getNodesComposites()
     {
-        return $this->hasMany(NodesComposite::class, ['compositeId' => 'id']);
+        return $this->hasMany(NodeComposite::class, ['compositeId' => 'id']);
     }
 
     /**
      * Gets query for [[Nodes]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getNodes()
     {
         return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable('{{%nodes_composites}}', ['compositeId' => 'id']);
+    }
+
+    /**
+     * @param Bloc $bloc
+     * @param integer $position
+     */
+    public function attachBloc(Bloc $bloc, $position = 1)
+    {
+        $status = true;
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            $blocCount = $this->getBlocs()->count();
+            if ($position < 1) {
+                $position = $blocCount + 1;
+            }
+            // open space to add bloc
+            if ($position <= $blocCount) {
+                $compositeBlocs = CompositeBloc::find(['compositeId' => $this->id])
+                    ->andWhere(['>=', 'order', $position])
+                    ->orderBy(['order' => SORT_DESC])->all();
+                foreach($compositeBlocs as $compositeBloc) {
+                    $compositeBloc->order++;
+                    $compositeBloc->save(['order']);
+                }
+            } else {
+                $position = $blocCount + 1;
+            }
+            $compositeBloc = new CompositeBloc();
+            $compositeBloc->compositeId = $this->id;
+            $compositeBloc->blocId = $bloc->id;
+            $compositeBloc->order = $position;
+            $compositeBloc->save();
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            $status = false;
+        }
+        return $status;
+    }
+
+    public function detachBloc(Bloc $bloc)
+    {
+        $status = false;
+        $compositeBloc = CompositeBloc::findOne([
+            'compositeId' => $this->id,
+            'blocId' => $bloc->id
+        ]);
+        if ($compositeBloc !== null) {
+            $compositeBloc->delete();
+            $status = true;
+        }
+        return $status;
+    }
+
+    public function moveBloc(Bloc $bloc, $position = 1)
+    {
+        $status = true;
+        $currentCompositeBloc = CompositeBloc::findOne([
+            'compositeId' => $this->id,
+            'blocId' => $bloc->id
+        ]);
+        if ($currentCompositeBloc === null || $currentCompositeBloc->order == $position) {
+            $status = false;
+        } else {
+
+            $currentPosition = $currentCompositeBloc->order;
+            $transaction = static::getDb()->beginTransaction();
+            try {
+                $currentPosition = $currentCompositeBloc->order;
+                $currentAttributes = $currentCompositeBloc->attributes;
+                $currentCompositeBloc->delete();
+                $compositeBlocs = CompositeBloc::find(['compositeId' => $this->id])
+                    ->andWhere(['>=', 'order', $currentPosition])
+                    ->orderBy(['order' => SORT_ASC])->all();
+                foreach($compositeBlocs as $compositeBloc) {
+                    $compositeBloc->order--;
+                    $compositeBloc->save(['order']);
+                }
+
+                $blocCount = $this->getBlocs()->count();
+                // open space to add bloc
+                if ($position <= $blocCount) {
+                    $compositeBlocs = CompositeBloc::find(['compositeId' => $this->id])
+                        ->andWhere(['>=', 'order', $position])
+                        ->orderBy(['order' => SORT_DESC])->all();
+                    foreach($compositeBlocs as $compositeBloc) {
+                        $compositeBloc->order++;
+                        $compositeBloc->save(['order']);
+                    }
+                } else {
+                    $position = $blocCount + 1;
+                }
+                $compositeBloc = new CompositeBloc();
+                $compositeBloc->attributes = $currentAttributes;
+                $compositeBloc->order = $position;
+                $compositeBloc->save();
+                $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                $status = false;
+            }
+
+        }
+        return $status;
+    }
+
+    protected function reorderBlocs()
+    {
+        $status = true;
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            $compositeBlocs = CompositeBloc::find()->where([
+                'compositeId' => $this->id
+            ])
+                ->orderBy(['order' => SORT_ASC])
+                ->select(['blocId'])
+                ->all();
+            foreach($compositeBlocs as $index => $compositeBloc) {
+                $compositeBloc->order = $index + 1;
+                $compositeBloc->save(['order']);
+            }
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            $status = false;
+        }
+        return $status;
     }
 }

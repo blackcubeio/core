@@ -123,4 +123,30 @@ class Language extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Node::class, ['languageId' => 'id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMainLanguage()
+    {
+        $mainLanguageId = static::extractMainPart($this->id);
+        $activeQuery = static::find()
+            ->andWhere([
+                'id' => $mainLanguageId,
+                'main' => true,
+            ]);
+        $activeQuery->multiple = false;
+        return $activeQuery;
+    }
+
+    /**
+     * @param string $languageId
+     * @return string
+     */
+    public static function extractMainPart($languageId)
+    {
+        list($mainLanguage,) = explode('-', $languageId);
+        return $mainLanguage;
+    }
+
 }

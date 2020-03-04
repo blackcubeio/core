@@ -46,6 +46,8 @@ use yii\db\Expression;
  */
 class Category extends \yii\db\ActiveRecord
 {
+    public const TYPE = 'category';
+
     /**
      * {@inheritdoc}
      */
@@ -67,6 +69,16 @@ class Category extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%categories}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new FilterActiveQuery(static::class);
     }
 
     /**
@@ -119,7 +131,7 @@ class Category extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Slug]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getSlug()
     {
@@ -162,7 +174,7 @@ class Category extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Tags]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getTags()
     {
