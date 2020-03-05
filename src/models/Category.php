@@ -14,6 +14,8 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\traits\BlocTrait;
+use blackcube\core\traits\TypeTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -40,13 +42,31 @@ use yii\db\Expression;
  * @property Language $language
  * @property Slug $slug
  * @property Type $type
- * @property CategoryBloc[] $categoriesBlocs
  * @property Bloc[] $blocs
  * @property Tag[] $tags
  */
 class Category extends \yii\db\ActiveRecord
 {
+    use TypeTrait;
+    use BlocTrait;
+
     public const TYPE = 'category';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementBlocClass()
+    {
+        return CategoryBloc::class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementIdColumn()
+    {
+        return 'categoryId';
+    }
 
     /**
      * {@inheritdoc}
@@ -149,23 +169,13 @@ class Category extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CategoryBloc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategoriesBlocs()
-    {
-        return $this->hasMany(CategoryBloc::class, ['categoryId' => 'id']);
-    }
-
-    /**
      * Gets query for [[Bloc]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getBlocs()
     {
-        return $this->hasMany(Bloc::class, ['id' => 'blocId'])->viaTable('{{%categories_blocs}}', ['categoryId' => 'id'], function ($query) {
+        return $this->hasMany(Bloc::class, ['id' => 'blocId'])->viaTable(CategoryBloc::tableName(), ['categoryId' => 'id'], function ($query) {
             /* @var $query \yii\db\ActiveQuery */
             $query->orderBy(['order' => SORT_ASC]);
         });

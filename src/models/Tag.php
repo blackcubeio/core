@@ -14,6 +14,8 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\traits\BlocTrait;
+use blackcube\core\traits\TypeTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -37,19 +39,35 @@ use yii\db\Expression;
  * @property string $dateCreate
  * @property string|null $dateUpdate
  *
- * @property CompositeTag[] $compositesTags
  * @property Composite[] $composites
- * @property NodeTag[] $nodesTags
  * @property Node[] $nodes
  * @property Category $category
  * @property Slug $slug
  * @property Type $type
- * @property TagBloc[] $tagsBlocs
  * @property Bloc[] $blocs
  */
 class Tag extends \yii\db\ActiveRecord
 {
+    use TypeTrait;
+    use BlocTrait;
+
     public const TYPE = 'tag';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementBlocClass()
+    {
+        return TagBloc::class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementIdColumn()
+    {
+        return 'tagId';
+    }
 
     /**
      * {@inheritdoc}
@@ -121,33 +139,13 @@ class Tag extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CompositeTag]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompositesTags()
-    {
-        return $this->hasMany(CompositeTag::class, ['tagId' => 'id']);
-    }
-
-    /**
      * Gets query for [[Composite]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getComposites()
     {
-        return $this->hasMany(Composite::class, ['id' => 'compositeId'])->viaTable('{{%composites_tags}}', ['tagId' => 'id']);
-    }
-
-    /**
-     * Gets query for [[NodeTag]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNodesTags()
-    {
-        return $this->hasMany(NodeTag::class, ['tagId' => 'id']);
+        return $this->hasMany(Composite::class, ['id' => 'compositeId'])->viaTable(CompositeTag::tableName(), ['tagId' => 'id']);
     }
 
     /**
@@ -157,7 +155,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getNodes()
     {
-        return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable('{{%nodes_tags}}', ['tagId' => 'id']);
+        return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable(NodeTag::tableName(), ['tagId' => 'id']);
     }
 
     /**
@@ -191,23 +189,13 @@ class Tag extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[TagBloc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTagsBlocs()
-    {
-        return $this->hasMany(TagBloc::class, ['tagId' => 'id']);
-    }
-
-    /**
      * Gets query for [[Bloc]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getBlocs()
     {
-        return $this->hasMany(Bloc::class, ['id' => 'blocId'])->viaTable('{{%tags_blocs}}', ['tagId' => 'id'], function ($query) {
+        return $this->hasMany(Bloc::class, ['id' => 'blocId'])->viaTable(TagBloc::tableName(), ['tagId' => 'id'], function ($query) {
             /* @var $query \yii\db\ActiveQuery */
             $query->orderBy(['order' => SORT_ASC]);
         });

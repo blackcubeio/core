@@ -41,7 +41,6 @@ use yii\db\Expression;
  * @property Composite[] $composites
  * @property Node $node
  * @property Tag[] $tags
- * @property TypesBlocType[] $typesBlocTypes
  * @property BlocType[] $blocTypes
  */
 class Type extends \yii\db\ActiveRecord
@@ -141,22 +140,12 @@ class Type extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[TypeBlocType]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTypesBlocTypes()
-    {
-        return $this->hasMany(TypeBlocType::class, ['typeId' => 'id']);
-    }
-
-    /**
      * Gets query for [[BlocType]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getBlocTypes()
     {
-        return $this->hasMany(BlocType::class, ['id' => 'blocTypeId'])->viaTable('{{%types_blocTypes}}', ['typeId' => 'id']);
+        return $this->hasMany(BlocType::class, ['id' => 'blocTypeId'])->viaTable(TypeBlocType::tableName(), ['typeId' => 'id']);
     }
 }

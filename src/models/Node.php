@@ -18,6 +18,8 @@ use blackcube\core\components\PreviewManager;
 use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
+use blackcube\core\traits\BlocTrait;
+use blackcube\core\traits\TypeTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -50,21 +52,37 @@ use yii\db\Expression;
  * @property Language $language
  * @property Slug $slug
  * @property Type $type
- * @property NodeBloc[] $nodesBlocs
  * @property Bloc[] $blocs
- * @property NodeComposite[] $nodesComposites
  * @property Composite[] $composites
- * @property NodeTag[] $nodesTags
  * @property Tag[] $tags
  */
 class Node extends \yii\db\ActiveRecord
 {
+    use TypeTrait;
+    use BlocTrait;
+
     public const TYPE = 'node';
 
     /**
      * @var MatrixHelper node path in matrix notation
      */
     private $nodeMatrix;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementBlocClass()
+    {
+        return NodeBloc::class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementIdColumn()
+    {
+        return 'nodeId';
+    }
 
     /**
      * {@inheritdoc}
@@ -183,16 +201,6 @@ class Node extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[NodeBloc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNodesBlocs()
-    {
-        return $this->hasMany(NodeBloc::class, ['nodeId' => 'id']);
-    }
-
-    /**
      * Gets query for [[Blocs]].
      *
      * @return \yii\db\ActiveQuery
@@ -200,20 +208,10 @@ class Node extends \yii\db\ActiveRecord
     public function getBlocs()
     {
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])
-            ->viaTable('{{%nodes_blocs}}', ['nodeId' => 'id'], function ($query) {
+            ->viaTable(NodeBloc::tableName(), ['nodeId' => 'id'], function ($query) {
                 /* @var $query \yii\db\ActiveQuery */
                 $query->orderBy(['order' => SORT_ASC]);
             });
-    }
-
-    /**
-     * Gets query for [[NodeComposite]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNodesComposites()
-    {
-        return $this->hasMany(NodeComposite::class, ['nodeId' => 'id']);
     }
 
     /**
@@ -224,20 +222,10 @@ class Node extends \yii\db\ActiveRecord
     public function getComposites()
     {
         return $this->hasMany(Composite::class, ['id' => 'compositeId'])
-            ->viaTable('{{%nodes_composites}}', ['nodeId' => 'id'], function ($query) {
+            ->viaTable(NodeComposite::tableName(), ['nodeId' => 'id'], function ($query) {
                 /* @var $query \yii\db\ActiveQuery */
                 $query->orderBy(['order' => SORT_ASC]);
             });
-    }
-
-    /**
-     * Gets query for [[NodeTag]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNodesTags()
-    {
-        return $this->hasMany(NodeTag::class, ['nodeId' => 'id']);
     }
 
     /**
@@ -249,7 +237,7 @@ class Node extends \yii\db\ActiveRecord
     public function getTags()
     {
         return $this->hasMany(Tag::class, ['id' => 'tagId'])
-            ->viaTable('{{%nodes_tags}}', ['nodeId' => 'id'])
+            ->viaTable(NodeTag::tableName(), ['nodeId' => 'id'])
             ->orderBy(['name' => SORT_ASC]);
 
     }

@@ -38,13 +38,9 @@ use yii\helpers\Json;
  * @property string|null $dateUpdate
  *
  * @property BlocType $blocType
- * @property CategoryBloc[] $categoriesBlocs
  * @property Category[] $categories
- * @property CompositeBloc[] $compositesBlocs
  * @property Composite[] $composites
- * @property NodeBloc[] $nodesBlocs
  * @property Node[] $nodes
- * @property TagBloc[] $tagsBlocs
  * @property Tag[] $tags
  */
 class Bloc extends \yii\db\ActiveRecord
@@ -113,33 +109,13 @@ class Bloc extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CategoryBloc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategoriesBlocs():ActiveQuery
-    {
-        return $this->hasMany(CategoryBloc::class, ['blocId' => 'id']);
-    }
-
-    /**
      * Gets query for [[Category]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getCategories():ActiveQuery
     {
-        return $this->hasMany(Category::class, ['id' => 'categoryId'])->viaTable('{{%categories_blocs}}', ['blocId' => 'id']);
-    }
-
-    /**
-     * Gets query for [[CompositeBloc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompositesBlocs():ActiveQuery
-    {
-        return $this->hasMany(CompositeBloc::class, ['blocId' => 'id']);
+        return $this->hasMany(Category::class, ['id' => 'categoryId'])->viaTable(CategoryBloc::tableName(), ['blocId' => 'id']);
     }
 
     /**
@@ -149,17 +125,7 @@ class Bloc extends \yii\db\ActiveRecord
      */
     public function getComposites():ActiveQuery
     {
-        return $this->hasMany(Composite::class, ['id' => 'compositeId'])->viaTable('{{%composites_blocs}}', ['blocId' => 'id']);
-    }
-
-    /**
-     * Gets query for [[NodeBloc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNodesBlocs():ActiveQuery
-    {
-        return $this->hasMany(NodeBloc::class, ['blocId' => 'id']);
+        return $this->hasMany(Composite::class, ['id' => 'compositeId'])->viaTable(CompositeBloc::tableName(), ['blocId' => 'id']);
     }
 
     /**
@@ -169,17 +135,7 @@ class Bloc extends \yii\db\ActiveRecord
      */
     public function getNodes():ActiveQuery
     {
-        return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable('{{%nodes_blocs}}', ['blocId' => 'id']);
-    }
-
-    /**
-     * Gets query for [[TagBloc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTagsBlocs():ActiveQuery
-    {
-        return $this->hasMany(TagBloc::class, ['blocId' => 'id']);
+        return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable(NodeBloc::tableName(), ['blocId' => 'id']);
     }
 
     /**
@@ -189,7 +145,7 @@ class Bloc extends \yii\db\ActiveRecord
      */
     public function getTags():ActiveQuery
     {
-        return $this->hasMany(Tag::class, ['id' => 'tagId'])->viaTable('{{%tags_blocs}}', ['blocId' => 'id']);
+        return $this->hasMany(Tag::class, ['id' => 'tagId'])->viaTable(TagBloc::tableName(), ['blocId' => 'id']);
     }
 
 

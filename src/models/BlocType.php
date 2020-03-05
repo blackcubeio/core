@@ -119,6 +119,6 @@ class BlocType extends \yii\db\ActiveRecord
      */
     public function getTypes()
     {
-        return $this->hasMany(Type::class, ['id' => 'typeId'])->viaTable('{{%types_blocTypes}}', ['blocTypeId' => 'id']);
+        return $this->hasMany(Type::class, ['id' => 'typeId'])->viaTable(TypeBlocType::tableName(), ['blocTypeId' => 'id']);
     }
 }

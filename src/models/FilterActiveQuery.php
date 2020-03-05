@@ -25,30 +25,36 @@ class FilterActiveQuery extends ActiveQuery
      * @return \yii\db\ActiveQuery
      */
     public function active($active = true) {
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
         if ($this->previewManager->check() === false) {
+
             switch($this->modelClass) {
                 case Node::class:
                 case Composite::class:
-                    $this->andWhere([
-                        'active' => true,
+                    $this->andWhere(['OR',
+                        ['<=', '[[dateStart]]', new Expression('NOW()')],
+                        ['IS', '[[dateStart]]', null]
                     ]);
                     $this->andWhere(['OR',
-                        ['<=', 'dateStart', new Expression('NOW()')],
-                        ['IS', 'dateStart', null]
+                        ['>=', '[[dateEnd]]', new Expression('NOW()')],
+                        ['IS', '[[dateStart]]', null]
                     ]);
-                    $this->andWhere(['OR',
-                        ['>=', 'dateEnd', new Expression('NOW()')],
-                        ['IS', 'dateStart', null]
-                    ]);
+                    break;
+                case Tag::class:
+                    $categoriesQuery = Category::find()->active()->select(['id']);
+                    $this->andWhere(['IN', '[[categoryId]]', $categoriesQuery]);
                     break;
                 case Category::class:
-                case Tag::class:
+                    $tagsQuery = Tag::find()->where(['[[active]]' => true])->distinct()->select(['[[categoryId]]']);
+                    $this->andWhere(['IN', '[[id]]', $tagsQuery]);
+                    break;
                 case Slug::class:
-                    $this->andWhere([
-                        'active' => true,
-                    ]);
                     break;
             }
+            $this->andWhere([
+                '[[active]]' => true,
+            ]);
         } else {
             $simulateDate = $this->previewManager->getSimulateDate();
             if ($simulateDate !== null) {
@@ -56,12 +62,12 @@ class FilterActiveQuery extends ActiveQuery
                     case Node::class:
                     case Composite::class:
                         $this->andWhere(['OR',
-                            ['<=', 'dateStart', $simulateDate],
-                            ['IS', 'dateStart', null]
+                            ['<=', '[[dateStart]]', $simulateDate],
+                            ['IS', '[[dateStart]]', null]
                         ]);
                         $this->andWhere(['OR',
-                            ['>=', 'dateEnd', $simulateDate],
-                            ['IS', 'dateStart', null]
+                            ['>=', '[[dateEnd]]', $simulateDate],
+                            ['IS', '[[dateStart]]', null]
                         ]);
                         break;
                 }
