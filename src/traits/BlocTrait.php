@@ -4,6 +4,7 @@ namespace blackcube\core\traits;
 
 
 use blackcube\core\models\Bloc;
+use blackcube\core\models\FilterActiveQuery;
 
 trait BlocTrait
 {
@@ -16,6 +17,12 @@ trait BlocTrait
      * @return string name of the column used to link element with blocs ("element"Id)
      */
     abstract protected function getElementIdColumn();
+
+    /**
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    abstract public function getBlocs();
+
 
     /**
      * @return string name of the column used to link element with blocs (blocId)

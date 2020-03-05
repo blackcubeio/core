@@ -19,6 +19,7 @@ use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
 use blackcube\core\traits\BlocTrait;
+use blackcube\core\traits\CompositeTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -52,7 +53,7 @@ use yii\db\Expression;
  * @property Language $language
  * @property Slug $slug
  * @property Type $type
- * @property Bloc[] $blocs
+ * @property Bloc[] $composites
  * @property Composite[] $composites
  * @property Tag[] $tags
  */
@@ -60,6 +61,7 @@ class Node extends \yii\db\ActiveRecord
 {
     use TypeTrait;
     use BlocTrait;
+    use CompositeTrait;
 
     public const TYPE = 'node';
 
@@ -82,6 +84,14 @@ class Node extends \yii\db\ActiveRecord
     protected function getElementIdColumn()
     {
         return 'nodeId';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementCompositeClass()
+    {
+        return NodeComposite::class;
     }
 
     /**

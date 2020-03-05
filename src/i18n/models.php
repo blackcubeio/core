@@ -13,5 +13,4 @@
  */
 
 return [
-    'welcome' => 'welkom'
 ];
