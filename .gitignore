@@ -23,6 +23,8 @@ www/assets/*
 
 ## Ignore Testing stuff
 tests/_output
+tests/_support/_generated
+tests/*Tester.php
 
 ## Keep directories
 !.gitkeep

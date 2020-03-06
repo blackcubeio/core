@@ -1,0 +1,9 @@
+actor: LanguageTester
+modules:
+    enabled:
+        - Yii2
+        - Asserts
+        - \tests\Helper\Language
+    config:
+        Yii2:
+            configFile: 'tests/config/main.php'

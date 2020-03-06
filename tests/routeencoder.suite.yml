@@ -1,0 +1,9 @@
+actor: RouteencoderTester
+modules:
+    enabled:
+        - Yii2
+        - Asserts
+        - \tests\Helper\Routeencoder
+    config:
+        Yii2:
+            configFile: 'tests/config/main.php'

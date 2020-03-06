@@ -1,0 +1,68 @@
+{
+    "name": "blackcubeio/cms",
+    "description": "Blackcube CMS Application",
+    "keywords": ["blackcube", "cms"],
+    "homepage": "https://code.redcat.io/blackcube/cms",
+    "type": "project",
+    "license": "proprietary",
+    "support": {
+        "issues": "https://code.redcat.io/blackcube/cms/issues",
+        "wiki": "https://code.redcat.io/blackcube/cms/wikis/home",
+        "source": "https://code.redcat.io/blackcube/cms/tree/devel"
+    },
+    "authors": [
+        {
+            "name": "Philippe Gaultier",
+            "email": "pgaultier@redcat.io"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "creocoder/yii2-flysystem": "~0.9",
+        "hashids/hashids": "~4.0",
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "league/flysystem-cached-adapter": "~1.0",
+        "swaggest/json-schema": "~0.12",
+        "vlucas/phpdotenv": "~4.1",
+        "yiisoft/yii2": "~2.0"
+    },
+    "require-dev" : {
+        "codeception/codeception": "~4.0",
+        "codeception/module-yii2": "~1.0",
+        "codeception/module-asserts": "~1.1",
+        "phpmd/phpmd": "~2.7",
+        "wapmorgan/php-code-fixer": "~2.0",
+        "yiisoft/yii2-debug":"~2.0",
+        "yiisoft/yii2-gii": "~2.0"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "autoload": {
+        "psr-4": {
+            "blackcube\\core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "webapp\\": "webapp/",
+            "console\\": "console/",
+            "app\\": "common/",
+            "tests\\": "tests/",
+            "tests\\_generated\\": "tests/_support/_generated/",
+            "tests\\Helper\\": "tests/_support/Helper/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+        ]
+    }
+}
