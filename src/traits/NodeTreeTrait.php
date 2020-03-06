@@ -1,6 +1,6 @@
 <?php
 /**
- * NodeTrait.php
+ * NodeTreeTrait.php
  *
  * PHP version 7.2+
  *
@@ -33,7 +33,7 @@ use blackcube\core\helpers\TreeHelper;
  * @package blackcube\core\traits
  * @since XXX
  */
-trait NodeTrait
+trait NodeTreeTrait
 {
     /**
      * @var string node path in dot notation

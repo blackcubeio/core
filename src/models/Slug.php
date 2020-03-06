@@ -171,7 +171,7 @@ class Slug extends \yii\db\ActiveRecord
     /**
      * @return array|null
      */
-    protected function findTargetElementInfo()
+    public function findTargetElementInfo()
     {
         $compositeQuery = Composite::find();
         $compositeQuery->select([

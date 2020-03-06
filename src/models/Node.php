@@ -18,8 +18,10 @@ use blackcube\core\components\PreviewManager;
 use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
+use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\CompositeTrait;
+use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -53,15 +55,16 @@ use yii\db\Expression;
  * @property Language $language
  * @property Slug $slug
  * @property Type $type
- * @property Bloc[] $composites
+ * @property Bloc[] $blocs
  * @property Composite[] $composites
  * @property Tag[] $tags
  */
-class Node extends \yii\db\ActiveRecord
+class Node extends \yii\db\ActiveRecord implements ElementInterface
 {
     use TypeTrait;
     use BlocTrait;
     use CompositeTrait;
+    use TagTrait;
 
     public const TYPE = 'node';
 
@@ -76,6 +79,14 @@ class Node extends \yii\db\ActiveRecord
     protected function getElementBlocClass()
     {
         return NodeBloc::class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementTagClass()
+    {
+        return NodeTag::class;
     }
 
     /**

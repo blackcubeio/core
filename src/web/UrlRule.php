@@ -60,8 +60,12 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
-        $previewManager = Yii::createObject(PreviewManager::class);
         $routeToPrettyUrl = false;
+        if (preg_match('/blackcube-([^-]+)-([0-9]+)(.*)/', $route, $matches) > 0) {
+            $route = 'blackcube-'.$matches[1].'-'.$matches[2].$matches[3];
+        } else {
+            return false;
+        }
         $action = null;
         if (strpos($route, '/') !== false) {
             $data = explode('/', $route);
@@ -82,44 +86,27 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             //TODO: handle preview (active)
             $query = null;
             switch($type) {
-                case Slug::TYPE_COMPOSITE:
-                    $query = Composite::find()->where(['slugId' => $id]);
+                case Composite::TYPE:
+                    $query = Composite::find();
                     break;
-                case Slug::TYPE_NODE:
-                    $query = Node::find()->where(['slugId' => $id]);
+                case Node::TYPE:
+                    $query = Node::find();
                     break;
-                case Slug::TYPE_CATEGORY:
-                    $query = Category::find()->where(['slugId' => $id]);
+                case Category::TYPE:
+                    $query = Category::find();
                     break;
-                case Slug::TYPE_TAG:
-                    $query = Tag::find()->where(['slugId' => $id]);
+                case Tag::TYPE:
+                    $query = Tag::find();
                     break;
             }
             if ($query !== null) {
-                if ($previewManager->check() === false) {
-                    $query->andWhere(['active' => true]);
-                    if ($type === Slug::TYPE_COMPOSITE || $type === Slug::TYPE_NODE) {
-                        $query->andWhere([['<=', 'dateStart', new Expression('NOW()')]]);
-                        $query->andWhere([['>=', 'dateEnd', new Expression('NOW()')]]);
-                    }
-                } else {
-                    $simulateDate = $previewManager->getSimulateDate();
-                    if (($simulateDate !== null) && ($type === Slug::TYPE_COMPOSITE || $type === Slug::TYPE_NODE)) {
-                        $query->andWhere([['<=', 'dateStart', $simulateDate]]);
-                        $query->andWhere([['>=', 'dateEnd', $simulateDate]]);
-                    }
-
-                }
-
+                $query->where(['id' => $id]);
+                $query->active();
             }
-            $slugQuery = Slug::find()->where([
-                'targetId' => $id,
-                'target' => $type,
-            ]);
-            if ($previewManager->check() === false) {
-                $slugQuery->andWhere(['active' => true]);
+            $element = $query->one();
+            if ($element !== null) {
+                $slug = $element->getSlug()->active()->one();
             }
-            $slug = $slugQuery->one();
             if ($slug !== null) {
                 $routeToPrettyUrl = $slug->path;
                 if ($action !== null) {
@@ -138,7 +125,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function parseRequest($manager, $request)
     {
-        $previewManager = Yii::createObject(PreviewManager::class);
         $prettyUrlToRoute = false;
         $pathInfo = $request->getPathInfo();
         $hostname = $request->getHostName();
@@ -167,101 +153,22 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 }
             }
             if ($slug !== null) {
-                $route = RouteEncoder::encode($slug->target, $slug->targetId);
-                if ($route !== false) {
-                    if ($action !== null) {
-                        $route .= '/'.$action;
+                $element = $slug->findTargetElementInfo();
+                if (isset($element['type']) && isset($element['id'])) {
+                    $route = RouteEncoder::encode($element['type'], $element['id']);
+                    if ($route !== false) {
+                        if ($action !== null) {
+                            $route .= '/'.$action;
+                        }
+                        $prettyUrlToRoute = [
+                            $route,
+                            []
+                        ];
                     }
-                    $prettyUrlToRoute = [
-                        $route,
-                        []
-                    ];
                 }
             }
         }
         return $prettyUrlToRoute;
     }
 
-    /**
-     * @param Slug $slug
-     * @return Category|Composite|Node|Tag|null
-     * @throws \yii\base\InvalidConfigException
-     */
-    protected function searchElement(Slug $slug)
-    {
-        /*/
-            select 'composite' type, id from composites where slugId = 1 and active = true and dateStart <= NOW() and dateEnd >= NOW()
-            union select 'node' type, id from nodes where slugId = 1 and active = true and dateStart <= NOW() and dateEnd >= NOW()
-            union select 'tag' type, id from tags where slugId = 1 and active = true
-            union select 'category' type, id from categories where slugId = 1 and active = true;
-        /**/
-        $previewManager = Yii::createObject(PreviewManager::class);
-
-        $compositeQuery = new Query();
-        $compositeQuery->select(['"composite" AS type', 'id'])
-            ->from(Composite::tableName())
-            ->where(['slugId' => $slug->id]);
-        $nodeQuery = new Query();
-        $nodeQuery->select(['"node" AS type', 'id'])
-            ->from(Node::tableName())
-            ->where(['slugId' => $slug->id]);
-        $tagQuery = new Query();
-        $tagQuery->select(['"tag" AS type', 'id'])
-            ->from(Tag::tableName())
-            ->where(['slugId' => $slug->id]);
-        $categoryQuery = new Query();
-        $categoryQuery->select(['"category" AS type', 'id'])
-            ->from(Category::tableName())
-            ->where(['slugId' => $slug->id]);
-
-        if ($previewManager->check() === false) {
-            $compositeQuery->andWhere([
-                'active' => true,
-            ]);
-            $compositeQuery->andWhere([['<=', 'dateStart', new Expression('NOW()')]]);
-            $compositeQuery->andWhere([['>=', 'dateEnd', new Expression('NOW()')]]);
-            $nodeQuery->andWhere([
-                'active' => true,
-            ]);
-            $nodeQuery->andWhere([['<=', 'dateStart', new Expression('NOW()')]]);
-            $nodeQuery->andWhere([['>=', 'dateEnd', new Expression('NOW()')]]);
-            $tagQuery->andWhere([
-                'active' => true,
-            ]);
-            $categoryQuery->andWhere([
-                'active' => true,
-            ]);
-        } else {
-            $simulateDate = $previewManager->getSimulateDate();
-            if ($simulateDate !== null) {
-                $compositeQuery->andWhere([['<=', 'dateStart', $simulateDate]]);
-                $compositeQuery->andWhere([['>=', 'dateEnd', $simulateDate]]);
-                $nodeQuery->andWhere([['<=', 'dateStart', $simulateDate]]);
-                $nodeQuery->andWhere([['>=', 'dateEnd', $simulateDate]]);
-            }
-        }
-        $compositeQuery->union($nodeQuery)
-            ->union($tagQuery)
-            ->union($categoryQuery);
-        $result = $compositeQuery->one();
-        $element = null;
-        if ($result !== false && isset($result['type']) && isset($result['id'])) {
-            switch ($result['type']) {
-                case 'composite':
-                    $element = Composite::findOne(['id' => $result['id']]);
-                    break;
-                case 'node':
-                    $element = Node::findOne(['id' => $result['id']]);
-                    break;
-                case 'tag':
-                    $element = Tag::findOne(['id' => $result['id']]);
-                    break;
-                case 'category':
-                    $element = Category::findOne(['id' => $result['id']]);
-                    break;
-            }
-        }
-        return $element;
-
-    }
 }

@@ -14,7 +14,9 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\BlocTrait;
+use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -49,11 +51,12 @@ use yii\db\Query;
  * @property Tag[] $tags
  * @property Node[] $nodes
  */
-class Composite extends \yii\db\ActiveRecord
+class Composite extends \yii\db\ActiveRecord implements ElementInterface
 {
 
     use TypeTrait;
     use BlocTrait;
+    use TagTrait;
 
     public const TYPE = 'composite';
 
@@ -63,6 +66,14 @@ class Composite extends \yii\db\ActiveRecord
     protected function getElementBlocClass()
     {
         return CompositeBloc::class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getElementTagClass()
+    {
+        return CompositeTag::class;
     }
 
     /**

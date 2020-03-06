@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
@@ -46,7 +47,7 @@ use yii\db\Expression;
  * @property Type $type
  * @property Bloc[] $blocs
  */
-class Tag extends \yii\db\ActiveRecord
+class Tag extends \yii\db\ActiveRecord implements ElementInterface
 {
     use TypeTrait;
     use BlocTrait;

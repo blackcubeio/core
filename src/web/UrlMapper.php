@@ -15,9 +15,16 @@
 namespace blackcube\core\web;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\models\Category;
+use blackcube\core\models\Composite;
+use blackcube\core\models\Node;
+use blackcube\core\models\Tag;
+use blackcube\core\models\TypeBlocType;
 use yii\base\BaseObject;
 use ArrayAccess;
 use Yii;
+use yii\base\InvalidArgumentException;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is class allow transcoding url from route to DB
@@ -37,6 +44,8 @@ class UrlMapper extends BaseObject implements ArrayAccess
     public static $CACHE_EXPIRE = 3600;
 
     public $routePrefix = 'blackcube';
+
+    public $defaultController = 'Blackcube';
 
     public $routeSeparator = '-';
 
@@ -65,14 +74,18 @@ class UrlMapper extends BaseObject implements ArrayAccess
             $mappedController = $this->additionalMap[$offset];
         } elseif (($data = RouteEncoder::decode($offset)) !== false) {
             // $data = ['type' => 'elementType', 'id' => 1234]
-            list ($controller, $action) = static::findController($data);
+            list ($controller, $action) = static::fetchControllerForElement($data);
+            if (empty($controller) === true) {
+                $controller = $this->defaultController;
+            }
             if ($this->controllerNamespace !== null) {
-                $class = $this->controllerNamespace . '\\' . $controller . 'Controller';
+                $class = $this->controllerNamespace . '\\' . $controller.'Controller';
             } else {
-                $class = $controller . 'Controller';
+                $class = $controller.'Controller';
             }
             $mappedController = [
                 'class' => $class,
+                'elementType' => $data['type'],
                 'elementId' => $data['id'],
             ];
             if (empty($action) === false) {
@@ -100,18 +113,31 @@ class UrlMapper extends BaseObject implements ArrayAccess
         unset($this->additionalMap[$offset]);
     }
 
-    protected static function findController($data)
-    {
-        $controller = null;
-        $action = null;
-        if ($data !== false) {
-            list($controller, $action) = static::fetchControllerForElement($data);
-        }
-    }
-
     protected static function fetchControllerForElement($data)
     {
-        //TODO: fetch in DB table types the controller associated to selected element
-        // if (isset($data['type']))
+        $element = null;
+        switch ($data['type']) {
+            case Node::TYPE:
+                $query = Node::find();
+                break;
+            case Composite::TYPE:
+                $query = Composite::find();
+                break;
+            case Category::TYPE:
+                $query = Category::find();
+                break;
+            case Tag::TYPE:
+                $query = Tag::find();
+                break;
+            default:
+                throw new InvalidArgumentException();
+                break;
+        }
+        $element = $query->where(['id' => $data['id']])->active()->one();
+        /* @var $element \blackcube\core\models\Node|\blackcube\core\models\Composite|\blackcube\core\models\Category|\blackcube\core\models\Tag */
+        if ($element === null) {
+            throw new NotFoundHttpException();
+        }
+        return [$element->getController(), $element->getAction()];
     }
 }

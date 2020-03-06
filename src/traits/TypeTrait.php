@@ -10,7 +10,7 @@ trait TypeTrait
      */
     public function getController()
     {
-        return (($this->type === null) || empty($this->type->controller) === true) ? 'BlackcubeController' : $this->type->controller.'Controller';
+        return (($this->type === null) || empty($this->type->controller) === true) ? null : $this->type->controller;
     }
 
     /**
@@ -18,7 +18,7 @@ trait TypeTrait
      */
     public function getAction()
     {
-        return (($this->type === null) || empty($this->type->action) === true) ? 'index' : $this->type->action;
+        return (($this->type === null) || empty($this->type->action) === true) ? null : $this->type->action;
     }
 
     /**

@@ -19,6 +19,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
+use yii\helpers\Inflector;
 use yii\helpers\Json;
 
 /**
@@ -148,5 +149,16 @@ class Bloc extends \yii\db\ActiveRecord
         return $this->hasMany(Tag::class, ['id' => 'tagId'])->viaTable(TagBloc::tableName(), ['blocId' => 'id']);
     }
 
+    /**
+     * @return string view name
+     */
+    public function getView()
+    {
+        $targetView = 'bloc';
+        if ($this->blocType !== null) {
+            $targetView = (empty($this->blocType->view) ? Inflector::underscore($this->blocType->name) : $this->blocType->view);
+        }
+        return preg_replace('/\s+/', '_', $targetView);
+    }
 
 }
