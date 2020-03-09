@@ -130,7 +130,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 $query = Tag::find();
                 break;
             default:
-                throw new InvalidArgumentException();
+                throw new NotFoundHttpException();
                 break;
         }
         $element = $query->where(['id' => $data['id']])->active()->one();

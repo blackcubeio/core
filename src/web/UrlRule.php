@@ -83,30 +83,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             }
         }
         if ($type !== null && $id !== null) {
-            //TODO: handle preview (active)
-            $query = null;
-            switch($type) {
-                case Composite::TYPE:
-                    $query = Composite::find();
-                    break;
-                case Node::TYPE:
-                    $query = Node::find();
-                    break;
-                case Category::TYPE:
-                    $query = Category::find();
-                    break;
-                case Tag::TYPE:
-                    $query = Tag::find();
-                    break;
-            }
-            if ($query !== null) {
-                $query->where(['id' => $id]);
-                $query->active();
-            }
-            $element = $query->one();
-            if ($element !== null) {
-                $slug = $element->getSlug()->active()->one();
-            }
+            $slug = Slug::findOneByTypeAndId($type, $id);
             if ($slug !== null) {
                 $routeToPrettyUrl = $slug->path;
                 if ($action !== null) {

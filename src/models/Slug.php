@@ -49,10 +49,6 @@ use yii\db\Query;
  */
 class Slug extends \yii\db\ActiveRecord
 {
-    public const TYPE_COMPOSITE = 'composite';
-    public const TYPE_NODE = 'node';
-    public const TYPE_CATEGORY = 'category';
-    public const TYPE_TAG = 'tag';
 
     /**
      * {@inheritdoc}
@@ -262,6 +258,36 @@ class Slug extends \yii\db\ActiveRecord
             $query = static::find()->where('1 = 0');
         }
         return $query;
+    }
+
+    public static function findOneByTypeAndId($type, $id)
+    {
+        $query = null;
+        $slug = null;
+        switch($type) {
+            case Composite::TYPE:
+                $query = Composite::find();
+                break;
+            case Node::TYPE:
+                $query = Node::find();
+                break;
+            case Category::TYPE:
+                $query = Category::find();
+                break;
+            case Tag::TYPE:
+                $query = Tag::find();
+                break;
+        }
+        if ($query !== null) {
+            $query->where(['id' => $id]);
+            $query->active();
+        }
+        $element = $query->one();
+        if ($element !== null) {
+            $slug = $element->getSlug()->active()->one();
+        }
+        return $slug;
+
     }
 
     public static function findOneByPathinfoAndHostname($pathInfo, $hostname = null)
