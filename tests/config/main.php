@@ -15,7 +15,7 @@
 use yii\web\AssetManager;
 use yii\web\JsonParser;
 
-$config = require dirname(__DIR__, 2) .'/common/config/common.php';
+$config = require 'common.php';
 
 // $config['basePath'] = dirname(dirname(__DIR__)).'/webapp';
 $config['id'] = 'blackcube/cms';
