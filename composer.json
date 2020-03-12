@@ -53,9 +53,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "webapp\\": "webapp/",
-            "console\\": "console/",
-            "app\\": "common/",
             "tests\\": "tests/",
             "tests\\_generated\\": "tests/_support/_generated/",
             "tests\\Helper\\": "tests/_support/Helper/"
