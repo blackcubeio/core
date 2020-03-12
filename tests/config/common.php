@@ -28,6 +28,7 @@ $config = [
     'extensions' => require dirname(__DIR__, 2) . '/vendor/yiisoft/extensions.php',
     'basePath' => dirname(__DIR__),
     'aliases' => [
+        '@blackcube/core' => dirname(__DIR__, 2).'/src',
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
