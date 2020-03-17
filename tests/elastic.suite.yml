@@ -1,0 +1,9 @@
+actor: ElasticTester
+modules:
+    enabled:
+        - Yii2
+        - Asserts
+        - \tests\Helper\Elastic
+    config:
+        Yii2:
+            configFile: 'tests/config/main.php'

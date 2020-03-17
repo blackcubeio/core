@@ -1,0 +1,9 @@
+actor: NodeTester
+modules:
+    enabled:
+        - Yii2
+        - Asserts
+        - \tests\Helper\Node
+    config:
+        Yii2:
+            configFile: 'tests/config/main.php'

@@ -1,0 +1,9 @@
+actor: TypeTester
+modules:
+    enabled:
+        - Yii2
+        - Asserts
+        - \tests\Helper\Type
+    config:
+        Yii2:
+            configFile: 'tests/config/main.php'

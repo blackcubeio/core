@@ -1,0 +1,113 @@
+<?php
+/**
+ * TagBloc.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2019 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\models
+ */
+
+namespace blackcube\core\models;
+
+use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+
+/**
+ * This is the model class for table "{{%tags_blocs}}".
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2019 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\models
+ *
+ * @property int $tagId
+ * @property int $blocId
+ * @property int|null $order
+ * @property string $dateCreate
+ * @property string|null $dateUpdate
+ *
+ * @property Bloc $bloc
+ * @property Tag $tag
+ */
+class TagBloc extends \yii\db\ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['timestamp'] = [
+            'class' => TimestampBehavior::class,
+            'createdAtAttribute' => 'dateCreate',
+            'updatedAtAttribute' => 'dateUpdate',
+            'value' => new Expression('NOW()'),
+        ];
+        return $behaviors;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return '{{%tags_blocs}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['tagId', 'blocId'], 'required'],
+            [['tagId', 'blocId', 'order'], 'integer'],
+            [['dateCreate', 'dateUpdate'], 'safe'],
+            [['tagId', 'blocId'], 'unique', 'targetAttribute' => ['tagId', 'blocId']],
+            [['blocId'], 'exist', 'skipOnError' => true, 'targetClass' => Bloc::class, 'targetAttribute' => ['blocId' => 'id']],
+            [['tagId'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['tagId' => 'id']],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'tagId' => Yii::t('blackcube.core', 'Tag ID'),
+            'blocId' => Yii::t('blackcube.core', 'Bloc ID'),
+            'order' => Yii::t('blackcube.core', 'Order'),
+            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
+            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+        ];
+    }
+
+    /**
+     * Gets query for [[Bloc]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBloc()
+    {
+        return $this->hasOne(Bloc::class, ['id' => 'blocId']);
+    }
+
+    /**
+     * Gets query for [[Tag]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTag()
+    {
+        return $this->hasOne(Tag::class, ['id' => 'tagId']);
+    }
+}

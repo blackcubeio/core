@@ -1,0 +1,9 @@
+actor: BlocTester
+modules:
+    enabled:
+        - Yii2
+        - Asserts
+        - \tests\Helper\Bloc
+    config:
+        Yii2:
+            configFile: 'tests/config/main.php'
