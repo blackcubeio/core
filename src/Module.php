@@ -54,6 +54,7 @@ class Module extends BaseModule implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+        Yii::setAlias('@blackcube/core', __DIR__);
         if ($app instanceof ConsoleApplication) {
             $this->bootstrapConsole($app);
         }
