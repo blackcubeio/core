@@ -89,8 +89,12 @@ class Slug extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['host', 'path', 'targetUrl'], 'filter', 'filter' => function($value) {
+                return empty(trim($value)) ? null : $value;
+            }],
             [['httpCode'], 'integer'],
             [['active'], 'boolean'],
+            [['path'], 'required'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['host', 'path', 'targetUrl'], 'string', 'max' => 255],
             [['host', 'path'], 'unique', 'targetAttribute' => ['host', 'path']],
