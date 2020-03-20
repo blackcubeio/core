@@ -28,13 +28,17 @@ trait SlugTrait
             try {
                 if (empty($this->{$slugIdColumn}) === true) {
                     // no slug
+                    $currentSlugId = null;
                     $this->{$slugIdColumn} = $slug->id;
                 } elseif ($slug->id != $this->{$slugIdColumn}) {
                     // replace slug
-                    Slug::deleteAll(['id' => $this->{$slugIdColumn}]);
+                    $currentSlugId = $this->{$slugIdColumn};
                     $this->{$slugIdColumn} = $slug->id;
                 }
                 $status = $this->save(false, [$slugIdColumn]);
+                if ($currentSlugId !== null) {
+                    Slug::deleteAll(['id' => $currentSlugId]);
+                }
                 $transaction->commit();
             } catch (\Exception $e) {
                 $status = false;
@@ -59,9 +63,12 @@ trait SlugTrait
         if ($currentSlug !== null && $currentSlug->getIsNewRecord() === false) {
             $transaction = static::getDb()->beginTransaction();
             try {
-                $currentSlug->delete();
+                $currentSlugId = $this->{$slugIdColumn};
                 $this->{$slugIdColumn} = null;
                 $status = $this->save(false, [$slugIdColumn]);
+                if ($currentSlugId !== null) {
+                    Slug::deleteAll(['id' => $currentSlugId]);
+                }
                 $transaction->commit();
             } catch (\Exception $e) {
                 $transaction->rollBack();
