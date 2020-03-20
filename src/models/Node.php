@@ -21,6 +21,7 @@ use blackcube\core\helpers\TreeHelper;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\CompositeTrait;
+use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
@@ -65,6 +66,7 @@ class Node extends \yii\db\ActiveRecord implements ElementInterface
     use BlocTrait;
     use CompositeTrait;
     use TagTrait;
+    use SlugTrait;
 
     public const TYPE = 'node';
 

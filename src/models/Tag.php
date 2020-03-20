@@ -16,6 +16,7 @@ namespace blackcube\core\models;
 
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\BlocTrait;
+use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -51,6 +52,7 @@ class Tag extends \yii\db\ActiveRecord implements ElementInterface
 {
     use TypeTrait;
     use BlocTrait;
+    use SlugTrait;
 
     public const TYPE = 'tag';
 

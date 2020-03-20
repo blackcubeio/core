@@ -46,6 +46,10 @@ class SlugCest extends SlugBase
         $I->assertEquals($slug->httpCode, $savedSlug->httpCode);
         $I->assertEquals($slug->active, $savedSlug->active);
 
+        $emptySlug = new Slug();
+        $emptySlug->path = ' ';
+        $emptySlug->active = true;
+        $I->assertFalse($emptySlug->validate());
         // $erroneousSlug = new Slug();
         // $I->assertFalse($erroneousSlug->validate());
         // $I->assertFalse($erroneousSitemap->save());

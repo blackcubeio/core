@@ -16,6 +16,7 @@ namespace blackcube\core\models;
 
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\BlocTrait;
+use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
@@ -57,6 +58,7 @@ class Composite extends \yii\db\ActiveRecord implements ElementInterface
     use TypeTrait;
     use BlocTrait;
     use TagTrait;
+    use SlugTrait;
 
     public const TYPE = 'composite';
 
