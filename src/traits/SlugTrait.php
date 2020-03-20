@@ -61,9 +61,9 @@ trait SlugTrait
         $currentSlug = $this->getSlug()->one();
         /* @var $currentSlug \blackcube\core\models\Slug */
         if ($currentSlug !== null && $currentSlug->getIsNewRecord() === false) {
+            $currentSlugId = $this->{$slugIdColumn};
             $transaction = static::getDb()->beginTransaction();
             try {
-                $currentSlugId = $this->{$slugIdColumn};
                 $this->{$slugIdColumn} = null;
                 $status = $this->save(false, [$slugIdColumn]);
                 if ($currentSlugId !== null) {
