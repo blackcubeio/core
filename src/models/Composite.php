@@ -20,6 +20,7 @@ use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\db\Query;
@@ -98,6 +99,16 @@ class Composite extends \yii\db\ActiveRecord implements ElementInterface
             'updatedAtAttribute' => 'dateUpdate',
             'value' => new Expression('NOW()'),
         ];
+        $behaviors['typecast'] = [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterFind' => true,
+            'typecastAfterSave' => true,
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+        ];
         return $behaviors;
     }
 
@@ -125,6 +136,9 @@ class Composite extends \yii\db\ActiveRecord implements ElementInterface
     public function rules()
     {
         return [
+            [['name', 'slugId', 'typeId', 'dateStart', 'dateEnd'], 'filter', 'filter' => function($value) {
+                return empty(trim($value)) ? null : trim($value);
+            }],
             [['slugId', 'typeId'], 'integer'],
             [['active'], 'boolean'],
             [['languageId'], 'required'],

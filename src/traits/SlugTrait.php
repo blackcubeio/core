@@ -26,17 +26,17 @@ trait SlugTrait
             $slugIdColumn = $this->getSlugIdColumn();
             $transaction = static::getDb()->beginTransaction();
             try {
+                $currentSlugId = $this->{$slugIdColumn};
                 if (empty($this->{$slugIdColumn}) === true) {
                     // no slug
                     $currentSlugId = null;
                     $this->{$slugIdColumn} = $slug->id;
                 } elseif ($slug->id != $this->{$slugIdColumn}) {
                     // replace slug
-                    $currentSlugId = $this->{$slugIdColumn};
                     $this->{$slugIdColumn} = $slug->id;
                 }
                 $status = $this->save(false, [$slugIdColumn]);
-                if ($currentSlugId !== null) {
+                if ($currentSlugId !== null && $currentSlugId != $slug->id ) {
                     Slug::deleteAll(['id' => $currentSlugId]);
                 }
                 $transaction->commit();

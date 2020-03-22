@@ -17,6 +17,7 @@ namespace blackcube\core\models;
 use blackcube\core\components\PreviewManager;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\db\Query;
@@ -45,6 +46,7 @@ use yii\db\Query;
  * @property Composite $composite
  * @property Node $node
  * @property Sitemap $sitemap
+ * @property Seo $seo
  * @property Tag $tag
  */
 class Slug extends \yii\db\ActiveRecord
@@ -61,6 +63,16 @@ class Slug extends \yii\db\ActiveRecord
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
             'value' => new Expression('NOW()'),
+        ];
+        $behaviors['typecast'] = [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterFind' => true,
+            'typecastAfterSave' => true,
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
         ];
         return $behaviors;
     }
@@ -90,7 +102,7 @@ class Slug extends \yii\db\ActiveRecord
     {
         return [
             [['host', 'path', 'targetUrl'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : $value;
+                return empty(trim($value)) ? null : trim($value);
             }],
             [['httpCode'], 'integer'],
             [['active'], 'boolean'],
@@ -156,6 +168,16 @@ class Slug extends \yii\db\ActiveRecord
     public function getSitemap()
     {
         return $this->hasOne(Sitemap::class, ['slugId' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Seo]].
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getSeo()
+    {
+        return $this->hasOne(Seo::class, ['slugId' => 'id']);
     }
 
     /**

@@ -1,16 +1,4 @@
 <?php
-/**
- * Sitemap.php
- *
- * PHP version 7.2+
- *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
- * @license https://www.redcat.io/license license
- * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\models
- */
 
 namespace blackcube\core\models;
 
@@ -21,7 +9,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 
 /**
- * This is the model class for table "{{%sitemaps}}".
+ * This is the model class for table "{{%seos}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2019 Redcat
@@ -32,15 +20,24 @@ use yii\db\Expression;
  *
  * @property int $id
  * @property int $slugId
- * @property string|null $frequency
- * @property float|null $priority
+ * @property int|null $canonicalSlugId
+ * @property string|null $title
+ * @property string|null $image
+ * @property string|null $description
+ * @property int|null $noindex
+ * @property int|null $nofollow
+ * @property boolean $og
+ * @property string|null $ogType
+ * @property boolean $twitter
+ * @property string|null $twitterCard
  * @property boolean $active
  * @property string $dateCreate
  * @property string|null $dateUpdate
  *
+ * @property Slug $canonicalSlug
  * @property Slug $slug
  */
-class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
+class Seo extends \yii\db\ActiveRecord implements SluggedInterface
 {
     /**
      * {@inheritdoc}
@@ -57,6 +54,8 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
         $behaviors['typecast'] = [
             'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
+                'noindex' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                'nofollow' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                 'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             ],
             'typecastAfterFind' => true,
@@ -64,16 +63,14 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
             'typecastAfterValidate' => true,
             'typecastBeforeSave' => false,
         ];
-
         return $behaviors;
     }
-
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%sitemaps}}';
+        return '{{%seos}}';
     }
 
     /**
@@ -92,13 +89,17 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     public function rules()
     {
         return [
+            [['slugId', 'canonicalSlugId', 'title', 'image', 'twitterCard', 'ogType', 'description'], 'filter', 'filter' => function($value) {
+                return empty(trim($value)) ? null : trim($value);
+            }],
             [['slugId'], 'required'],
-            [['slugId'], 'integer'],
-            [['active'], 'boolean'],
-            [['priority'], 'number'],
+            [['slugId', 'canonicalSlugId'], 'integer'],
+            [['noindex', 'nofollow', 'og', 'twitter', 'active'], 'boolean'],
+            [['description'], 'string'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['frequency'], 'string', 'max' => 64],
+            [['title', 'image', 'ogType', 'twitterCard'], 'string', 'max' => 255],
             [['slugId'], 'unique'],
+            [['canonicalSlugId'], 'exist', 'skipOnError' => true, 'targetClass' => Slug::class, 'targetAttribute' => ['canonicalSlugId' => 'id']],
             [['slugId'], 'exist', 'skipOnError' => true, 'targetClass' => Slug::class, 'targetAttribute' => ['slugId' => 'id']],
         ];
     }
@@ -111,8 +112,16 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
         return [
             'id' => Yii::t('blackcube.core', 'ID'),
             'slugId' => Yii::t('blackcube.core', 'Slug ID'),
-            'frequency' => Yii::t('blackcube.core', 'Frequency'),
-            'priority' => Yii::t('blackcube.core', 'Priority'),
+            'canonicalSlugId' => Yii::t('blackcube.core', 'Canonical Slug ID'),
+            'title' => Yii::t('blackcube.core', 'Title'),
+            'image' => Yii::t('blackcube.core', 'Image'),
+            'description' => Yii::t('blackcube.core', 'Description'),
+            'noindex' => Yii::t('blackcube.core', 'Noindex'),
+            'nofollow' => Yii::t('blackcube.core', 'Nofollow'),
+            'og' => Yii::t('blackcube.core', 'Og'),
+            'ogType' => Yii::t('blackcube.core', 'Og Type'),
+            'twitter' => Yii::t('blackcube.core', 'Twitter'),
+            'twitterCard' => Yii::t('blackcube.core', 'Twitter Card'),
             'active' => Yii::t('blackcube.core', 'Active'),
             'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
             'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
@@ -120,9 +129,19 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     }
 
     /**
+     * Gets query for [[CanonicalSlug]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCanonicalSlug()
+    {
+        return $this->hasOne(Slug::class, ['id' => 'canonicalSlugId']);
+    }
+
+    /**
      * Gets query for [[Slug]].
      *
-     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getSlug()
     {

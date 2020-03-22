@@ -15,6 +15,7 @@
 namespace blackcube\core\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 
@@ -52,6 +53,17 @@ class Language extends \yii\db\ActiveRecord
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
             'value' => new Expression('NOW()'),
+        ];
+        $behaviors['typecast'] = [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'main' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterFind' => true,
+            'typecastAfterSave' => true,
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
         ];
         return $behaviors;
     }
