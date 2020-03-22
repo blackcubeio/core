@@ -22,6 +22,7 @@ use blackcube\core\models\NodeBloc;
 use blackcube\core\models\NodeComposite;
 use blackcube\core\models\NodeTag;
 use blackcube\core\models\Parameter;
+use blackcube\core\models\Seo;
 use blackcube\core\models\Sitemap;
 use blackcube\core\models\Slug;
 use blackcube\core\models\BlocType;
@@ -105,6 +106,13 @@ JSON;
         2 => ['slugId' => 2, 'frequency' => 'monthly', 'priority' => 0.6, 'active' => true],
         3 => ['slugId' => 3, 'frequency' => 'daily', 'priority' => 0.4, 'active' => false],
         4 => ['slugId' => 4, 'frequency' => 'daily', 'priority' => 0.5, 'active' => true],
+    ];
+
+    protected $seoList = [
+        1 => ['slugId' => 1, 'canonicalSlugId' => null, 'title' => 'home title', 'description' => 'home description', 'active' => true],
+        2 => ['slugId' => 2, 'canonicalSlugId' => null, 'title' => 'node title', 'description' => 'node description', 'active' => true],
+        3 => ['slugId' => 3, 'canonicalSlugId' => null, 'title' => 'tag title', 'description' => 'tag description', 'active' => true],
+        4 => ['slugId' => 4, 'canonicalSlugId' => null, 'title' => 'base host title', 'description' => 'base host description', 'active' => true],
     ];
 
     protected $typeList = [
@@ -328,6 +336,9 @@ JSON
         Bloc::deleteAll();
         Yii::$app->db->createCommand()->resetSequence(Bloc::tableName());
 
+        Seo::deleteAll();
+        Yii::$app->db->createCommand()->resetSequence(Seo::tableName());
+
         CompositeBloc::deleteAll();
         // Yii::$app->db->createCommand()->resetSequence(CompositeBloc::tableName());
 
@@ -361,6 +372,13 @@ JSON
             $sitemap->attributes = $config;
             $sitemap->id = $id;
             $sitemap->save();
+        }
+
+        foreach($this->seoList as $id => $config) {
+            $seo = new Seo();
+            $seo->attributes = $config;
+            $seo->id = $id;
+            $seo->save();
         }
 
         foreach($this->typeList as $id => $config) {
