@@ -107,7 +107,7 @@ class Composite extends \yii\db\ActiveRecord implements ElementInterface
             'typecastAfterFind' => true,
             'typecastAfterSave' => true,
             'typecastAfterValidate' => true,
-            'typecastBeforeSave' => false,
+            'typecastBeforeSave' => true,
         ];
         return $behaviors;
     }

@@ -62,7 +62,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
             'typecastAfterFind' => true,
             'typecastAfterSave' => true,
             'typecastAfterValidate' => true,
-            'typecastBeforeSave' => false,
+            'typecastBeforeSave' => true,
         ];
 
         return $behaviors;

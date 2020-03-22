@@ -63,7 +63,7 @@ class Language extends \yii\db\ActiveRecord
             'typecastAfterFind' => true,
             'typecastAfterSave' => true,
             'typecastAfterValidate' => true,
-            'typecastBeforeSave' => false,
+            'typecastBeforeSave' => true,
         ];
         return $behaviors;
     }
