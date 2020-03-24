@@ -74,6 +74,12 @@ class Type extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['controller', 'action'], 'filter', 'filter' => function($value) {
+                return empty(trim($value)) ? null : trim($value);
+            }],
+            [['minBlocs', 'maxBlocs'], 'filter', 'filter' => function($value) {
+                return (trim($value) > 0 ) ? trim($value) : null;
+            }],
             [['name', 'controller'], 'required'],
             [['minBlocs', 'maxBlocs'], 'integer'],
             [['dateCreate', 'dateUpdate'], 'safe'],
@@ -139,6 +145,41 @@ class Type extends \yii\db\ActiveRecord
         return $this->hasMany(Tag::class, ['typeId' => 'id']);
     }
 
+    public function getElementsCount()
+    {
+        $compositeQuery = Composite::find();
+        $compositeQuery->select([
+            new Expression('"'.Composite::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+        $nodeQuery = Node::find();
+        $nodeQuery->select([
+            new Expression('"'.Node::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+
+        $tagQuery = Tag::find();
+        $tagQuery->select([
+            new Expression('"'.Tag::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+
+        $categoryQuery = Category::find();
+        $categoryQuery->select([
+            new Expression('"'.Category::TYPE.'" AS type'),
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+
+        $compositeQuery->union($nodeQuery)
+            ->union($tagQuery)
+            ->union($categoryQuery);
+        return $compositeQuery->count();
+    }
+
     /**
      * Gets query for [[BlocType]].
      *
@@ -146,6 +187,9 @@ class Type extends \yii\db\ActiveRecord
      */
     public function getBlocTypes()
     {
-        return $this->hasMany(BlocType::class, ['id' => 'blocTypeId'])->viaTable(TypeBlocType::tableName(), ['typeId' => 'id']);
+        return $this->hasMany(BlocType::class, ['id' => 'blocTypeId'])->viaTable(TypeBlocType::tableName(), ['typeId' => 'id'], function ($query) {
+            /* @var $query \yii\db\ActiveQuery */
+            $query->andWhere(['allowed' => true]);
+        });
     }
 }

@@ -40,6 +40,11 @@ use yii\db\Expression;
 class Seo extends \yii\db\ActiveRecord implements SluggedInterface
 {
     /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE = 'pre_validate';
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -81,6 +86,16 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     public static function find()
     {
         return new FilterActiveQuery(static::class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_PRE_VALIDATE] = ['canonicalSlugId', 'noindex', 'nofollow', 'og', 'twitter', 'active', 'description', 'title', 'image', 'ogType', 'twitterCard'];
+        return $scenarios;
     }
 
     /**

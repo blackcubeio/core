@@ -43,6 +43,16 @@ use yii\db\Expression;
 class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
 {
     /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE = 'pre_validate';
+
+    // public const PRIORITY = ['0.0' => 0.0, '0.1' => 0.1, '0.2' => 0.2, '0.3' => 0.3, '0.4' => 0.4, '0.5' => 0.5, '0.6' => 0.6, '0.7' => 0.7, '0.8' => 0.8, '0.9' => 0.9, '1.0' => 1.0];
+    public const PRIORITY = ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0'];
+
+    // public const FREQUENCY = ['always' => 'always', 'hourly' => 'hourly', 'daily' => 'daily', 'weekly' => 'weekly', 'monthly' => 'monthly', 'yearly' => 'yearly', 'never' => 'never'];
+    public const FREQUENCY = ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never'];
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -84,6 +94,16 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     public static function find()
     {
         return new FilterActiveQuery(static::class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_PRE_VALIDATE] = ['active', 'priority', 'frequency'];
+        return $scenarios;
     }
 
     /**

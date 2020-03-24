@@ -43,6 +43,11 @@ class Module extends BaseModule implements BootstrapInterface
     public $cmsControllerNamespace;
 
     /**
+     * @var string cms controller which will be used in case realcontroller does not exists
+     */
+    public $cmsDefaultController = 'Blackcube';
+
+    /**
      * @var mixed cms url rules. Set it to false to disable cms url rule management
      */
     public $cmsUrlRule = [
@@ -90,6 +95,7 @@ class Module extends BaseModule implements BootstrapInterface
 
         $app->controllerMap = Yii::createObject([
             'class' => UrlMapper::class,
+            'defaultController' => $this->cmsDefaultController,
             'controllerNamespace' => ($this->cmsControllerNamespace === null) ? $app->controllerNamespace : $this->cmsControllerNamespace,
             'additionalMap' => $app->controllerMap,
         ]);
