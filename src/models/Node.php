@@ -245,11 +245,19 @@ class Node extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getBlocs()
     {
+        $blocQuery = Bloc::find()
+            ->rightJoin(NodeBloc::tableName().' nb', 'nb.[[blocId]] = id')
+            ->andWhere(['nb.nodeId' => $this->id])
+            ->orderBy(['nb.order' => SORT_ASC]);
+        $blocQuery->multiple = true;
+        return $blocQuery;
+        /*/
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(NodeBloc::tableName(), ['nodeId' => 'id'], function ($query) {
-                /* @var $query \yii\db\ActiveQuery */
+                / * @var $query \yii\db\ActiveQuery * /
                 $query->orderBy(['order' => SORT_ASC]);
             });
+        /**/
     }
 
     /**

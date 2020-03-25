@@ -212,9 +212,18 @@ class Tag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getBlocs()
     {
+        //TODO: make better query
+        $blocQuery = Bloc::find()
+            ->rightJoin(TagBloc::tableName().' tb', 'tb.[[blocId]] = id')
+            ->andWhere(['tb.tagId' => $this->id])
+            ->orderBy(['tb.order' => SORT_ASC]);
+        $blocQuery->multiple = true;
+        return $blocQuery;
+        /*/
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])->viaTable(TagBloc::tableName(), ['tagId' => 'id'], function ($query) {
-            /* @var $query \yii\db\ActiveQuery */
-            $query->orderBy(['order' => SORT_ASC]);
+            / * @var $query \yii\db\ActiveQuery * /
+            $query->orderBy(['order' => SORT_DESC]);
         });
+        /**/
     }
 }

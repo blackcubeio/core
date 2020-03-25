@@ -46,6 +46,8 @@ use yii\helpers\Json;
  */
 class Bloc extends \yii\db\ActiveRecord
 {
+    public const DISABLED_ATTRIBUTES = ['id', 'blocTypeId', 'dateCreate', 'dateUpdate', 'data'];
+
     use ElasticTrait;
 
     /**

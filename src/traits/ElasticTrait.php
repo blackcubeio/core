@@ -268,6 +268,11 @@ trait ElasticTrait
         $this->elastic = new Elastic(['schema' => $jsonSchema]);
     }
 
+    public function getStructure()
+    {
+        return $this->elastic->getModelStructure();
+    }
+
     /**
      * Copy attributes from data to elastic model
      */

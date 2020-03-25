@@ -192,10 +192,19 @@ class Category extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getBlocs()
     {
+        //TODO: make better query
+        $blocQuery = Bloc::find()
+            ->rightJoin(CategoryBloc::tableName().' cb', 'cb.[[blocId]] = id')
+            ->andWhere(['cb.categoryId' => $this->id])
+            ->orderBy(['cb.order' => SORT_ASC]);
+        $blocQuery->multiple = true;
+        return $blocQuery;
+        /*/
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])->viaTable(CategoryBloc::tableName(), ['categoryId' => 'id'], function ($query) {
-            /* @var $query \yii\db\ActiveQuery */
+            / * @var $query \yii\db\ActiveQuery * /
             $query->orderBy(['order' => SORT_ASC]);
         });
+        /**/
     }
 
     /**

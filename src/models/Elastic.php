@@ -167,6 +167,13 @@ class Elastic extends Model {
      */
     private $_rules = [];
 
+    private $_modelStructure = [];
+
+    public function getModelStructure()
+    {
+        return $this->_modelStructure;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -466,12 +473,17 @@ class Elastic extends Model {
         }
         foreach ($schemaProperties as $key => $property) {
             $this->buildLabelsAndHints($key, $property);
+            //TODO:handle subobject
             if ($property->type === 'object') {
                 $this->_attributes[$key] = new static(['schema' => $property]);
                 $this->_definedAttributes[] = $key;
                 $this->_rules[] = [$key, 'safe'];
                 $this->_rules[] = [$key, ElasticValidator::class];
             } else {
+                $this->_modelStructure[$key] = [
+                    'field' => $property->field,
+                    'label' => $property->label,
+                ];
                 $this->_attributes[$key] = null;
                 $this->_definedAttributes[] = $key;
                 $rule = $this->buildRule($key, $property);

@@ -40,6 +40,16 @@ use yii\db\Expression;
 class TypeBlocType extends \yii\db\ActiveRecord
 {
     /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE_TYPE = 'pre_validate_type';
+
+    /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE_BLOCTYPE = 'pre_validate_bloctype';
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -60,6 +70,17 @@ class TypeBlocType extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%types_blocTypes}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_PRE_VALIDATE_TYPE] = ['allowed', 'typeId'];
+        $scenarios[static::SCENARIO_PRE_VALIDATE_BLOCTYPE] = ['allowed', 'blocTypeId'];
+        return $scenarios;
     }
 
     /**

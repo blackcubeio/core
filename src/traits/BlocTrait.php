@@ -81,6 +81,10 @@ trait BlocTrait
      */
     public function detachBloc(Bloc $bloc)
     {
+        $bloc->delete();
+        $this->reorderBlocs();
+        return true;
+        /*/
         $status = false;
         $elementBlocClass = $this->getElementBlocClass();
         $elementBloc = $elementBlocClass::findOne([
@@ -93,6 +97,7 @@ trait BlocTrait
         }
         $this->reorderBlocs();
         return $status;
+        /**/
     }
 
     /**
@@ -157,7 +162,43 @@ trait BlocTrait
         }
         return $status;
     }
+    public function moveBlocUp(Bloc $bloc)
+    {
+        $elementBlocClass = $this->getElementBlocClass();
+        $blocCount = $this->getBlocs()->count();
+        $currentElementBloc = $elementBlocClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getBlocIdColumn() => $bloc->id
+        ]);
+        if ($currentElementBloc === null) {
+            return false;
+        }
+        $position = $currentElementBloc->order - 1;
+        if ($position < 1) {
+            return true;
+        } else {
+            return $this->moveBloc($bloc, $position);
+        }
+    }
 
+    public function moveBlocDown(Bloc $bloc)
+    {
+        $elementBlocClass = $this->getElementBlocClass();
+        $blocCount = $this->getBlocs()->count();
+        $currentElementBloc = $elementBlocClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getBlocIdColumn() => $bloc->id
+        ]);
+        if ($currentElementBloc === null) {
+            return false;
+        }
+        $position = $currentElementBloc->order + 1;
+        if ($position > $blocCount) {
+            return true;
+        } else {
+            return $this->moveBloc($bloc, $position);
+        }
+    }
     /**
      * Reset blocs order value to have the list 1 indexed
      * @return bool
@@ -183,6 +224,20 @@ trait BlocTrait
             $status = false;
         }
         return $status;
+    }
+
+    public function getElementBlocs()
+    {
+        $elementBlocs = [];
+        if ($this->getIsNewRecord() === false) {
+            $elementBlocClass = $this->getElementBlocClass();
+            $elementBlocs = $elementBlocClass::find()
+                ->andWhere([$this->getElementIdColumn() => $this->id])
+                ->orderBy(['order' => SORT_ASC])
+                ->all();
+
+        }
+        return $elementBlocs;
     }
 
 }
