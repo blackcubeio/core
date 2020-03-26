@@ -36,6 +36,7 @@ class m000000_000002_blocs extends Migration
         $this->createTable('{{%blocs}}', [
             'id' => $this->bigPrimaryKey(),
             'blocTypeId' => $this->bigInteger()->notNull(),
+            'active' => $this->boolean()->defaultValue(false),
             'data' => $this->binary(),
             'dateCreate' => $this->dateTime()->notNull(),
             'dateUpdate' => $this->dateTime()

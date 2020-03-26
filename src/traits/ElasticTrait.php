@@ -19,6 +19,10 @@ trait ElasticTrait
      */
     public $defaultJsonSchema = '{"type":"object"}';
 
+    public function getElasticAttributes($names = null, $except = [])
+    {
+        return $this->elastic->getAttributes($names, $except);
+    }
     /**
      * {@inheritDoc}
      */

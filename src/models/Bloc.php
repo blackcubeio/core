@@ -34,6 +34,7 @@ use yii\helpers\Json;
  *
  * @property int $id
  * @property int $blocTypeId
+ * @property boolean $active
  * @property resource|null $data
  * @property string $dateCreate
  * @property string|null $dateUpdate
@@ -75,12 +76,22 @@ class Bloc extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new FilterActiveQuery(static::class);
+    }
+    /**
+     * {@inheritdoc}
      */
     public function rules():array
     {
         return [
             [['blocTypeId'], 'required'],
             [['blocTypeId'], 'integer'],
+            [['active'], 'boolean'],
             [['data'], 'string'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['blocTypeId'], 'exist', 'skipOnError' => true, 'targetClass' => BlocType::class, 'targetAttribute' => ['blocTypeId' => 'id']],
@@ -95,6 +106,7 @@ class Bloc extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('blackcube.core', 'ID'),
             'blocTypeId' => Yii::t('blackcube.core', 'Bloc Type ID'),
+            'active' => Yii::t('blackcube.core', 'Active'),
             'data' => Yii::t('blackcube.core', 'Data'),
             'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
             'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
@@ -161,6 +173,20 @@ class Bloc extends \yii\db\ActiveRecord
             $targetView = (empty($this->blocType->view) ? Inflector::underscore($this->blocType->name) : $this->blocType->view);
         }
         return preg_replace('/\s+/', '_', $targetView);
+    }
+
+    public function getAdminView($pathAlias)
+    {
+        if ($pathAlias !== null && $this->blocType !== null) {
+            $targetView = (empty($this->blocType->view) ? Inflector::underscore($this->blocType->name) : $this->blocType->view);
+            $targetView = preg_replace('/\s+/', '_', $targetView);
+            $templatePath = Yii::getAlias($pathAlias);
+            $filePath = $templatePath . '/' . $targetView . '.php';
+            if (file_exists($filePath) === true) {
+                return $pathAlias.'/'.$targetView.'.php';
+            }
+        }
+        return false;
     }
 
 }

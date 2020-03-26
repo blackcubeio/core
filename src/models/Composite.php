@@ -202,28 +202,6 @@ class Composite extends \yii\db\ActiveRecord implements ElementInterface
     }
 
     /**
-     * Gets query for [[Blocs]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBlocs()
-    {
-        //TODO: make better query
-        $blocQuery = Bloc::find()
-            ->rightJoin(CompositeBloc::tableName().' cb', 'cb.[[blocId]] = id')
-            ->andWhere(['cb.compositeId' => $this->id])
-            ->orderBy(['cb.order' => SORT_ASC]);
-        $blocQuery->multiple = true;
-        return $blocQuery;
-        /*/
-        return $this->hasMany(Bloc::class, ['id' => 'blocId'])->viaTable(CompositeBloc::tableName(), ['compositeId' => 'id'], function ($query) {
-            / * @var $query \yii\db\ActiveQuery * /
-            $query->orderBy(['order' => SORT_ASC]);
-        });
-        /**/
-    }
-
-    /**
      * Gets query for [[Tags]].
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery

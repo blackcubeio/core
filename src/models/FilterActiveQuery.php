@@ -21,14 +21,12 @@ class FilterActiveQuery extends ActiveQuery
     }
 
     /**
-     * @param bool $active
      * @return \yii\db\ActiveQuery
      */
-    public function active($active = true) {
+    public function active() {
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
         if ($this->previewManager->check() === false) {
-
             switch($this->modelClass) {
                 case Node::class:
                 case Composite::class:
@@ -50,6 +48,7 @@ class FilterActiveQuery extends ActiveQuery
                     $this->andWhere(['IN', '[[id]]', $tagsQuery]);
                     break;
                 case Slug::class:
+                case Bloc::class:
                     break;
             }
             $this->andWhere([

@@ -18,11 +18,6 @@ trait BlocTrait
      */
     abstract protected function getElementIdColumn();
 
-    /**
-     * @return FilterActiveQuery|\yii\db\ActiveQuery
-     */
-    abstract public function getBlocs();
-
 
     /**
      * @return string name of the column used to link element with blocs (blocId)
@@ -153,6 +148,7 @@ trait BlocTrait
                 $elementBloc->attributes = $currentAttributes;
                 $elementBloc->order = $position;
                 $elementBloc->save();
+                $this->reorderBlocs();
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
@@ -238,6 +234,22 @@ trait BlocTrait
 
         }
         return $elementBlocs;
+    }
+
+    /**
+     * Gets query for [[Bloc]].
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getBlocs() {
+        $elementBlocClass = $this->getElementBlocClass();
+        $blocQuery = Bloc::find()
+            ->rightJoin($elementBlocClass::tableName().' linktable', 'linktable.[[blocId]] = id')
+            ->andWhere(['linktable.'.$this->getElementIdColumn() => $this->id])
+            ->orderBy(['linktable.order' => SORT_ASC]);
+        $blocQuery->multiple = true;
+        return $blocQuery;
+
     }
 
 }
