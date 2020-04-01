@@ -480,10 +480,7 @@ class Elastic extends Model {
                 $this->_rules[] = [$key, 'safe'];
                 $this->_rules[] = [$key, ElasticValidator::class];
             } else {
-                $this->_modelStructure[$key] = [
-                    'field' => $property->field,
-                    'label' => $property->label,
-                ];
+                $this->_modelStructure[$key] = $this->buildField($key, $property);
                 $this->_attributes[$key] = null;
                 $this->_definedAttributes[] = $key;
                 $rule = $this->buildRule($key, $property);
@@ -494,6 +491,17 @@ class Elastic extends Model {
         }
     }
 
+    private function buildField($name, Schema $property)
+    {
+        $fieldData = [
+            'field' => $property->field,
+            'label' => $property->label,
+        ];
+        if ($property->type === 'string' && ($property->format === 'image' || $property->format === 'images')) {
+            $fieldData['field'] = $property->format;
+        }
+        return $fieldData;
+    }
     /**
      * Extract json schema validators and convert to Yii2 validators
      * @param string $name

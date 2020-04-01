@@ -12,7 +12,7 @@
  * @package blackcube\core\web
  */
 
-namespace blackcube\core\web;
+namespace blackcube\core\web\controllers;
 
 use blackcube\core\components\RouteEncoder;
 use blackcube\core\interfaces\ElementInterface;

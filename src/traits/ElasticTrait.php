@@ -306,8 +306,8 @@ trait ElasticTrait
      */
     public function afterFind()
     {
-        parent::afterFind();
         $this->fillElastic();
+        parent::afterFind();
     }
 
     /**
@@ -315,8 +315,8 @@ trait ElasticTrait
      */
     public function afterRefresh()
     {
-        parent::afterRefresh();
         $this->fillElastic();
+        parent::afterRefresh();
     }
 
     /**
@@ -333,8 +333,8 @@ trait ElasticTrait
      */
     public function afterDelete()
     {
-        parent::afterDelete();
         $this->fillElastic();
+        parent::afterDelete();
     }
 
     /**
