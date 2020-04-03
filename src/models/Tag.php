@@ -15,6 +15,7 @@
 namespace blackcube\core\models;
 
 use blackcube\core\interfaces\ElementInterface;
+use blackcube\core\traits\ActiveTrait;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TypeTrait;
@@ -54,6 +55,7 @@ class Tag extends \yii\db\ActiveRecord implements ElementInterface
     use TypeTrait;
     use BlocTrait;
     use SlugTrait;
+    use ActiveTrait;
 
     public const TYPE = 'tag';
 

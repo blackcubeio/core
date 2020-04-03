@@ -14,7 +14,10 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\behaviors\FileSaveBehavior;
+use blackcube\core\interfaces\ElasticInterface;
 use blackcube\core\traits\ElasticTrait;
+use blackcube\core\behaviors\BlocFileSaveBehavior;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -45,9 +48,11 @@ use yii\helpers\Json;
  * @property Node[] $nodes
  * @property Tag[] $tags
  */
-class Bloc extends \yii\db\ActiveRecord
+class Bloc extends \yii\db\ActiveRecord implements ElasticInterface
 {
     public const DISABLED_ATTRIBUTES = ['id', 'blocTypeId', 'dateCreate', 'dateUpdate', 'data'];
+
+    public const TYPE = 'bloc';
 
     use ElasticTrait;
 
@@ -62,6 +67,9 @@ class Bloc extends \yii\db\ActiveRecord
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
             'value' => new Expression('NOW()'),
+        ];
+        $behaviors['savefiles'] = [
+            'class' => FileSaveBehavior::class,
         ];
         return $behaviors;
     }

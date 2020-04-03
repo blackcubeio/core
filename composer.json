@@ -26,12 +26,14 @@
         "php": ">=7.2",
         "ext-intl": "*",
         "ext-json": "*",
+        "ext-fileinfo": "*",
         "creocoder/yii2-flysystem": "~0.9",
         "hashids/hashids": "~4.0",
         "league/flysystem-aws-s3-v3": "~1.0",
         "league/flysystem-cached-adapter": "~1.0",
         "swaggest/json-schema": "~0.12",
         "vlucas/phpdotenv": "~4.1",
+        "yiisoft/yii2-imagine": "~2.2",
         "yiisoft/yii2": "~2.0"
     },
     "require-dev" : {

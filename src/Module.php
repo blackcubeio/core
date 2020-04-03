@@ -16,8 +16,11 @@ namespace blackcube\core;
 
 use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
+use creocoder\flysystem\Filesystem;
 use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
+use yii\db\Connection;
+use yii\di\Instance;
 use yii\web\Application as WebApplication;
 use yii\console\Application as ConsoleApplication;
 use Exception;
@@ -48,11 +51,46 @@ class Module extends BaseModule implements BootstrapInterface
     public $cmsDefaultController = 'Blackcube';
 
     /**
+     * @var string alias where we should upload temporary files
+     */
+    public $uploadAlias = '@app/runtime/blackcube/uploads';
+
+    /**
      * @var mixed cms url rules. Set it to false to disable cms url rule management
      */
     public $cmsUrlRule = [
         'class' => UrlRule::class,
     ];
+
+    /**
+     * @var Filesystem|array|string flysystem access
+     */
+    public $fs = 'fs';
+
+    /**
+     * @var Connection|array|string database access
+     */
+    public $db = 'db';
+
+    /**
+     * @var string prefix used for temporary async files
+     */
+    public $uploadTmpPrefix = '@blackcubetmp';
+
+    /**
+     * @var string prefix used for async saved files
+     */
+    public $uploadFsPrefix = '@blackcubefs';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function init()
+    {
+        parent::init();
+        $this->fs = Instance::ensure($this->fs, Filesystem::class);
+        $this->db = Instance::ensure($this->db, Connection::class);
+    }
 
     /**
      * @inheritdoc

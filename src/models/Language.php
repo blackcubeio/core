@@ -78,6 +78,16 @@ class Language extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new FilterActiveQuery(static::class);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function rules()
     {

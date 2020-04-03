@@ -306,8 +306,8 @@ trait ElasticTrait
      */
     public function afterFind()
     {
-        $this->fillElastic();
         parent::afterFind();
+        $this->fillElastic();
     }
 
     /**
@@ -315,8 +315,8 @@ trait ElasticTrait
      */
     public function afterRefresh()
     {
-        $this->fillElastic();
         parent::afterRefresh();
+        $this->fillElastic();
     }
 
     /**
@@ -333,8 +333,8 @@ trait ElasticTrait
      */
     public function afterDelete()
     {
-        $this->fillElastic();
         parent::afterDelete();
+        $this->fillElastic();
     }
 
     /**
@@ -342,8 +342,9 @@ trait ElasticTrait
      */
     public function beforeValidate()
     {
+        $status = parent::beforeValidate();
         $this->fillModel();
-        return parent::beforeValidate();
+        return $status;
     }
 
     /**
@@ -351,8 +352,9 @@ trait ElasticTrait
      */
     public function beforeSave($insert)
     {
+        $status = parent::beforeSave($insert);
         $this->fillModel();
-        return parent::beforeSave($insert);
+        return $status;
     }
 
 }

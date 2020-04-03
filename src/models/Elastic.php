@@ -39,6 +39,7 @@ class Elastic extends Model {
     public const MAPPING_JSON_YII = [
         'string' => [
             //TODO: check if we should create a specific json type to use UploadedFile
+            /*/
             'file' => [
                 'validator' => 'file',
                 'config' => [],
@@ -48,6 +49,7 @@ class Elastic extends Model {
                     'maxSize' => 'maxSize',
                 ]
             ],
+            /**/
             'email' => [
                 'validator' => 'email',
                 'config' => [
@@ -497,8 +499,9 @@ class Elastic extends Model {
             'field' => $property->field,
             'label' => $property->label,
         ];
-        if ($property->type === 'string' && ($property->format === 'image' || $property->format === 'images')) {
+        if ($property->type === 'string' && ($property->format === 'file' || $property->format === 'files')) {
             $fieldData['field'] = $property->format;
+            $fieldData['fileType'] = $property->fileType;
         }
         return $fieldData;
     }

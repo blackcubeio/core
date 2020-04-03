@@ -2,6 +2,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\behaviors\FileSaveBehavior;
 use blackcube\core\interfaces\SluggedInterface;
 use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -67,6 +68,10 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
             'typecastAfterSave' => true,
             'typecastAfterValidate' => true,
             'typecastBeforeSave' => true,
+        ];
+        $behaviors['savefiles'] = [
+            'class' => FileSaveBehavior::class,
+            'filesAttributes' => ['image'],
         ];
         return $behaviors;
     }

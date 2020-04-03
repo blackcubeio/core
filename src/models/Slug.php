@@ -15,6 +15,7 @@
 namespace blackcube\core\models;
 
 use blackcube\core\components\PreviewManager;
+use blackcube\core\traits\ActiveTrait;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\behaviors\AttributeTypecastBehavior;

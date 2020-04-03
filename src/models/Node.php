@@ -19,6 +19,7 @@ use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
 use blackcube\core\interfaces\ElementInterface;
+use blackcube\core\traits\ActiveTrait;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\CompositeTrait;
 use blackcube\core\traits\SlugTrait;
@@ -68,6 +69,7 @@ class Node extends \yii\db\ActiveRecord implements ElementInterface
     use CompositeTrait;
     use TagTrait;
     use SlugTrait;
+    use ActiveTrait;
 
     public const TYPE = 'node';
 

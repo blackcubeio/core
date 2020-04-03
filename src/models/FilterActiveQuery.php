@@ -31,28 +31,28 @@ class FilterActiveQuery extends ActiveQuery
                 case Node::class:
                 case Composite::class:
                     $this->andWhere(['OR',
-                        ['<=', '[[dateStart]]', new Expression('NOW()')],
-                        ['IS', '[[dateStart]]', null]
+                        ['<=', $tableName.'.[[dateStart]]', new Expression('NOW()')],
+                        ['IS', $tableName.'.[[dateStart]]', null]
                     ]);
                     $this->andWhere(['OR',
-                        ['>=', '[[dateEnd]]', new Expression('NOW()')],
-                        ['IS', '[[dateStart]]', null]
+                        ['>=', $tableName.'.[[dateEnd]]', new Expression('NOW()')],
+                        ['IS', $tableName.'.[[dateStart]]', null]
                     ]);
                     break;
                 case Tag::class:
                     $categoriesQuery = Category::find()->active()->select(['id']);
-                    $this->andWhere(['IN', '[[categoryId]]', $categoriesQuery]);
+                    $this->andWhere(['IN', $tableName.'.[[categoryId]]', $categoriesQuery]);
                     break;
                 case Category::class:
                     $tagsQuery = Tag::find()->where(['[[active]]' => true])->distinct()->select(['[[categoryId]]']);
-                    $this->andWhere(['IN', '[[id]]', $tagsQuery]);
+                    $this->andWhere(['IN', Category::tableName().'.[[id]]', $tagsQuery]);
                     break;
                 case Slug::class:
                 case Bloc::class:
                     break;
             }
             $this->andWhere([
-                '[[active]]' => true,
+                $tableName.'.[[active]]' => true,
             ]);
         } else {
             $simulateDate = $this->previewManager->getSimulateDate();
@@ -61,12 +61,12 @@ class FilterActiveQuery extends ActiveQuery
                     case Node::class:
                     case Composite::class:
                         $this->andWhere(['OR',
-                            ['<=', '[[dateStart]]', $simulateDate],
-                            ['IS', '[[dateStart]]', null]
+                            ['<=', $tableName.'.[[dateStart]]', $simulateDate],
+                            ['IS', $tableName.'.[[dateStart]]', null]
                         ]);
                         $this->andWhere(['OR',
-                            ['>=', '[[dateEnd]]', $simulateDate],
-                            ['IS', '[[dateStart]]', null]
+                            ['>=', $tableName.'.[[dateEnd]]', $simulateDate],
+                            ['IS', $tableName.'.[[dateStart]]', null]
                         ]);
                         break;
                 }
