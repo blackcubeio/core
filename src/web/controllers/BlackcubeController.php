@@ -88,16 +88,16 @@ class BlackcubeController extends Controller
     {
         if (($this->_element === null) && ($this->elementId !== null) && ($this->elementType !== null)) {
             switch ($this->elementType) {
-                case Node::TYPE:
+                case Node::getElementType():
                     $query = Node::find();
                     break;
-                case Composite::TYPE:
+                case Composite::getElementType():
                     $query = Composite::find();
                     break;
-                case Category::TYPE:
+                case Category::getElementType():
                     $query = Category::find();
                     break;
-                case Tag::TYPE:
+                case Tag::getElementType():
                     $query = Tag::find();
                     break;
                 default:

@@ -29,6 +29,8 @@ use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%nodes}}".
@@ -71,7 +73,13 @@ class Node extends \yii\db\ActiveRecord implements ElementInterface
     use SlugTrait;
     use ActiveTrait;
 
-    public const TYPE = 'node';
+    /**
+     * @return string type
+     */
+    public static function getElementType()
+    {
+        return Inflector::camel2id(StringHelper::basename(__CLASS__));
+    }
 
     /**
      * @var MatrixHelper node path in matrix notation

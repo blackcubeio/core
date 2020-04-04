@@ -117,16 +117,16 @@ class UrlMapper extends BaseObject implements ArrayAccess
     {
         $element = null;
         switch ($data['type']) {
-            case Node::TYPE:
+            case Node::getElementType():
                 $query = Node::find();
                 break;
-            case Composite::TYPE:
+            case Composite::getElementType():
                 $query = Composite::find();
                 break;
-            case Category::TYPE:
+            case Category::getElementType():
                 $query = Category::find();
                 break;
-            case Tag::TYPE:
+            case Tag::getElementType():
                 $query = Tag::find();
                 break;
             default:

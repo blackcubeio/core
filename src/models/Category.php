@@ -23,6 +23,8 @@ use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%categories}}".
@@ -56,7 +58,13 @@ class Category extends \yii\db\ActiveRecord implements ElementInterface
     use SlugTrait;
     use ActiveTrait;
 
-    public const TYPE = 'category';
+    /**
+     * @return string type
+     */
+    public static function getElementType()
+    {
+        return Inflector::camel2id(StringHelper::basename(__CLASS__));
+    }
 
     /**
      * {@inheritDoc}

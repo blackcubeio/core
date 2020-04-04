@@ -198,7 +198,7 @@ class Slug extends \yii\db\ActiveRecord
     {
         $compositeQuery = Composite::find();
         $compositeQuery->select([
-            new Expression('"'.Composite::TYPE.'" AS type'),
+            new Expression('"'.Composite::getElementType().'" AS type'),
             'id'
         ])
             ->where(['slugId' => $this->id])
@@ -206,7 +206,7 @@ class Slug extends \yii\db\ActiveRecord
 
         $nodeQuery = Node::find();
         $nodeQuery->select([
-            new Expression('"'.Node::TYPE.'" AS type'),
+            new Expression('"'.Node::getElementType().'" AS type'),
             'id'
         ])
             ->where(['slugId' => $this->id])
@@ -214,7 +214,7 @@ class Slug extends \yii\db\ActiveRecord
 
         $tagQuery = Tag::find();
         $tagQuery->select([
-            new Expression('"'.Tag::TYPE.'" AS type'),
+            new Expression('"'.Tag::getElementType().'" AS type'),
             'id'
         ])
             ->where(['slugId' => $this->id])
@@ -222,7 +222,7 @@ class Slug extends \yii\db\ActiveRecord
 
         $categoryQuery = Category::find();
         $categoryQuery->select([
-            new Expression('"'.Category::TYPE.'" AS type'),
+            new Expression('"'.Category::getElementType().'" AS type'),
             'id'
         ])
             ->where(['slugId' => $this->id])
@@ -263,16 +263,16 @@ class Slug extends \yii\db\ActiveRecord
         $result = $this->findTargetElementInfo();
         if ($result !== null && is_array($result)) {
             switch ($result['type']) {
-                case Node::TYPE:
+                case Node::getElementType():
                     $query = Node::find();
                     break;
-                case Composite::TYPE:
+                case Composite::getElementType():
                     $query = Composite::find();
                     break;
-                case Category::TYPE:
+                case Category::getElementType():
                     $query = Category::find();
                     break;
-                case Tag::TYPE:
+                case Tag::getElementType():
                     $query = Tag::find();
                     break;
                 default:
@@ -292,16 +292,16 @@ class Slug extends \yii\db\ActiveRecord
         $query = null;
         $slug = null;
         switch($type) {
-            case Composite::TYPE:
+            case Composite::getElementType():
                 $query = Composite::find();
                 break;
-            case Node::TYPE:
+            case Node::getElementType():
                 $query = Node::find();
                 break;
-            case Category::TYPE:
+            case Category::getElementType():
                 $query = Category::find();
                 break;
-            case Tag::TYPE:
+            case Tag::getElementType():
                 $query = Tag::find();
                 break;
         }

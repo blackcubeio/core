@@ -149,27 +149,27 @@ class Type extends \yii\db\ActiveRecord
     {
         $compositeQuery = Composite::find();
         $compositeQuery->select([
-            new Expression('"'.Composite::TYPE.'" AS type'),
+            new Expression('"'.Composite::getElementType().'" AS type'),
             'id'
         ])
             ->where(['typeId' => $this->id]);
         $nodeQuery = Node::find();
         $nodeQuery->select([
-            new Expression('"'.Node::TYPE.'" AS type'),
+            new Expression('"'.Node::getElementType().'" AS type'),
             'id'
         ])
             ->where(['typeId' => $this->id]);
 
         $tagQuery = Tag::find();
         $tagQuery->select([
-            new Expression('"'.Tag::TYPE.'" AS type'),
+            new Expression('"'.Tag::getElementType().'" AS type'),
             'id'
         ])
             ->where(['typeId' => $this->id]);
 
         $categoryQuery = Category::find();
         $categoryQuery->select([
-            new Expression('"'.Category::TYPE.'" AS type'),
+            new Expression('"'.Category::getElementType().'" AS type'),
             'id'
         ])
             ->where(['typeId' => $this->id]);

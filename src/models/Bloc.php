@@ -24,6 +24,7 @@ use yii\db\ActiveQuery;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%blocs}}".
@@ -52,9 +53,15 @@ class Bloc extends \yii\db\ActiveRecord implements ElasticInterface
 {
     public const DISABLED_ATTRIBUTES = ['id', 'blocTypeId', 'dateCreate', 'dateUpdate', 'data'];
 
-    public const TYPE = 'bloc';
-
     use ElasticTrait;
+
+    /**
+     * @return string type
+     */
+    public static function getElementType()
+    {
+        return Inflector::camel2id(StringHelper::basename(__CLASS__));
+    }
 
     /**
      * {@inheritdoc}
