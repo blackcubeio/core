@@ -27,6 +27,7 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-fileinfo": "*",
+        "ext-dom": "*",
         "creocoder/yii2-flysystem": "~0.9",
         "hashids/hashids": "~4.0",
         "league/flysystem-aws-s3-v3": "~1.0",
