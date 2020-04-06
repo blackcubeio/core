@@ -16,6 +16,7 @@ namespace blackcube\core\traits;
 
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
+use Yii;
 
 /**
  * Trait used to handle tree node management
@@ -78,7 +79,7 @@ trait NodeTreeTrait
     public function setNodeMatrix($matrix)
     {
         if (is_array($matrix) === true) {
-            $matrix = new MatrixHelper($matrix);
+            $matrix = Yii::createObject(MatrixHelper::class, [$matrix]);
         }
         $this->nodeMatrix = $matrix;
         $this->nodePath = TreeHelper::convertMatrixToPath($matrix);

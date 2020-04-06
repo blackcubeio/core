@@ -5,6 +5,7 @@ namespace blackcube\core\traits;
 
 use blackcube\core\models\Bloc;
 use blackcube\core\models\FilterActiveQuery;
+use Yii;
 
 trait BlocTrait
 {
@@ -56,7 +57,7 @@ trait BlocTrait
             } else {
                 $position = $blocCount + 1;
             }
-            $elementBloc = new $elementBlocClass();
+            $elementBloc = Yii::createObject($elementBlocClass);
             $elementBloc->{$this->getElementIdColumn()} = $this->id;
             $elementBloc->{$this->getBlocIdColumn()} = $bloc->id;
             $elementBloc->order = $position;
@@ -144,7 +145,7 @@ trait BlocTrait
                 } else {
                     $position = $blocCount + 1;
                 }
-                $elementBloc = new $elementBlocClass();
+                $elementBloc = Yii::createObject($elementBlocClass);
                 $elementBloc->attributes = $currentAttributes;
                 $elementBloc->order = $position;
                 $elementBloc->save();

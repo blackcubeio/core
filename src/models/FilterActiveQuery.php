@@ -31,11 +31,11 @@ class FilterActiveQuery extends ActiveQuery
                 case Node::class:
                 case Composite::class:
                     $this->andWhere(['OR',
-                        ['<=', $tableName.'.[[dateStart]]', new Expression('NOW()')],
+                        ['<=', $tableName.'.[[dateStart]]', Yii::createObject(Expression::class, ['NOW()'])],
                         ['IS', $tableName.'.[[dateStart]]', null]
                     ]);
                     $this->andWhere(['OR',
-                        ['>=', $tableName.'.[[dateEnd]]', new Expression('NOW()')],
+                        ['>=', $tableName.'.[[dateEnd]]', Yii::createObject(Expression::class, ['NOW()'])],
                         ['IS', $tableName.'.[[dateStart]]', null]
                     ]);
                     break;

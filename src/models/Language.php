@@ -52,7 +52,7 @@ class Language extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         $behaviors['typecast'] = [
             'class' => AttributeTypecastBehavior::class,
@@ -83,7 +83,7 @@ class Language extends \yii\db\ActiveRecord
      */
     public static function find()
     {
-        return new FilterActiveQuery(static::class);
+        return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
 
     /**

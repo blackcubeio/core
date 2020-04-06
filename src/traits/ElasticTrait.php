@@ -5,6 +5,7 @@ namespace blackcube\core\traits;
 use blackcube\core\models\BlocType;
 use blackcube\core\models\Elastic;
 use yii\helpers\Json;
+use Yii;
 
 trait ElasticTrait
 {
@@ -269,7 +270,7 @@ trait ElasticTrait
         } else {
             $jsonSchema = $this->defaultJsonSchema;
         }
-        $this->elastic = new Elastic(['schema' => $jsonSchema]);
+        $this->elastic =  Yii::createObject(['class' => Elastic::class, 'schema' => $jsonSchema]);
     }
 
     public function getStructure()

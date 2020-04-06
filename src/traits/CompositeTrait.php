@@ -5,6 +5,7 @@ namespace blackcube\core\traits;
 
 use blackcube\core\models\Composite;
 use blackcube\core\models\FilterActiveQuery;
+use Yii;
 
 trait CompositeTrait
 {
@@ -60,7 +61,7 @@ trait CompositeTrait
             } else {
                 $position = $compositeCount + 1;
             }
-            $elementComposite = new $elementCompositeClass();
+            $elementComposite = Yii::createObject($elementCompositeClass);
             $elementComposite->{$this->getElementIdColumn()} = $this->id;
             $elementComposite->{$this->getCompositeIdColumn()} = $composite->id;
             $elementComposite->order = $position;
@@ -143,7 +144,7 @@ trait CompositeTrait
                 } else {
                     $position = $compositeCount + 1;
                 }
-                $elementComposite = new $elementCompositeClass();
+                $elementComposite = Yii::createObject($elementCompositeClass);
                 $elementComposite->attributes = $currentAttributes;
                 $elementComposite->order = $position;
                 $elementComposite->save();

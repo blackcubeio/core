@@ -477,7 +477,10 @@ abstract class BaseElastic extends Model {
             $this->buildLabelsAndHints($key, $property);
             //TODO:handle subobject
             if ($property->type === 'object') {
-                $this->_attributes[$key] = new static(['schema' => $property]);
+                $this->_attributes[$key] = Yii::createObject([
+                    'class' => Elastic::class,
+                    'schema' => $property
+                ]);
                 $this->_definedAttributes[] = $key;
                 $this->_rules[] = [$key, 'safe'];
                 $this->_rules[] = [$key, ElasticValidator::class];

@@ -10,6 +10,7 @@ use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
+use Yii;
 use DateTime;
 
 trait ActiveTrait
@@ -22,13 +23,13 @@ trait ActiveTrait
             switch ($modelClass) {
                 case Node::class:
                 case Composite::class:
-                    $currentDate = new DateTime();
+                    $currentDate = Yii::createObject(DateTime::class);
                     if ($this->dateStart !== null) {
-                        $dateStart = new DateTime($this->dateStart);
+                        $dateStart = Yii::createObject(DateTime::class, [$this->dateStart]);
                         $isActive = $isActive && ($dateStart <= $currentDate);
                     }
                     if ($this->dateEnd !== null) {
-                        $dateEnd = new DateTime($this->dateEnd);
+                        $dateEnd = Yii::createObject(DateTime::class, [$this->dateEnd]);
                         $isActive = $isActive && ($dateEnd >= $currentDate);
                     }
                     break;

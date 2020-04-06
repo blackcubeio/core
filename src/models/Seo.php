@@ -55,7 +55,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         $behaviors['typecast'] = [
             'class' => AttributeTypecastBehavior::class,
@@ -90,7 +90,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
      */
     public static function find()
     {
-        return new FilterActiveQuery(static::class);
+        return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
 
     /**

@@ -6,6 +6,7 @@ namespace blackcube\core\traits;
 use blackcube\core\models\Composite;
 use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\Tag;
+use Yii;
 
 trait TagTrait
 {
@@ -44,7 +45,7 @@ trait TagTrait
         $transaction = static::getDb()->beginTransaction();
         try {
             // open space to add composite
-            $elementTag = new $elementTagClass();
+            $elementTag = Yii::createObject($elementTagClass);
             $elementTag->{$this->getElementIdColumn()} = $this->id;
             $elementTag->{$this->getTagIdColumn()} = $tag->id;
             $status = $elementTag->save();

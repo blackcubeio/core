@@ -48,7 +48,7 @@ class SitemapAction extends ViewAction
     {
         $hostname = Yii::$app->request->getHostName();
         $protocol = Yii::$app->request->isSecureConnection ? 'https':'http';
-        $this->dom = new DOMDocument('1.0', 'UTF-8');
+        $this->dom = Yii::createObject(DOMDocument::class, ['1.0', 'UTF-8']);
         $urlSet = $this->dom->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $sitemaps = Sitemap::find()->active()->with('slug');
@@ -67,7 +67,7 @@ class SitemapAction extends ViewAction
                     }
                     $loc = $this->dom->createElement('loc', $currentHost.'/'.$sitemap->slug->path);
                     $url->appendChild($loc);
-                    $datetime = new DateTime($element->dateUpdate);
+                    $datetime = Yii::createObject(DateTime::class, [$element->dateUpdate]);
                     $lastMod = $this->dom->createElement('lastmod', $datetime->format('c'));
                     $url->appendChild($lastMod);
                     $changeFreq = $this->dom->createElement('changefreq', $sitemap->frequency);

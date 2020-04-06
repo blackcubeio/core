@@ -71,7 +71,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         $behaviors['savefiles'] = [
             'class' => FileSaveBehavior::class,
@@ -94,7 +94,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public static function find()
     {
-        return new FilterActiveQuery(static::class);
+        return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
     /**
      * {@inheritdoc}

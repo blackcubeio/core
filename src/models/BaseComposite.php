@@ -107,7 +107,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         $behaviors['typecast'] = [
             'class' => AttributeTypecastBehavior::class,
@@ -137,7 +137,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public static function find()
     {
-        return new FilterActiveQuery(static::class);
+        return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
 
     /**
@@ -230,4 +230,5 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     {
         return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable(NodeComposite::tableName(), ['compositeId' => 'id']);
     }
+
 }
