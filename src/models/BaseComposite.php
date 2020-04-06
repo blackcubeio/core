@@ -16,6 +16,7 @@ namespace blackcube\core\models;
 
 use blackcube\core\Module;
 use blackcube\core\interfaces\ElementInterface;
+use blackcube\core\interfaces\TaggableInterface;
 use blackcube\core\traits\ActiveTrait;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\SlugTrait;
@@ -59,7 +60,7 @@ use Yii;
  * @property Tag[] $tags
  * @property Node[] $nodes
  */
-abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInterface
+abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInterface, TaggableInterface
 {
 
     use TypeTrait;

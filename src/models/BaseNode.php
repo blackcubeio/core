@@ -19,6 +19,7 @@ use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
 use blackcube\core\interfaces\ElementInterface;
+use blackcube\core\interfaces\TaggableInterface;
 use blackcube\core\traits\ActiveTrait;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\CompositeTrait;
@@ -69,7 +70,7 @@ use Yii;
  * @property Composite[] $composites
  * @property Tag[] $tags
  */
-abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
+abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface, TaggableInterface
 {
     use TypeTrait;
     use BlocTrait;
