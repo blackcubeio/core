@@ -4,8 +4,8 @@ namespace blackcube\core\models;
 
 use blackcube\core\components\PreviewManager;
 use yii\db\ActiveQuery;
-use Yii;
 use yii\db\Expression;
+use Yii;
 
 class FilterActiveQuery extends ActiveQuery
 {

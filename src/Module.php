@@ -23,7 +23,6 @@ use yii\db\Connection;
 use yii\di\Instance;
 use yii\web\Application as WebApplication;
 use yii\console\Application as ConsoleApplication;
-use Exception;
 use Yii;
 
 

@@ -16,11 +16,9 @@ namespace blackcube\core\models;
 
 use blackcube\core\validators\ElasticValidator;
 use Swaggest\JsonSchema\Schema;
-use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
-use yii\behaviors\TimestampBehavior;
-use yii\db\Expression;
+use Yii;
 
 /**
  * This is the elastic model class for json schema.
@@ -31,6 +29,7 @@ use yii\db\Expression;
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property-write string|array|\StdClass $schema
  */
@@ -169,8 +168,15 @@ abstract class BaseElastic extends Model {
      */
     private $_rules = [];
 
+    /**
+     * @var array
+     */
     private $_modelStructure = [];
 
+    /**
+     * @return array model structure
+     * @since XXX
+     */
     public function getModelStructure()
     {
         return $this->_modelStructure;
@@ -228,6 +234,7 @@ abstract class BaseElastic extends Model {
      * @param string|\StdClass $schema
      * @throws \Swaggest\JsonSchema\Exception
      * @throws \Swaggest\JsonSchema\InvalidValue
+     * @since XXX
      */
     public function setSchema($schema)
     {
@@ -273,6 +280,7 @@ abstract class BaseElastic extends Model {
      * Returns a value indicating whether the model has an attribute with the specified name.
      * @param string $name the name of the attribute
      * @return bool whether the model has an attribute with the specified name.
+     * @since XXX
      */
     public function hasAttribute($name)
     {
@@ -286,6 +294,7 @@ abstract class BaseElastic extends Model {
      * @param string $name the attribute name
      * @return mixed the attribute value. `null` if the attribute is not set or does not exist.
      * @see hasAttribute()
+     * @since XXX
      */
     public function getAttribute($name)
     {
@@ -298,6 +307,7 @@ abstract class BaseElastic extends Model {
      * @param mixed $value the attribute value.
      * @throws InvalidArgumentException if the named attribute does not exist.
      * @see hasAttribute()
+     * @since XXX
      */
     public function setAttribute($name, $value)
     {
@@ -442,6 +452,7 @@ abstract class BaseElastic extends Model {
      * Extract property label and hint
      * @param string $name
      * @param Schema $property
+     * @since XXX
      */
     private function buildLabelsAndHints($name, $property)
     {
@@ -453,6 +464,10 @@ abstract class BaseElastic extends Model {
         }
     }
 
+    /**
+     * Reset elastic
+     * @since XXX
+     */
     private function resetInternalObject()
     {
         $this->_attributeHints = [];
@@ -466,6 +481,7 @@ abstract class BaseElastic extends Model {
      * @param Schema $schema
      * @throws \Swaggest\JsonSchema\Exception
      * @throws \Swaggest\JsonSchema\InvalidValue
+     * @since XXX
      */
     private function buildInternalObject($schema)
     {
@@ -496,6 +512,13 @@ abstract class BaseElastic extends Model {
         }
     }
 
+    /**
+     * Build each field of elastic model
+     * @param $name
+     * @param Schema $property
+     * @return array
+     * @since XXX
+     */
     private function buildField($name, Schema $property)
     {
         $fieldData = [
@@ -513,6 +536,7 @@ abstract class BaseElastic extends Model {
      * @param string $name
      * @param Schema $property
      * @return array|null
+     * @since XXX
      */
     private function buildRule($name, Schema $property) {
         $rule = null;

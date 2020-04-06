@@ -15,6 +15,7 @@
 namespace blackcube\core\exceptions;
 
 use Exception;
+
 /**
  * Exception raised on path segment is invalid
  *

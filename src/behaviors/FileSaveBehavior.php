@@ -1,5 +1,16 @@
 <?php
-
+/**
+ * FileSaveBehavior.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\behaviors
+ */
 namespace blackcube\core\behaviors;
 
 use blackcube\core\models\Bloc;
@@ -8,19 +19,43 @@ use yii\base\Behavior;
 use yii\base\ErrorException;
 use yii\base\Event;
 use yii\db\ActiveRecord;
-use Yii;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use Yii;
 
+/**
+ * Save files in fly system
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\behaviors
+ * @since XXX
+ */
 class FileSaveBehavior extends Behavior
 {
     /**
      * @var array list of attributes to handle
      */
     public $filesAttributes = [];
+
+    /**
+     * @var array list of elastic fields which handle files
+     */
     public $elasticFilesAttributes = ['file', 'files'];
+
+    /**
+     * @var string prefix directory
+     */
     public $prefix;
 
+    /**
+     * {@inheritDoc}
+     */
     public function events()
     {
         return [
@@ -29,6 +64,9 @@ class FileSaveBehavior extends Behavior
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function init()
     {
         parent::init();
@@ -47,12 +85,15 @@ class FileSaveBehavior extends Behavior
      * Save files in system
      * @param Event $event
      * @throws ErrorException
+     * @since XXX
      */
     public function saveFiles($event)
     {
         $model = $this->owner;
         /* @var ActiveRecord $model */
         $uploadAlias = Module::getInstance()->uploadAlias;
+        $uploadTmp = trim(Module::getInstance()->uploadTmpPrefix, '/').'/';
+        $uploadFs =  trim(Module::getInstance()->uploadFsPrefix, '/').'/';
         if ($this->prefix === null) {
             $this->prefix = Inflector::camel2id(StringHelper::basename(get_class($model)));
         }
@@ -61,8 +102,8 @@ class FileSaveBehavior extends Behavior
             $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
             $finaFiles = [];
             foreach ($files as $file) {
-                if (strncmp('@blackcubetmp/', $file, 14) === 0) {
-                    $realFilenameAlias = str_replace('@blackcubetmp/', $uploadAlias.'/', $file);
+                if (strncmp($uploadTmp, $file, strlen($uploadTmp)) === 0) {
+                    $realFilenameAlias = str_replace($uploadTmp, $uploadAlias.'/', $file);
                     $realFilename = Yii::getAlias($realFilenameAlias);
                     $finalFilename = pathinfo($realFilename, PATHINFO_BASENAME);
                     if (file_exists($realFilename) === true) {
@@ -78,7 +119,7 @@ class FileSaveBehavior extends Behavior
                             if ($copyStatus === false) {
                                 throw new ErrorException();
                             }
-                            $finaFiles[] = '@blackcubefs/'.$targetFilename;
+                            $finaFiles[] = $uploadFs.$targetFilename;
                         }
                     }
                 } else {
@@ -88,5 +129,4 @@ class FileSaveBehavior extends Behavior
             $model->{$attribute} = implode(', ', $finaFiles);
         }
     }
-
 }

@@ -12,19 +12,17 @@
  * @package application\actions
  */
 
-namespace blackcube\core\actions;
+namespace blackcube\core\web\actions;
 
-use blackcube\core\models\Seo;
 use blackcube\core\models\Sitemap;
 use blackcube\core\models\Slug;
 use blackcube\core\Module;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ViewAction;
-use Yii;
-use DOMDocument;
 use DateTime;
+use DateTimeZone;
+use DOMDocument;
+use Yii;
 
 /**
  * generate Sitemap
@@ -52,6 +50,7 @@ class SitemapAction extends ViewAction
         $urlSet = $this->dom->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $sitemaps = Sitemap::find()->active()->with('slug');
+        $timeZone = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
         foreach($sitemaps->each() as $sitemap) {
             /* @var $sitemap \blackcube\core\models\Sitemap */
             $currentSlug = Slug::findOneByPathinfoAndHostname($sitemap->slug->path, $hostname);
@@ -67,7 +66,7 @@ class SitemapAction extends ViewAction
                     }
                     $loc = $this->dom->createElement('loc', $currentHost.'/'.$sitemap->slug->path);
                     $url->appendChild($loc);
-                    $datetime = Yii::createObject(DateTime::class, [$element->dateUpdate]);
+                    $datetime = Yii::createObject(DateTime::class, [$element->dateUpdate, $timeZone]);
                     $lastMod = $this->dom->createElement('lastmod', $datetime->format('c'));
                     $url->appendChild($lastMod);
                     $changeFreq = $this->dom->createElement('changefreq', $sitemap->frequency);

@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,19 +14,20 @@
 
 namespace blackcube\core\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%blocTypes}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property string $name

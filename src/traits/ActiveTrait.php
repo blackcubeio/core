@@ -6,12 +6,12 @@ namespace blackcube\core\traits;
 use blackcube\core\models\Bloc;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
-use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
-use Yii;
 use DateTime;
+use DateTimeZone;
+use Yii;
 
 trait ActiveTrait
 {
@@ -19,17 +19,18 @@ trait ActiveTrait
     {
         $isActive = $this->active;
         $modelClass = get_class($this);
+        $timeZone = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
         if ($isActive) {
             switch ($modelClass) {
                 case Node::class:
                 case Composite::class:
                     $currentDate = Yii::createObject(DateTime::class);
                     if ($this->dateStart !== null) {
-                        $dateStart = Yii::createObject(DateTime::class, [$this->dateStart]);
+                        $dateStart = Yii::createObject(DateTime::class, [$this->dateStart, $timeZone]);
                         $isActive = $isActive && ($dateStart <= $currentDate);
                     }
                     if ($this->dateEnd !== null) {
-                        $dateEnd = Yii::createObject(DateTime::class, [$this->dateEnd]);
+                        $dateEnd = Yii::createObject(DateTime::class, [$this->dateEnd, $timeZone]);
                         $isActive = $isActive && ($dateEnd >= $currentDate);
                     }
                     break;

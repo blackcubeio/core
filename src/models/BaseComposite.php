@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -20,23 +20,23 @@ use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
-use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
-use yii\db\Query;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use Yii;
 
 /**
  * This is the model class for table "{{%composites}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property string|null $name
@@ -66,7 +66,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     use ActiveTrait;
 
     /**
-     * @return string type
+     * {@inheritDoc}
      */
     public static function getElementType()
     {
@@ -185,6 +185,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * Gets query for [[Language]].
      *
      * @return \yii\db\ActiveQuery
+     * @since XXX
      */
     public function getLanguage()
     {
@@ -225,6 +226,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * Gets query for [[Nodes]].
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getNodes()
     {

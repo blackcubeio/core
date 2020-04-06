@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -19,22 +19,23 @@ use blackcube\core\traits\ActiveTrait;
 use blackcube\core\traits\BlocTrait;
 use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TypeTrait;
-use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use Yii;
 
 /**
  * This is the model class for table "{{%categories}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property string $name
@@ -59,7 +60,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     use ActiveTrait;
 
     /**
-     * @return string type
+     * {@inheritDoc}
      */
     public static function getElementType()
     {
@@ -169,6 +170,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      * Gets query for [[Language]].
      *
      * @return \yii\db\ActiveQuery
+     * @since XXX
      */
     public function getLanguage()
     {
@@ -199,6 +201,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      * Gets query for [[Tags]].
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getTags()
     {

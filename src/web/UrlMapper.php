@@ -19,12 +19,10 @@ use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
 use blackcube\core\models\Tag;
-use blackcube\core\models\TypeBlocType;
 use yii\base\BaseObject;
 use ArrayAccess;
-use Yii;
-use yii\base\InvalidArgumentException;
 use yii\web\NotFoundHttpException;
+use Yii;
 
 /**
  * This is class allow transcoding url from route to DB

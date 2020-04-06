@@ -14,9 +14,9 @@
 
 namespace blackcube\core\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%tags_blocs}}".

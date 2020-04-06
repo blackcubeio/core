@@ -15,8 +15,8 @@
 namespace blackcube\core\validators;
 
 use blackcube\core\models\Elastic;
-use Yii;
 use yii\validators\Validator;
+use Yii;
 
 /**
  * This is the elastic validator to trigger validation of sub elastic models.

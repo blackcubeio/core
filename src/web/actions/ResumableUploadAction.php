@@ -12,7 +12,7 @@
  * @package application\actions
  */
 
-namespace blackcube\core\actions;
+namespace blackcube\core\web\actions;
 
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

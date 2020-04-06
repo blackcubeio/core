@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,20 +14,20 @@
 
 namespace blackcube\core\components;
 
+use blackcube\core\interfaces\PreviewManagerInterface;
 use yii\base\Component;
-use yii\helpers\Inflector;
-use blackcube\core\interfaces\PreviewManager as PreviewManagerInterface;
 use Yii;
 
 /**
  * Handle preview mode
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\components
+ * @since XXX
  */
 
 class PreviewManager extends Component implements PreviewManagerInterface

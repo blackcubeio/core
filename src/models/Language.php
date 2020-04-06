@@ -14,10 +14,10 @@
 
 namespace blackcube\core\models;
 
-use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%languages}}".

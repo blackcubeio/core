@@ -14,18 +14,11 @@
 
 namespace blackcube\core\web;
 
-use blackcube\core\components\PreviewManager;
 use blackcube\core\components\RouteEncoder;
-use blackcube\core\models\Category;
-use blackcube\core\models\Composite;
-use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
-use blackcube\core\models\Tag;
-use Yii;
 use yii\base\BaseObject;
-use yii\db\Expression;
-use yii\db\Query;
 use yii\web\UrlRuleInterface;
+use Yii;
 
 /**
  * This is class allow transcoding url from route to DB

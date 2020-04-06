@@ -3,7 +3,6 @@
 namespace blackcube\core\traits;
 
 
-use blackcube\core\models\Composite;
 use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\Tag;
 use Yii;

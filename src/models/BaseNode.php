@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,7 +14,6 @@
 
 namespace blackcube\core\models;
 
-use blackcube\core\components\PreviewManager;
 use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
@@ -25,22 +24,23 @@ use blackcube\core\traits\CompositeTrait;
 use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
-use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use Yii;
 
 /**
  * This is the model class for table "{{%nodes}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property string $path
@@ -74,7 +74,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     use ActiveTrait;
 
     /**
-     * @return string type
+     * {@inheritDoc}
      */
     public static function getElementType()
     {
@@ -214,6 +214,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * Gets query for [[Language]].
      *
      * @return \yii\db\ActiveQuery
+     * @since XXX
      */
     public function getLanguage()
     {
@@ -222,6 +223,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return \yii\db\ActiveQuery
+     * @since XXX
      */
     public function getMainLanguage()
     {
@@ -286,6 +288,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getCategories()
     {
@@ -300,6 +303,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return bool
+     * @since XXX
      */
     public function getIsRoot()
     {
@@ -308,6 +312,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getChildren()
     {
@@ -321,6 +326,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getTree()
     {
@@ -334,6 +340,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getParent()
     {
@@ -345,6 +352,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getParents()
     {
@@ -358,6 +366,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getSiblings()
     {
@@ -368,6 +377,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getSiblingsTrees()
     {
@@ -393,6 +403,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getPreviousSiblingsTrees()
     {
@@ -414,6 +425,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getPreviousSiblings()
     {
@@ -424,6 +436,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getPreviousSibling()
     {
@@ -436,6 +449,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getNextSiblingsTrees()
     {
@@ -457,6 +471,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getNextSiblings()
     {
@@ -467,6 +482,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
      */
     public function getNextSibling()
     {
@@ -478,6 +494,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @param string $nodePath
+     * @since XXX
      */
     public function setNodePath($nodePath)
     {
@@ -490,6 +507,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @param MatrixHelper $matrix
+     * @since XXX
      */
     public function setNodeMatrix(MatrixHelper $matrix)
     {
@@ -500,10 +518,16 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
         $this->right = TreeHelper::getRightFromMatrix($this->nodeMatrix);
 
     }
+
+    /**
+     * @return MatrixHelper
+     * @since XXX
+     */
     public function getNodeMatrix()
     {
         return TreeHelper::convertPathToMatrix($this->path);
     }
+
     /**
      * @param string $targetPath
      * @return bool
@@ -520,6 +544,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param null|array $attributeNames
      * @return boolean
      * @throws InvalidNodeConfigurationException
+     * @since XXX
      */
     public function saveInto(Node $targetNode, $runValidation = true, $attributeNames = null)
     {
@@ -568,6 +593,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param null|array $attributeNames
      * @return boolean
      * @throws InvalidNodeConfigurationException
+     * @since XXX
      */
     public function saveBefore(Node $targetNode, $runValidation = true, $attributeNames = null)
     {
@@ -613,6 +639,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param null|array $attributeNames
      * @return boolean
      * @throws InvalidNodeConfigurationException
+     * @since XXX
      */
     public function saveAfter(Node $targetNode, $runValidation = true, $attributeNames = null)
     {
@@ -777,6 +804,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * @param Node $targetNode
      * @param boolean $moveBefore
+     * @since XXX
      */
     private function moveThisNodeTree(Node $targetNode, $moveBefore)
     {
@@ -811,6 +839,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
 
     /**
      * @param integer $nodeId
+     * @since XXX
      */
     private function moveBackNodes($nodeId = null)
     {
@@ -830,6 +859,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * @param Node $node
      * @return \yii\db\ActiveQuery
+     * @since XXX
      */
     private function getNodeAndSiblings(Node $node)
     {
@@ -843,6 +873,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * @param \yii\db\ActiveQuery $nodesToMove
      * @param MatrixHelper $moveMatrix
+     * @since XXX
      */
     private function moveAndSaveNodes(\yii\db\ActiveQuery $nodesToMove, MatrixHelper $moveMatrix)
     {
@@ -861,6 +892,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param integer $bump
      * @param boolean $inside
      * @return MatrixHelper
+     * @since XXX
      */
     private function prepareMoveMatrix(Node $fromNode, Node $toNode, $bump, $inside = false)
     {

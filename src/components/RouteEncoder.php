@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,34 +14,42 @@
 
 namespace blackcube\core\components;
 
-use yii\helpers\Inflector;
 use Yii;
 
 /**
  * Encode CMS parameters into a string
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\components
- *
+ * @since XXX
  */
-
 class RouteEncoder
 {
 
+    /**
+     * @var array routes
+     */
     private static $routes = [];
 
+    /**
+     * @var string regex pattern used to match routes
+     */
     private static $routePattern = '/^blackcube-(?P<type>[a-zA-Z]+)(-(?P<id>\d+))?$/';
 
+    /**
+     * @var string route prefix
+     */
     private static $routePrefix = 'blackcube-';
 
     /**
      * @param string $type
      * @param null|integer $id
      * @return string
+     * @since XXX
      */
     public static function encode($type, $id = null)
     {
@@ -55,6 +63,7 @@ class RouteEncoder
     /**
      * @param string $route
      * @return array|false ['type' => 'xxx'[, 'id' => 'YYY']]
+     * @since XXX
      */
     public static function decode($route)
     {

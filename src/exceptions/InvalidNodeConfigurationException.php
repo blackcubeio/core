@@ -15,6 +15,7 @@
 namespace blackcube\core\exceptions;
 
 use Exception;
+
 /**
  * Exception raised when node is not configured as expected
  *
