@@ -27,7 +27,7 @@ use Yii;
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\validators
- *
+ * @since XXX
  */
 class ElasticValidator extends Validator
 {

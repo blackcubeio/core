@@ -2,14 +2,14 @@
 /**
  * ResumableUploadAction.php
  *
- * PHP version 5.6+
+ * PHP version 7.2+
  *
- * @author Philippe Gaultier <pgaultier@ibitux.com>
- * @copyright 2010-2017 Ibitux
- * @license http://www.ibitux.com/license license
- * @version 1.3.1
- * @link http://www.ibitux.com
- * @package application\actions
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\web\actions
  */
 
 namespace blackcube\core\web\actions;
@@ -23,13 +23,13 @@ use Yii;
 /**
  * resumable action
  *
- * @author Philippe Gaultier <pgaultier@ibitux.com>
- * @copyright 2010-2017 Ibitux
- * @license http://www.ibitux.com/license license
- * @version 1.3.1
- * @link http://www.ibitux.com
- * @package application\actions
- * @since 1.3.0
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\web\actions
+ * @since XXX
  */
 class ResumableUploadAction extends ViewAction
 {

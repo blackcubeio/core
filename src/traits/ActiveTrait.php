@@ -1,7 +1,18 @@
 <?php
+/**
+ * ActiveTrait.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ */
 
 namespace blackcube\core\traits;
-
 
 use blackcube\core\models\Bloc;
 use blackcube\core\models\Category;
@@ -13,6 +24,17 @@ use DateTime;
 use DateTimeZone;
 use Yii;
 
+/**
+ * Active trait
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ * @since XXX
+ */
 trait ActiveTrait
 {
     public function getIsActive()
