@@ -29,6 +29,8 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use DateTime;
+use DateTimeZone;
 use Yii;
 
 /**
@@ -53,7 +55,9 @@ use Yii;
  * @property int|null $typeId
  * @property boolean $active
  * @property string|null $dateStart
+ * @property DateTime|null $activeDateStart
  * @property string|null $dateEnd
+ * @property DateTime|null $activeDateEnd
  * @property string $dateCreate
  * @property string|null $dateUpdate
  *
@@ -175,7 +179,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
             [['left', 'right'], 'number'],
             [['level', 'slugId', 'typeId'], 'integer'],
             [['active'], 'boolean'],
-            [['nodePath', 'dateStart', 'dateEnd', 'dateCreate', 'dateUpdate'], 'safe'],
+            [['nodePath', 'dateStart', 'activeDateStart', 'dateEnd', 'activeDateEnd', 'dateCreate', 'dateUpdate'], 'safe'],
             [['path', 'name'], 'string', 'max' => 255],
             [['languageId'], 'string', 'max' => 6],
             [['path'], 'unique'],
@@ -903,6 +907,71 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
             $toMatrix = TreeHelper::extractParentMatrixFromMatrix($toNode->getNodeMatrix());
         }
         return TreeHelper::buildMoveMatrix($fromMatrix, $toMatrix, $bump);
+    }
+
+    /**
+     * @param string $date date to set
+     * @throws \Exception
+     * @since XXX
+     */
+    public function setActiveDateStart($date)
+    {
+        if (empty($date) === false) {
+            $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
+            $dateObject = Yii::createObject(DateTime::class, [$date, $tz]);
+            $this->dateStart = $dateObject->format('Y-m-d H:i:s');
+        } else {
+            $this->dateStart = null;
+        }
+    }
+
+    /**
+     * @return DateTime|object
+     * @throws \yii\base\InvalidConfigException
+     * @since XXX
+     */
+    public function getActiveDateStart()
+    {
+        if (empty($this->dateStart) === false) {
+            $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
+            return Yii::createObject(DateTime::class, [$this->dateStart, $tz]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $date date to set
+     * @throws \yii\base\InvalidConfigException
+     * @since XXX
+     */
+    public function setActiveDateEnd($date)
+    {
+        if (empty($date) === false) {
+            $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
+            $dateObject = Yii::createObject(DateTime::class, [$date, $tz]);
+            if ($dateObject->format('H:i:s') === '00:00:00') {
+                $dateObject->setTime(23, 59, 59);
+            }
+            $this->dateEnd = $dateObject->format('Y-m-d H:i:s');
+        } else {
+            $this->dateEnd = null;
+        }
+    }
+
+    /**
+     * @return DateTime|object
+     * @throws \yii\base\InvalidConfigException
+     * @since XXX
+     */
+    public function getActiveDateEnd()
+    {
+        if (empty($this->dateEnd) === false) {
+            $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
+            return Yii::createObject(DateTime::class, [$this->dateEnd, $tz]);
+        } else {
+            return null;
+        }
     }
 
 }
