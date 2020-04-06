@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use yii\base\InvalidArgumentException;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -50,6 +51,13 @@ use Yii;
  */
 class Slug extends \yii\db\ActiveRecord
 {
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
 
     /**
      * {@inheritdoc}
@@ -118,14 +126,14 @@ class Slug extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'host' => Yii::t('blackcube.core', 'Host'),
-            'path' => Yii::t('blackcube.core', 'Path'),
-            'targetUrl' => Yii::t('blackcube.core', 'Target Url'),
-            'httpCode' => Yii::t('blackcube.core', 'Http Code'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/slug', 'ID'),
+            'host' => Module::t('models/slug', 'Host'),
+            'path' => Module::t('models/slug', 'Path'),
+            'targetUrl' => Module::t('models/slug', 'Target Url'),
+            'httpCode' => Module::t('models/slug', 'Http Code'),
+            'active' => Module::t('models/slug', 'Active'),
+            'dateCreate' => Module::t('models/slug', 'Date Create'),
+            'dateUpdate' => Module::t('models/slug', 'Date Update'),
         ];
     }
 

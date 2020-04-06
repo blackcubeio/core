@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use blackcube\core\interfaces\SluggedInterface;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -53,6 +54,15 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
 
     // public const FREQUENCY = ['always' => 'always', 'hourly' => 'hourly', 'daily' => 'daily', 'weekly' => 'weekly', 'monthly' => 'monthly', 'yearly' => 'yearly', 'never' => 'never'];
     public const FREQUENCY = ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never'];
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -130,13 +140,13 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'slugId' => Yii::t('blackcube.core', 'Slug ID'),
-            'frequency' => Yii::t('blackcube.core', 'Frequency'),
-            'priority' => Yii::t('blackcube.core', 'Priority'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/sitemap', 'ID'),
+            'slugId' => Module::t('models/sitemap', 'Slug ID'),
+            'frequency' => Module::t('models/sitemap', 'Frequency'),
+            'priority' => Module::t('models/sitemap', 'Priority'),
+            'active' => Module::t('models/sitemap', 'Active'),
+            'dateCreate' => Module::t('models/sitemap', 'Date Create'),
+            'dateUpdate' => Module::t('models/sitemap', 'Date Update'),
         ];
     }
 

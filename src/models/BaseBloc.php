@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use blackcube\core\behaviors\FileSaveBehavior;
 use blackcube\core\interfaces\ElasticInterface;
 use blackcube\core\traits\ElasticTrait;
@@ -53,6 +54,14 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     public const DISABLED_ATTRIBUTES = ['id', 'blocTypeId', 'dateCreate', 'dateUpdate', 'data'];
 
     use ElasticTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
 
     /**
      * @return string type
@@ -118,12 +127,12 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     public function attributeLabels():array
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'blocTypeId' => Yii::t('blackcube.core', 'Bloc Type ID'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'data' => Yii::t('blackcube.core', 'Data'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/bloc', 'ID'),
+            'blocTypeId' => Module::t('models/bloc', 'Bloc Type ID'),
+            'active' => Module::t('models/bloc', 'Active'),
+            'data' => Module::t('models/bloc', 'Data'),
+            'dateCreate' => Module::t('models/bloc', 'Date Create'),
+            'dateUpdate' => Module::t('models/bloc', 'Date Update'),
         ];
     }
 

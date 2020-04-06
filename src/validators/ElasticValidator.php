@@ -14,6 +14,7 @@
 
 namespace blackcube\core\validators;
 
+use blackcube\core\Module;
 use blackcube\core\models\Elastic;
 use yii\validators\Validator;
 use Yii;
@@ -37,7 +38,9 @@ class ElasticValidator extends Validator
         if ($subModel instanceof Elastic) {
             $subModel->validate();
             if ($subModel->hasErrors() === true) {
-                $this->addError($model, $attribute, Yii::t('blackcube', 'Submodel"'.$attribute.'" is invalid'));
+                $this->addError($model, $attribute, Module::t('validators', 'Submodel "{attribute}" is invalid', [
+                    'attribute' => $attribute
+                ]));
             }
         }
     }

@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use Yii;
@@ -39,6 +40,14 @@ use Yii;
  */
 class CompositeTag extends \yii\db\ActiveRecord
 {
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -83,10 +92,10 @@ class CompositeTag extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'compositeId' => Yii::t('blackcube.core', 'Composite ID'),
-            'tagId' => Yii::t('blackcube.core', 'Tag ID'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'compositeId' => Module::t('models/composite-tag', 'Composite ID'),
+            'tagId' => Module::t('models/composite-tag', 'Tag ID'),
+            'dateCreate' => Module::t('models/composite-tag', 'Date Create'),
+            'dateUpdate' => Module::t('models/composite-tag', 'Date Update'),
         ];
     }
 

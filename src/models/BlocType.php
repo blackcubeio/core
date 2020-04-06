@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use Yii;
@@ -42,6 +43,14 @@ use Yii;
  */
 class BlocType extends \yii\db\ActiveRecord
 {
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -84,12 +93,12 @@ class BlocType extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'template' => Yii::t('blackcube.core', 'Template'),
-            'view' => Yii::t('blackcube.core', 'View'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/bloc-type', 'ID'),
+            'name' => Module::t('models/bloc-type', 'Name'),
+            'template' => Module::t('models/bloc-type', 'Template'),
+            'view' => Module::t('models/bloc-type', 'View'),
+            'dateCreate' => Module::t('models/bloc-type', 'Date Create'),
+            'dateUpdate' => Module::t('models/bloc-type', 'Date Update'),
         ];
     }
 

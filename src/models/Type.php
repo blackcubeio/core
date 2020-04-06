@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use Yii;
@@ -46,6 +47,14 @@ use Yii;
  */
 class Type extends \yii\db\ActiveRecord
 {
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -95,14 +104,14 @@ class Type extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'controller' => Yii::t('blackcube.core', 'Controller'),
-            'action' => Yii::t('blackcube.core', 'Action'),
-            'minBlocs' => Yii::t('blackcube.core', 'Min Blocs'),
-            'maxBlocs' => Yii::t('blackcube.core', 'Max Blocs'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/type', 'ID'),
+            'name' => Module::t('models/type', 'Name'),
+            'controller' => Module::t('models/type', 'Controller'),
+            'action' => Module::t('models/type', 'Action'),
+            'minBlocs' => Module::t('models/type', 'Min Blocs'),
+            'maxBlocs' => Module::t('models/type', 'Max Blocs'),
+            'dateCreate' => Module::t('models/type', 'Date Create'),
+            'dateUpdate' => Module::t('models/type', 'Date Update'),
         ];
     }
 

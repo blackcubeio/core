@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use blackcube\core\validators\ElasticValidator;
 use Swaggest\JsonSchema\Schema;
 use yii\base\InvalidArgumentException;
@@ -314,7 +315,10 @@ abstract class BaseElastic extends Model {
         if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
         } else {
-            throw new InvalidArgumentException(get_class($this) . ' has no attribute named "' . $name . '".');
+            throw new InvalidArgumentException(Module::t('models/elastic', '{class} has no attribute named "{attribute}"', [
+                'class' => get_class($this),
+                'attribute' => $name
+            ]));
         }
     }
 

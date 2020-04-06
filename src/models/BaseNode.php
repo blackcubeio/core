@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
@@ -76,6 +77,14 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     use TagTrait;
     use SlugTrait;
     use ActiveTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
 
     /**
      * {@inheritDoc}
@@ -197,20 +206,20 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'path' => Yii::t('blackcube.core', 'Path'),
-            'left' => Yii::t('blackcube.core', 'Left'),
-            'right' => Yii::t('blackcube.core', 'Right'),
-            'level' => Yii::t('blackcube.core', 'Level'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'slugId' => Yii::t('blackcube.core', 'Slug ID'),
-            'languageId' => Yii::t('blackcube.core', 'Language ID'),
-            'typeId' => Yii::t('blackcube.core', 'Type ID'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateStart' => Yii::t('blackcube.core', 'Date Start'),
-            'dateEnd' => Yii::t('blackcube.core', 'Date End'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/node', 'ID'),
+            'path' => Module::t('models/node', 'Path'),
+            'left' => Module::t('models/node', 'Left'),
+            'right' => Module::t('models/node', 'Right'),
+            'level' => Module::t('models/node', 'Level'),
+            'name' => Module::t('models/node', 'Name'),
+            'slugId' => Module::t('models/node', 'Slug ID'),
+            'languageId' => Module::t('models/node', 'Language ID'),
+            'typeId' => Module::t('models/node', 'Type ID'),
+            'active' => Module::t('models/node', 'Active'),
+            'dateStart' => Module::t('models/node', 'Date Start'),
+            'dateEnd' => Module::t('models/node', 'Date End'),
+            'dateCreate' => Module::t('models/node', 'Date Create'),
+            'dateUpdate' => Module::t('models/node', 'Date Update'),
         ];
     }
 
@@ -564,7 +573,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                 $transaction->commit();
             }
         } elseif ($this->path !== null) {
-            throw new InvalidNodeConfigurationException('Cannot saveInto() a new record with a node path');
+            throw new InvalidNodeConfigurationException(Module::t('models/node', 'Cannot "saveInto()" a new record with a node path'));
         } else {
             $transaction = static::getDb()->beginTransaction();
             //find last child of target node
@@ -613,7 +622,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                 $transaction->commit();
             }
         } elseif ($this->path !== null) {
-            throw new InvalidNodeConfigurationException('Cannot saveBefore() a new record with a node path');
+            throw new InvalidNodeConfigurationException(Module::t('models/node','Cannot "saveBefore()" a new record with a node path'));
         } else {
             $transaction = static::getDb()->beginTransaction();
             $path = $targetNode->path;
@@ -659,7 +668,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                 $transaction->commit();
             }
         } elseif ($this->path !== null) {
-            throw new InvalidNodeConfigurationException('Cannot saveAfter() a new record with a node path');
+            throw new InvalidNodeConfigurationException(Module::t('models/node','Cannot "saveAfter()" a new record with a node path'));
         } else {
             $transaction = static::getDb()->beginTransaction();
             $nextSiblingNode = $targetNode->nextSibling;

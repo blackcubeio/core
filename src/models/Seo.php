@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use blackcube\core\behaviors\FileSaveBehavior;
 use blackcube\core\interfaces\SluggedInterface;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -53,6 +54,14 @@ use Yii;
  */
 class Seo extends \yii\db\ActiveRecord implements SluggedInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * @var string
      */
@@ -143,21 +152,21 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'slugId' => Yii::t('blackcube.core', 'Slug ID'),
-            'canonicalSlugId' => Yii::t('blackcube.core', 'Canonical Slug ID'),
-            'title' => Yii::t('blackcube.core', 'Title'),
-            'image' => Yii::t('blackcube.core', 'Image'),
-            'description' => Yii::t('blackcube.core', 'Description'),
-            'noindex' => Yii::t('blackcube.core', 'Noindex'),
-            'nofollow' => Yii::t('blackcube.core', 'Nofollow'),
-            'og' => Yii::t('blackcube.core', 'Og'),
-            'ogType' => Yii::t('blackcube.core', 'Og Type'),
-            'twitter' => Yii::t('blackcube.core', 'Twitter'),
-            'twitterCard' => Yii::t('blackcube.core', 'Twitter Card'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/seo', 'ID'),
+            'slugId' => Module::t('models/seo', 'Slug ID'),
+            'canonicalSlugId' => Module::t('models/seo', 'Canonical Slug ID'),
+            'title' => Module::t('models/seo', 'Title'),
+            'image' => Module::t('models/seo', 'Image'),
+            'description' => Module::t('models/seo', 'Description'),
+            'noindex' => Module::t('models/seo', 'No Index'),
+            'nofollow' => Module::t('models/seo', 'No Follow'),
+            'og' => Module::t('models/seo', 'Og'),
+            'ogType' => Module::t('models/seo', 'Og Type'),
+            'twitter' => Module::t('models/seo', 'Twitter'),
+            'twitterCard' => Module::t('models/seo', 'Twitter Card'),
+            'active' => Module::t('models/seo', 'Active'),
+            'dateCreate' => Module::t('models/seo', 'Date Create'),
+            'dateUpdate' => Module::t('models/seo', 'Date Update'),
         ];
     }
 

@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -43,6 +44,14 @@ use Yii;
  */
 class Language extends \yii\db\ActiveRecord
 {
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -108,12 +117,12 @@ class Language extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'main' => Yii::t('blackcube.core', 'Main'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/language', 'ID'),
+            'name' => Module::t('models/language', 'Name'),
+            'main' => Module::t('models/language', 'Main'),
+            'active' => Module::t('models/language', 'Active'),
+            'dateCreate' => Module::t('models/language', 'Date Create'),
+            'dateUpdate' => Module::t('models/language', 'Date Update'),
         ];
     }
 

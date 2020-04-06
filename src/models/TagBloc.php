@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use Yii;
@@ -40,6 +41,14 @@ use Yii;
  */
 class TagBloc extends \yii\db\ActiveRecord
 {
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -84,11 +93,11 @@ class TagBloc extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'tagId' => Yii::t('blackcube.core', 'Tag ID'),
-            'blocId' => Yii::t('blackcube.core', 'Bloc ID'),
-            'order' => Yii::t('blackcube.core', 'Order'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'tagId' => Module::t('models/tag-bloc', 'Tag ID'),
+            'blocId' => Module::t('models/tag-bloc', 'Bloc ID'),
+            'order' => Module::t('models/tag-bloc', 'Order'),
+            'dateCreate' => Module::t('models/tag-bloc', 'Date Create'),
+            'dateUpdate' => Module::t('models/tag-bloc', 'Date Update'),
         ];
     }
 

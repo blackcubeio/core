@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\ActiveTrait;
 use blackcube\core\traits\BlocTrait;
@@ -58,6 +59,14 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     use BlocTrait;
     use SlugTrait;
     use ActiveTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
 
     /**
      * {@inheritDoc}
@@ -155,14 +164,14 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'slugId' => Yii::t('blackcube.core', 'Slug ID'),
-            'languageId' => Yii::t('blackcube.core', 'Language ID'),
-            'typeId' => Yii::t('blackcube.core', 'Type ID'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/category',  'ID'),
+            'name' => Module::t('models/category', 'Name'),
+            'slugId' => Module::t('models/category', 'Slug ID'),
+            'languageId' => Module::t('models/category', 'Language ID'),
+            'typeId' => Module::t('models/category', 'Type ID'),
+            'active' => Module::t('models/category', 'Active'),
+            'dateCreate' => Module::t('models/category', 'Date Create'),
+            'dateUpdate' => Module::t('models/category', 'Date Update'),
         ];
     }
 

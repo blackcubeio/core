@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\Module;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\ActiveTrait;
 use blackcube\core\traits\BlocTrait;
@@ -66,6 +67,14 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     use TagTrait;
     use SlugTrait;
     use ActiveTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
 
     /**
      * {@inheritDoc}
@@ -170,16 +179,16 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'slugId' => Yii::t('blackcube.core', 'Slug ID'),
-            'languageId' => Yii::t('blackcube.core', 'Language ID'),
-            'typeId' => Yii::t('blackcube.core', 'Type ID'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateStart' => Yii::t('blackcube.core', 'Date Start'),
-            'dateEnd' => Yii::t('blackcube.core', 'Date End'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/composite', 'ID'),
+            'name' => Module::t('models/composite', 'Name'),
+            'slugId' => Module::t('models/composite', 'Slug ID'),
+            'languageId' => Module::t('models/composite', 'Language ID'),
+            'typeId' => Module::t('models/composite', 'Type ID'),
+            'active' => Module::t('models/composite', 'Active'),
+            'dateStart' => Module::t('models/composite', 'Date Start'),
+            'dateEnd' => Module::t('models/composite', 'Date End'),
+            'dateCreate' => Module::t('models/composite', 'Date Create'),
+            'dateUpdate' => Module::t('models/composite', 'Date Update'),
         ];
     }
 
