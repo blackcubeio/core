@@ -1,4 +1,16 @@
 <?php
+/**
+ * FilterActiveQuery.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\models
+ */
 
 namespace blackcube\core\models;
 
@@ -7,6 +19,15 @@ use yii\db\ActiveQuery;
 use yii\db\Expression;
 use Yii;
 
+/**
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\models
+ * @since XXX
+ */
 class FilterActiveQuery extends ActiveQuery
 {
     /**
@@ -14,6 +35,9 @@ class FilterActiveQuery extends ActiveQuery
      */
     private $previewManager;
 
+    /**
+     * {@inheritDoc}
+     */
     public function init()
     {
         parent::init();
@@ -22,6 +46,7 @@ class FilterActiveQuery extends ActiveQuery
 
     /**
      * @return \yii\db\ActiveQuery
+     * @since XXX
      */
     public function active() {
         $modelClass = $this->modelClass;
