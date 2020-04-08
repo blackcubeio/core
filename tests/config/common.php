@@ -20,9 +20,9 @@ use yii\db\pgsql\Schema as PgsqlSchema;
 use yii\i18n\Formatter;
 use yii\log\FileTarget;
 use yii\rbac\DbManager;
-
+Yii::setAlias('@tmpfs', dirname(__DIR__));
 $config = [
-    'sourceLanguage' => 'en-US',
+    'sourceLanguage' => 'en',
     'language' => 'en-US',
     'timezone' => 'Europe/Paris',
     'extensions' => require dirname(__DIR__, 2) . '/vendor/yiisoft/extensions.php',
@@ -93,7 +93,7 @@ if (getenv('DB_DRIVER') === 'pgsql') {
     ];
 }
 
-
+/**/
 if (getenv('FILESYSTEM_TYPE') === 'local') {
     $config['components']['fs'] = [
         'class' => LocalFilesystem::class,
@@ -117,5 +117,6 @@ if (getenv('FILESYSTEM_TYPE') === 'local') {
         'cacheDuration' => (getenv('FILESYSTEM_CACHE') == 1) ? getenv('FILESYSTEM_CACHE_DURATION') : null,
     ];
 }
+/**/
 
 return $config;

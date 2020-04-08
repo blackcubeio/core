@@ -20,6 +20,7 @@ use creocoder\flysystem\Filesystem;
 use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
 use yii\console\Application as ConsoleApplication;
+use yii\console\controllers\MigrateController;
 use yii\db\Connection;
 use yii\di\Instance;
 use yii\i18n\GettextMessageSource;
@@ -69,6 +70,11 @@ class Module extends BaseModule implements BootstrapInterface
     public $fs = 'fs';
 
     /**
+     * @var string command prefix
+     */
+    public $commandNameSpace = 'bcc:';
+
+    /**
      * @var Connection|array|string database access
      */
     public $db = 'db';
@@ -116,6 +122,13 @@ class Module extends BaseModule implements BootstrapInterface
      */
     protected function bootstrapConsole(ConsoleApplication $app)
     {
+        $app->controllerMap[$this->commandNameSpace.'migrate'] = [
+            'class' => MigrateController::class,
+            'migrationNamespaces' => [
+                'blackcube\core\migrations',
+            ],
+            'db' => $this->db,
+        ];
 
     }
 
