@@ -58,6 +58,16 @@ class Module extends BaseModule implements BootstrapInterface
     public $uploadAlias = '@app/runtime/blackcube/uploads';
 
     /**
+     * @var string alias to store cached files
+     */
+    public $fileCachePathAlias = '@webroot/cache';
+
+    /**
+     * @var string alias to access cached files through URL
+     */
+    public $fileCacheUrlAlias = '@web/cache';
+
+    /**
      * @var mixed cms url rules. Set it to false to disable cms url rule management
      */
     public $cmsUrlRule = [

@@ -63,7 +63,8 @@ class ResumablePreviewAction extends ViewAction
                 $mimeType = mime_content_type($realName);
             } else {
                 Image::$thumbnailBackgroundAlpha = 0;
-                $image = Image::thumbnail($realName, 200, 200, ManipulatorInterface::THUMBNAIL_INSET);
+                $image = Image::thumbnail($realName, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
+                // $image = Image::resize($realName, $width, $height, true, true);
                 $thumbnailName = Yii::getAlias($uploadAlias.'thumb_'.$width.'x'.$height.'_'.$fileName);
                 $image->save($thumbnailName);
                 $realName = $thumbnailName;
@@ -88,7 +89,8 @@ class ResumablePreviewAction extends ViewAction
             } else {
                 Image::$thumbnailBackgroundAlpha = 0;
                 $handle = Yii::$app->fs->readStream($realName);
-                $image = Image::thumbnail($handle, 200, 200, ManipulatorInterface::THUMBNAIL_INSET);
+                $image = Image::thumbnail($handle, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
+                // $image = Image::resize($realName, $width, $height, true, true);
                 $thumbnailName = Yii::getAlias($uploadAlias.'thumb_'.$width.'x'.$height.'_'.$fileName);
                 $image->save($thumbnailName);
                 $realName = $thumbnailName;

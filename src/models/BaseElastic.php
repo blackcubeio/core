@@ -532,6 +532,12 @@ abstract class BaseElastic extends Model {
         if ($property->type === 'string' && ($property->format === 'file' || $property->format === 'files')) {
             $fieldData['field'] = $property->format;
             $fieldData['fileType'] = $property->fileType;
+            if (empty($property->imageWidth) !== true) {
+                $fieldData['imageWidth'] = $property->imageWidth;
+            }
+            if (empty($property->imageHeight) !== true) {
+                $fieldData['imageHeight'] = $property->imageHeight;
+            }
         }
         return $fieldData;
     }
