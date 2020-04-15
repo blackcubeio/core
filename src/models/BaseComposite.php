@@ -246,6 +246,21 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     }
 
     /**
+     * Gets query for [[Composites]] which are not linked to a node.
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @since XXX
+     */
+    public static function findOrphans()
+    {
+        $compositeQuery = static::find()
+            ->leftJoin(NodeComposite::tableName().' linktable', 'linktable.[[compositeId]] = id')
+            ->andWhere(['linktable.nodeId' => null]);
+        $compositeQuery->multiple = true;
+        return $compositeQuery;
+    }
+
+    /**
      * @param string $date date to set
      * @throws \Exception
      * @since XXX

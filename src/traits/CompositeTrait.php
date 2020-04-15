@@ -180,6 +180,43 @@ trait CompositeTrait
         return $status;
     }
 
+    public function moveCompositeUp(Composite $composite)
+    {
+        $elementCompositeClass = $this->getElementCompositeClass();
+        $compositeCount = $this->getComposites()->count();
+        $currentElementComposite = $elementCompositeClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getCompositeIdColumn() => $composite->id
+        ]);
+        if ($currentElementComposite === null) {
+            return false;
+        }
+        $position = $currentElementComposite->order - 1;
+        if ($position < 1) {
+            return true;
+        } else {
+            return $this->moveComposite($composite, $position);
+        }
+    }
+
+    public function moveCompositeDown(Composite $composite)
+    {
+        $elementCompositeClass = $this->getElementCompositeClass();
+        $compositeCount = $this->getComposites()->count();
+        $currentElementComposite = $elementCompositeClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getCompositeIdColumn() => $composite->id
+        ]);
+        if ($currentElementComposite === null) {
+            return false;
+        }
+        $position = $currentElementComposite->order + 1;
+        if ($position > $compositeCount) {
+            return true;
+        } else {
+            return $this->moveComposite($composite, $position);
+        }
+    }
     /**
      * Reset composite order value to have the list 1 indexed
      * @return bool
