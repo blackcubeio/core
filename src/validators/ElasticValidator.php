@@ -32,6 +32,10 @@ use Yii;
  */
 class ElasticValidator extends Validator
 {
+    /**
+     * @param \yii\base\Model $model
+     * @param string $attribute
+     */
     public function validateAttribute($model, $attribute)
     {
         $subModel = $model->{$attribute};

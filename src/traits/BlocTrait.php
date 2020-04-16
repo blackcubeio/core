@@ -15,7 +15,11 @@
 namespace blackcube\core\traits;
 
 use blackcube\core\models\Bloc;
+use blackcube\core\models\CategoryBloc;
+use blackcube\core\models\CompositeBloc;
 use blackcube\core\models\FilterActiveQuery;
+use blackcube\core\models\NodeBloc;
+use blackcube\core\models\TagBloc;
 use Yii;
 
 /**
@@ -96,26 +100,14 @@ trait BlocTrait
      * Detach the bloc from the element but do not delete it
      * @param Bloc $bloc
      * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function detachBloc(Bloc $bloc)
     {
         $bloc->delete();
         $this->reorderBlocs();
         return true;
-        /*/
-        $status = false;
-        $elementBlocClass = $this->getElementBlocClass();
-        $elementBloc = $elementBlocClass::findOne([
-            $this->getElementIdColumn() => $this->id,
-            $this->getBlocIdColumn() => $bloc->id
-        ]);
-        if ($elementBloc !== null) {
-            $elementBloc->delete();
-            $status = true;
-        }
-        $this->reorderBlocs();
-        return $status;
-        /**/
     }
 
     /**
@@ -181,6 +173,11 @@ trait BlocTrait
         }
         return $status;
     }
+
+    /**
+     * @param Bloc $bloc
+     * @return bool
+     */
     public function moveBlocUp(Bloc $bloc)
     {
         $elementBlocClass = $this->getElementBlocClass();
@@ -200,6 +197,10 @@ trait BlocTrait
         }
     }
 
+    /**
+     * @param Bloc $bloc
+     * @return bool
+     */
     public function moveBlocDown(Bloc $bloc)
     {
         $elementBlocClass = $this->getElementBlocClass();
@@ -218,6 +219,7 @@ trait BlocTrait
             return $this->moveBloc($bloc, $position);
         }
     }
+
     /**
      * Reset blocs order value to have the list 1 indexed
      * @return bool
@@ -245,6 +247,9 @@ trait BlocTrait
         return $status;
     }
 
+    /**
+     * @return CategoryBloc[]|TagBloc[]|CompositeBloc[]|NodeBloc[]
+     */
     public function getElementBlocs()
     {
         $elementBlocs = [];
@@ -269,7 +274,7 @@ trait BlocTrait
         $blocQuery = Bloc::find()
             ->rightJoin($elementBlocClass::tableName().' linktable', 'linktable.[[blocId]] = id')
             ->andWhere(['linktable.'.$this->getElementIdColumn() => $this->id])
-            ->orderBy(['linktable.order' => SORT_ASC]);
+            ->orderBy(['linktable.[[order]]' => SORT_ASC]);
         $blocQuery->multiple = true;
         return $blocQuery;
 

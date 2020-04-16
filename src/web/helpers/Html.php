@@ -38,6 +38,7 @@ class Html extends YiiHtml
      * @param string $attribute
      * @param array $options
      * @return string
+     * @throws \Exception
      */
     public static function activeDateTimeInput($model, $attribute, $options = [])
     {
@@ -68,6 +69,7 @@ class Html extends YiiHtml
      * @param string $attribute
      * @param array $options
      * @return string
+     * @throws \Exception
      */
     public static function activeDateInput($model, $attribute, $options = [])
     {

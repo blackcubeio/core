@@ -14,6 +14,8 @@
 
 namespace blackcube\core\traits;
 
+use blackcube\core\models\Slug;
+
 /**
  * Slug trait
  *
@@ -25,8 +27,6 @@ namespace blackcube\core\traits;
  * @package blackcube\core\traits
  * @since XXX
  */
-use blackcube\core\models\Slug;
-
 trait SlugTrait
 {
     /**

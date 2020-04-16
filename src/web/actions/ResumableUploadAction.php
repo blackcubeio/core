@@ -33,15 +33,39 @@ use Yii;
  */
 class ResumableUploadAction extends ViewAction
 {
+    /**
+     * @var string
+     */
     public $uploadAlias = '@app/runtime/blackcube/uploads';
 
+    /**
+     * @var string
+     */
     public $fileId = 'file';
 
+    /**
+     * @var string
+     */
     protected $extension;
+
+    /**
+     * @var string
+     */
     protected $originalFilename;
+
+    /**
+     * @var string
+     */
     protected $finalPath;
 
+    /**
+     * @var bool
+     */
     protected $uploadComplete = false;
+
+    /**
+     * @var string
+     */
     protected $finalFilename;
 
     /**
@@ -63,6 +87,9 @@ class ResumableUploadAction extends ViewAction
         }
     }
 
+    /**
+     * @throws ServerErrorHttpException
+     */
     protected function handleChunk()
     {
         $identifier = $this->getResumableParam('identifier');
@@ -92,12 +119,25 @@ class ResumableUploadAction extends ViewAction
         return (isset($_FILES) === true && empty($_FILES) === false);
     }
 
+    /**
+     * @param string $identifier
+     * @param string $filename
+     * @param string $chunkNumber
+     * @return bool
+     */
     protected function getIsChunkUploaded($identifier, $filename, $chunkNumber)
     {
         $filePath = $this->getTmpChunkFile($identifier, $filename, $chunkNumber);
         return file_exists($filePath);
     }
 
+    /**
+     * @param string $filename
+     * @param string $identifier
+     * @param integer $chunkSize
+     * @param integer $totalSize
+     * @return bool
+     */
     protected function getIsUploadComplete($filename, $identifier, $chunkSize, $totalSize)
     {
         if ($chunkSize <= 0) {
@@ -112,11 +152,21 @@ class ResumableUploadAction extends ViewAction
         return true;
     }
 
+    /**
+     * @param string $identifier
+     * @param string $filename
+     * @param integer $chunkNumber
+     * @return string
+     */
     protected function getTmpChunkFile($identifier, $filename, $chunkNumber)
     {
         return $this->getTmpChunkDir($identifier) . DIRECTORY_SEPARATOR . $this->getTmpChunkname($filename, $chunkNumber);
     }
 
+    /**
+     * @param string $identifier
+     * @return bool|string
+     */
     protected function getTmpChunkDir($identifier)
     {
         $identifier = preg_replace('/[^a-z0-9_\-.]+/i', '_', $identifier);
@@ -129,6 +179,11 @@ class ResumableUploadAction extends ViewAction
         return $tmpChunkDir;
     }
 
+    /**
+     * @param string $filename
+     * @param integer $chunkNumber
+     * @return string
+     */
     protected function getTmpChunkname($filename, $chunkNumber)
     {
         return $filename . '.part' . $chunkNumber;
@@ -158,11 +213,18 @@ class ResumableUploadAction extends ViewAction
         }
     }
 
+    /**
+     * @param string $filename
+     * @return string
+     */
     public static function cleanUpFilename($filename)
     {
         return preg_replace('/[^a-z0-9_\-.]+/i', '_', $filename);
     }
 
+    /**
+     * @param string $directory
+     */
     protected function deleteDirectory($directory)
     {
         $dir = opendir($directory);
@@ -181,6 +243,11 @@ class ResumableUploadAction extends ViewAction
         rmdir($directory);
     }
 
+    /**
+     * @param array $chunkFiles
+     * @param string $destFile
+     * @return bool
+     */
     protected function createFileFromChunks($chunkFiles, $destFile)
     {
         natsort($chunkFiles);

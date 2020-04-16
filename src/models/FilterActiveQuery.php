@@ -65,7 +65,7 @@ class FilterActiveQuery extends ActiveQuery
                     ]);
                     break;
                 case Tag::class:
-                    $categoriesQuery = Category::find()->active()->select(['id']);
+                    $categoriesQuery = Category::find()->active()->select(['[[id]]']);
                     $this->andWhere(['IN', $tableName.'.[[categoryId]]', $categoriesQuery]);
                     break;
                 case Category::class:

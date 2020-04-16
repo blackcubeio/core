@@ -180,6 +180,10 @@ trait CompositeTrait
         return $status;
     }
 
+    /**
+     * @param Composite $composite
+     * @return bool
+     */
     public function moveCompositeUp(Composite $composite)
     {
         $elementCompositeClass = $this->getElementCompositeClass();
@@ -199,6 +203,10 @@ trait CompositeTrait
         }
     }
 
+    /**
+     * @param Composite $composite
+     * @return bool
+     */
     public function moveCompositeDown(Composite $composite)
     {
         $elementCompositeClass = $this->getElementCompositeClass();
@@ -217,6 +225,7 @@ trait CompositeTrait
             return $this->moveComposite($composite, $position);
         }
     }
+
     /**
      * Reset composite order value to have the list 1 indexed
      * @return bool

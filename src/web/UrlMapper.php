@@ -20,8 +20,8 @@ use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
 use blackcube\core\models\Tag;
 use yii\base\BaseObject;
-use ArrayAccess;
 use yii\web\NotFoundHttpException;
+use ArrayAccess;
 use Yii;
 
 /**
@@ -39,15 +39,34 @@ class UrlMapper extends BaseObject implements ArrayAccess
 {
     const CACHE_PREFIX = 'blackcube:web:urlmapper';
 
+    /**
+     * @var int
+     */
     public static $CACHE_EXPIRE = 3600;
 
+    /**
+     * @var string
+     */
     public $routePrefix = 'blackcube';
 
+    /**
+     * @var string
+     */
     public $defaultController = 'Blackcube';
 
+    /**
+     * @var string
+     */
     public $routeSeparator = '-';
 
+    /**
+     * @var string
+     */
     public $controllerNamespace;
+
+    /**
+     * @var array 
+     */
     public $additionalMap = [];
 
     /**

@@ -42,9 +42,16 @@ use Yii;
 class BlackcubeController extends Controller
 {
 
+    /**
+     * @var integer
+     */
     public $elementId;
 
+    /**
+     * @var string
+     */
     public $elementType;
+
     /**
      * @var Node|Composite|Category|Tag|ElementInterface
      */

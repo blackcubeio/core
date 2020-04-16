@@ -273,8 +273,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     {
         $compositeQuery = Composite::find()
             ->rightJoin(NodeComposite::tableName().' linktable', 'linktable.[[compositeId]] = id')
-            ->andWhere(['linktable.nodeId' => $this->id])
-            ->orderBy(['linktable.order' => SORT_ASC]);
+            ->andWhere(['linktable.[[nodeId]]' => $this->id])
+            ->orderBy(['linktable.[[order]]' => SORT_ASC]);
         $compositeQuery->multiple = true;
         return $compositeQuery;
         /*/

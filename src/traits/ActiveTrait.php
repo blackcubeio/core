@@ -34,9 +34,15 @@ use Yii;
  * @link https://www.redcat.io
  * @package blackcube\core\traits
  * @since XXX
+ *
+ * @var boolean $isActive
  */
 trait ActiveTrait
 {
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
     public function getIsActive()
     {
         $isActive = $this->active;

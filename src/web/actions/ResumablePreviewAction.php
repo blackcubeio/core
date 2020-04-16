@@ -36,7 +36,11 @@ use Yii;
  */
 class ResumablePreviewAction extends ViewAction
 {
+    /**
+     * @var string
+     */
     public $filetypeIconAlias = '@blackcube/admin/assets/static/files/';
+
     /**
      * @inheritdoc
      */
@@ -121,6 +125,10 @@ class ResumablePreviewAction extends ViewAction
         return Yii::$app->response->sendStreamAsFile($handle, $fileName, ['inline' => true, 'mimeType' => $mimeType]);
     }
 
+    /**
+     * @param string $filename
+     * @return bool|string
+     */
     protected function prepareImage($filename) {
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
         $iconAlias = $this->filetypeIconAlias . $extension . '.png';

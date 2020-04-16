@@ -146,6 +146,7 @@ class Module extends BaseModule implements BootstrapInterface
      * Bootstrap web stuff
      *
      * @param WebApplication $app
+     * @throws \yii\base\InvalidConfigException
      * @since XXX
      */
     protected function bootstrapWeb(WebApplication $app)
