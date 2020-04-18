@@ -38,6 +38,8 @@ use Yii;
  */
 class Parameter extends \yii\db\ActiveRecord
 {
+    public const HOST_DOMAIN = 'HOSTS';
+
     /**
      * {@inheritDoc}
      */
@@ -96,4 +98,26 @@ class Parameter extends \yii\db\ActiveRecord
             'dateUpdate' => Module::t('models/parameter', 'Date Update'),
         ];
     }
+
+    /**
+     * @return array
+     */
+    public static function getAllowedHosts()
+    {
+        $parameters = static::find()
+            ->andWhere(['domain' => static::HOST_DOMAIN])
+            ->select(['value'])
+            ->orderBy(['name' => SORT_ASC])
+            ->asArray()
+            ->all();
+        $allowedHosts = array_map(function($item) {
+            return [
+                'id' => $item['value'] === '*' ? '' : $item['value'],
+                'value' => $item['value'],
+            ];
+        }, $parameters);
+        array_unshift($allowedHosts, ['id' => '', 'value' => '*']);
+        return $allowedHosts;
+    }
+
 }

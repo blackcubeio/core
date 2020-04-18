@@ -14,6 +14,7 @@
 
 namespace blackcube\core;
 
+use blackcube\core\models\Parameter;
 use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
 use creocoder\flysystem\Filesystem;
@@ -100,6 +101,11 @@ class Module extends BaseModule implements BootstrapInterface
     public $uploadFsPrefix = '@blackcubefs';
 
     /**
+     * @var array list of allowed parameter domains, if empty, any value can be used HOSTS domain is mandatory
+     */
+    public $allowedParameterDomains = [];
+
+    /**
      * {@inheritDoc}
      */
     public function init()
@@ -107,6 +113,9 @@ class Module extends BaseModule implements BootstrapInterface
         parent::init();
         $this->fs = Instance::ensure($this->fs, Filesystem::class);
         $this->db = Instance::ensure($this->db, Connection::class);
+        if (empty($this->allowedParameterDomains) === false && in_array(Parameter::HOST_DOMAIN, $this->allowedParameterDomains) === false) {
+            $this->allowedParameterDomains[] = Parameter::HOST_DOMAIN;
+        }
         $this->registerTranslations();
     }
 
