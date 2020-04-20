@@ -21,7 +21,6 @@ use blackcube\core\web\UrlMapper;
 use creocoder\flysystem\Filesystem;
 use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
-use yii\caching\CacheInterface;
 use yii\console\Application as ConsoleApplication;
 use yii\console\controllers\MigrateController;
 use yii\db\Connection;
@@ -29,8 +28,6 @@ use yii\di\Instance;
 use yii\i18n\GettextMessageSource;
 use yii\web\Application as WebApplication;
 use Yii;
-
-
 
 /**
  * Class module
@@ -115,9 +112,6 @@ class Module extends BaseModule implements BootstrapInterface
         parent::init();
         $this->fs = Instance::ensure($this->fs, Filesystem::class);
         $this->db = Instance::ensure($this->db, Connection::class);
-        if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, CacheInterface::class);
-        }
         if (empty($this->allowedParameterDomains) === false && in_array(Parameter::HOST_DOMAIN, $this->allowedParameterDomains) === false) {
             $this->allowedParameterDomains[] = Parameter::HOST_DOMAIN;
         }

@@ -15,10 +15,18 @@
 namespace blackcube\core\web\helpers;
 
 use blackcube\core\Module;
+use blackcube\core\web\helpers\editorjs\DelimiterBlock;
+use blackcube\core\web\helpers\editorjs\EmbedBlock;
+use blackcube\core\web\helpers\editorjs\HeaderBlock;
+use blackcube\core\web\helpers\editorjs\ListBlock;
+use blackcube\core\web\helpers\editorjs\ParagraphBlock;
+use blackcube\core\web\helpers\editorjs\QuoteBlock;
+use blackcube\core\web\helpers\editorjs\RawBlock;
 use creocoder\flysystem\Filesystem;
 use Imagine\Image\ManipulatorInterface;
 use yii\base\Model;
 use yii\helpers\Html as YiiHtml;
+use yii\helpers\Json;
 use yii\imagine\Image;
 use DateTime;
 use Yii;
@@ -36,6 +44,67 @@ use Yii;
  */
 class Html extends YiiHtml
 {
+    public const EDITORJS_BLOCK_PARAGRAPH = 'paragraph';
+    public const EDITORJS_BLOCK_LIST = 'list';
+    public const EDITORJS_BLOCK_HEADER = 'header';
+    public const EDITORJS_BLOCK_DELIMITER = 'delimiter';
+    public const EDITORJS_BLOCK_RAW = 'raw';
+    public const EDITORJS_BLOCK_QUOTE = 'quote';
+    public const EDITORJS_BLOCK_EMBED = 'embed';
+
+    public static $editorJsRenderers = [
+        self::EDITORJS_BLOCK_PARAGRAPH => ParagraphBlock::class,
+        self::EDITORJS_BLOCK_LIST => ListBlock::class,
+        self::EDITORJS_BLOCK_HEADER => HeaderBlock::class,
+        self::EDITORJS_BLOCK_QUOTE => QuoteBlock::class,
+        self::EDITORJS_BLOCK_RAW => RawBlock::class,
+        self::EDITORJS_BLOCK_DELIMITER => DelimiterBlock::class,
+        self::EDITORJS_BLOCK_EMBED => EmbedBlock::class,
+    ];
+
+    /**
+     * Render editor JS Content
+     * @param string|array $editorJsData
+     * @param array $options
+     * @return string
+     */
+    public static function editorJs($editorJsData, $options = [])
+    {
+        if (is_string($editorJsData) === true) {
+            $editorJsData = Json::decode($editorJsData);
+        }
+        $blocks = [];
+        if (isset($editorJsData['blocks']) === true && is_array($editorJsData['blocks'])) {
+            $blocks = $editorJsData['blocks'];
+        }
+        $editorTime = 0;
+        if (isset($editorJsData['time']) === true) {
+            $editorTime = $editorJsData['time'];
+        }
+        $output = '';
+        foreach($blocks as $i => $block) {
+            try {
+                $blockType = $block['type'];
+                if (isset(static::$editorJsRenderers[$blockType]) === true) {
+                    $config = [
+                        'class' => static::$editorJsRenderers[$blockType],
+                        'data' => isset($block['data']) ? $block['data'] : [],
+                        'index' => $i,
+                    ];
+                    $renderer = Yii::createObject($config);
+                    /* @var $renderer \blackcube\core\web\helpers\editorjs\EditorJsBlock */
+                    if ($renderer !== null) {
+                        $blockOptions = isset($options[$blockType]) ? $options[$blockType] : [];
+                        $output .= $renderer->render($blockOptions);
+                    }
+                }
+            } catch (\Exception $e) {
+                Yii::warning(Module::t('helpers', 'Unable to render block'));
+            }
+        }
+        return $output;
+    }
+
     /**
      * Extend img tag to handle fs saved files
      * @param array|string $src
