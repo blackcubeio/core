@@ -538,6 +538,8 @@ abstract class BaseElastic extends Model {
             if (empty($property->imageHeight) !== true) {
                 $fieldData['imageHeight'] = $property->imageHeight;
             }
+        } elseif ($property->type === 'string' && ($property->format === 'wysiwyg')) {
+            $fieldData['field'] = $property->format;
         }
         return $fieldData;
     }

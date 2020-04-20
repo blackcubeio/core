@@ -14,8 +14,12 @@
 
 namespace blackcube\core\web\helpers;
 
+use blackcube\core\Module;
+use creocoder\flysystem\Filesystem;
+use Imagine\Image\ManipulatorInterface;
 use yii\base\Model;
 use yii\helpers\Html as YiiHtml;
+use yii\imagine\Image;
 use DateTime;
 use Yii;
 
@@ -32,6 +36,114 @@ use Yii;
  */
 class Html extends YiiHtml
 {
+    /**
+     * Extend img tag to handle fs saved files
+     * @param array|string $src
+     * @param array $options
+     * @return string
+     */
+    public static function img($src, $options = [])
+    {
+        if (is_string($src) === true) {
+            if (isset($options['width'], $options['height']) === true) {
+                $src = static::cacheImage($src, $options['width'], $options['height']);
+            } else {
+                $src = static::cacheImage($src);
+            }
+        }
+        return parent::img($src, $options);
+    }
+
+    /**
+     * Generate an image in cache
+     * @param string $imageLink
+     * @param integer|null $width
+     * @param integer|null $height
+     * @return string
+     */
+    public static function cacheImage($imageLink, $width = null, $height = null)
+    {
+        $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
+        $fileCachePathAlias = trim(Module::getInstance()->fileCachePathAlias, '/') . '/';
+        $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
+        $resultFileUrl = $imageLink;
+        if (strncmp($prefix, $imageLink, strlen($prefix)) === 0) {
+            $fs = Module::getInstance()->fs;
+            /* @var $fs Filesystem */
+            $originalFilename = str_replace($prefix, '', $imageLink);
+            if ($fs->has($originalFilename) === true) {
+                $fileData = pathinfo($originalFilename);
+                $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
+                if ($width !== null && $height !== null) {
+                    $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-'.$width.'-'.$height.'.'.$fileData['extension'];
+                }
+                $originalFileTimestamp = $fs->getTimestamp($originalFilename);
+                $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
+                $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
+                if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
+                    $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
+                    if (is_dir($targetCachePath) === false) {
+                        mkdir($targetCachePath, 0777, true);
+                    }
+                    if ($width !== null && $height !== null) {
+                        $sourceStream = $fs->readStream($originalFilename);
+                        $image = Image::thumbnail($sourceStream, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
+                        $image->save($cachedFilePath);
+                        fclose($sourceStream);
+                    } else {
+                        $sourceStream = $fs->readStream($originalFilename);
+                        $targetStream = fopen($cachedFilePath, 'w');
+                        stream_copy_to_stream($sourceStream, $targetStream);
+                        fclose($sourceStream);
+                        fclose($targetStream);
+                    }
+                }
+                $resultFileUrl = $cachedFileUrl;
+            }
+
+        }
+        return $resultFileUrl;
+    }
+
+    /**
+     * Generate cached file
+     * @param string $fileLink
+     * @return string
+     */
+    public static function cacheFile($fileLink)
+    {
+        $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
+        $fileCachePathAlias = trim(Module::getInstance()->fileCachePathAlias, '/') . '/';
+        $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
+        $resultFileUrl = $fileLink;
+        if (strncmp($prefix, $fileLink, strlen($prefix)) === 0) {
+            $fs = Module::getInstance()->fs;
+            /* @var $fs Filesystem */
+            $originalFilename = str_replace($prefix, '', $fileLink);
+            if ($fs->has($originalFilename) === true) {
+                $fileData = pathinfo($originalFilename);
+                $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
+                $originalFileTimestamp = $fs->getTimestamp($originalFilename);
+                $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
+                $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
+                if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
+                    $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
+                    if (is_dir($targetCachePath) === false) {
+                        mkdir($targetCachePath, 0777, true);
+                    }
+                    $sourceStream = $fs->readStream($originalFilename);
+                    $targetStream = fopen($cachedFilePath, 'w');
+                    stream_copy_to_stream($sourceStream, $targetStream);
+                    fclose($sourceStream);
+                    fclose($targetStream);
+                }
+                $resultFileUrl = $cachedFileUrl;
+            }
+
+        }
+        return $resultFileUrl;
+
+    }
     /**
      * Generate input[type=datetime-local] field
      * @param Model $model

@@ -84,7 +84,7 @@ class ResumablePreviewAction extends ViewAction
         } elseif (strncmp($uploadFsPrefix, $name, strlen($uploadFsPrefix)) === 0) {
             $realName = str_replace($uploadFsPrefix, '', $name);
             // file is in fly system (creocoder)
-            $mimeType = Yii::$app->fs->getMimetype($realName);
+            $mimeType = Module::getInstance()->fs->getMimetype($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             if (strncmp('image/', $mimeType, 6) !== 0) {
                 $realName = $this->prepareImage($fileName);
@@ -92,7 +92,7 @@ class ResumablePreviewAction extends ViewAction
                 $handle = fopen($realName, 'r');
             } else {
                 Image::$thumbnailBackgroundAlpha = 0;
-                $handle = Yii::$app->fs->readStream($realName);
+                $handle = Module::getInstance()->fs->readStream($realName);
                 $image = Image::thumbnail($handle, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
                 // $image = Image::resize($realName, $width, $height, true, true);
                 $thumbnailName = Yii::getAlias($uploadAlias.'thumb_'.$width.'x'.$height.'_'.$fileName);

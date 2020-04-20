@@ -65,11 +65,13 @@ class FileSaveBehavior extends Behavior
     }
 
     /**
-     * {@inheritDoc}
+     * Save files in system
+     * @param Event $event
+     * @throws ErrorException
+     * @since XXX
      */
-    public function init()
+    public function saveFiles($event)
     {
-        parent::init();
         if ($this->owner instanceof Bloc) {
             $modelStructure = $this->owner->getStructure();
             $this->filesAttributes = [];
@@ -79,16 +81,6 @@ class FileSaveBehavior extends Behavior
                 }
             }
         }
-    }
-
-    /**
-     * Save files in system
-     * @param Event $event
-     * @throws ErrorException
-     * @since XXX
-     */
-    public function saveFiles($event)
-    {
         $model = $this->owner;
         /* @var ActiveRecord $model */
         $uploadAlias = Module::getInstance()->uploadAlias;
