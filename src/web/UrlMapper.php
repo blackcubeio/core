@@ -18,7 +18,9 @@ use blackcube\core\components\RouteEncoder;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
+use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
+use blackcube\core\web\controllers\RedirectController;
 use yii\base\BaseObject;
 use yii\web\NotFoundHttpException;
 use ArrayAccess;
@@ -92,19 +94,26 @@ class UrlMapper extends BaseObject implements ArrayAccess
         } elseif (($data = RouteEncoder::decode($offset)) !== false) {
             // $data = ['type' => 'elementType', 'id' => 1234]
             list ($controller, $action) = static::fetchControllerForElement($data);
-            if (empty($controller) === true) {
-                $controller = $this->defaultController;
-            }
-            if ($this->controllerNamespace !== null) {
-                $class = $this->controllerNamespace . '\\' . $controller.'Controller';
+            if ($data['type'] === Slug::getElementType()) {
+                $mappedController = [
+                    'class' => $controller,
+                    'slugId' => $data['id'],
+                ];
             } else {
-                $class = $controller.'Controller';
+                if (empty($controller) === true) {
+                    $controller = $this->defaultController;
+                }
+                if ($this->controllerNamespace !== null) {
+                    $class = $this->controllerNamespace . '\\' . $controller.'Controller';
+                } else {
+                    $class = $controller.'Controller';
+                }
+                $mappedController = [
+                    'class' => $class,
+                    'elementType' => $data['type'],
+                    'elementId' => $data['id'],
+                ];
             }
-            $mappedController = [
-                'class' => $class,
-                'elementType' => $data['type'],
-                'elementId' => $data['id'],
-            ];
             if (empty($action) === false) {
                 $mappedController['defaultAction'] = $action;
             }
@@ -145,6 +154,10 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 break;
             case Tag::getElementType():
                 $query = Tag::find();
+                break;
+            case Slug::getElementType():
+                // Special case to handle redirect
+                return [RedirectController::class, null];
                 break;
             default:
                 throw new NotFoundHttpException();

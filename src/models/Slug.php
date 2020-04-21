@@ -20,6 +20,8 @@ use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use Yii;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%slugs}}".
@@ -51,12 +53,22 @@ use Yii;
  */
 class Slug extends \yii\db\ActiveRecord
 {
+    public const SCENARIO_REDIRECT = 'redirect';
+
     /**
      * {@inheritDoc}
      */
     public static function getDb()
     {
         return Module::getInstance()->db;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getElementType()
+    {
+        return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**
@@ -103,6 +115,16 @@ class Slug extends \yii\db\ActiveRecord
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_REDIRECT] = ['httpCode', 'path', 'host', 'targetUrl', 'active'];
+        return $scenarios;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
@@ -114,6 +136,8 @@ class Slug extends \yii\db\ActiveRecord
             [['httpCode'], 'integer'],
             [['active'], 'boolean'],
             [['path'], 'required'],
+            [['targetUrl'], 'url'],
+            [['httpCode', 'targetUrl'], 'required', 'on' => [static::SCENARIO_REDIRECT]],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['host', 'path', 'targetUrl'], 'string', 'max' => 255],
             [['host', 'path'], 'unique', 'targetAttribute' => ['host', 'path']],
@@ -207,32 +231,28 @@ class Slug extends \yii\db\ActiveRecord
             new Expression('"'.Composite::getElementType().'" AS type'),
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $nodeQuery = Node::find();
         $nodeQuery->select([
             new Expression('"'.Node::getElementType().'" AS type'),
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $tagQuery = Tag::find();
         $tagQuery->select([
             new Expression('"'.Tag::getElementType().'" AS type'),
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $categoryQuery = Category::find();
         $categoryQuery->select([
             new Expression('"'.Category::getElementType().'" AS type'),
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $compositeQuery->union($nodeQuery)
             ->union($tagQuery)
@@ -285,7 +305,7 @@ class Slug extends \yii\db\ActiveRecord
                     throw new InvalidArgumentException();
                     break;
             }
-            $query->where(['id' => $result['id']])->active();
+            $query->where(['id' => $result['id']]);
         } else {
             // fake query to allow the active query trick
             $query = static::find()->where('1 = 0');
@@ -323,7 +343,12 @@ class Slug extends \yii\db\ActiveRecord
 
     }
 
-    public static function findOneByPathinfoAndHostname($pathInfo, $hostname = null)
+    /**
+     * @param string $pathInfo
+     * @param string|null $hostname
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function findByPathinfoAndHostname($pathInfo, $hostname = null)
     {
         $slugQuery = static::find()->where([
             'path' => $pathInfo,
@@ -332,9 +357,9 @@ class Slug extends \yii\db\ActiveRecord
                 ['host' => $hostname],
                 ['IS', 'host', null]
             ])
-            ->active();
-        $slugQuery->orderBy(['host' => SORT_DESC])
+            ->orderBy(['host' => SORT_DESC])
             ->limit(1);
-        return $slugQuery->one();
+        $slugQuery->multiple = false;
+        return $slugQuery;
     }
 }

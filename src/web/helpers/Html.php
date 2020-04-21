@@ -230,9 +230,11 @@ class Html extends YiiHtml
             $currentValue = static::getAttributeValue($model, $attribute);
             if ($currentValue instanceof DateTime) {
                 $value = $currentValue->format('Y-m-d\TH:i:s');
-            } else {
+            } elseif($currentValue !==null) {
                 $currentDate = new DateTime($currentValue);
                 $value = $currentDate->format('Y-m-d\TH:i:s');;
+            } else {
+                $value;
             }
         }
         if (!array_key_exists('id', $options)) {
@@ -261,9 +263,11 @@ class Html extends YiiHtml
             $currentValue = static::getAttributeValue($model, $attribute);
             if ($currentValue instanceof DateTime) {
                 $value = $currentValue->format('Y-m-d');
-            } else {
+            } elseif ($currentValue !== null) {
                 $currentDate = new DateTime($currentValue);
                 $value = $currentDate->format('Y-m-d');
+            } else {
+                $value = null;
             }
         }
         if (!array_key_exists('id', $options)) {

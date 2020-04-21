@@ -61,7 +61,7 @@ class FilterActiveQuery extends ActiveQuery
                     ]);
                     $this->andWhere(['OR',
                         ['>=', $tableName.'.[[dateEnd]]', Yii::createObject(Expression::class, ['NOW()'])],
-                        ['IS', $tableName.'.[[dateStart]]', null]
+                        ['IS', $tableName.'.[[dateEnd]]', null]
                     ]);
                     break;
                 case Tag::class:
@@ -91,7 +91,7 @@ class FilterActiveQuery extends ActiveQuery
                         ]);
                         $this->andWhere(['OR',
                             ['>=', $tableName.'.[[dateEnd]]', $simulateDate],
-                            ['IS', $tableName.'.[[dateStart]]', null]
+                            ['IS', $tableName.'.[[dateEnd]]', null]
                         ]);
                         break;
                 }

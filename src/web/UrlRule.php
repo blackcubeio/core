@@ -112,21 +112,36 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 }
             }
 
-            $slug = Slug::findOneByPathinfoAndHostname($pathInfo, $hostname);
+            $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
+            /*/
+            //TODO: check if overriding an action in the URL is correct... I'm not sure
             if ($slug === null) {
-                //TODO: check if finding an action is correct...
                 if (strpos($pathInfo, '/') !== false) {
                     $parts = explode('/', $pathInfo);
                     $action = array_pop($parts);
                     $pathInfo = implode('/', $parts);
                     //TODO: handle preview (active)
-                    $slug = Slug::findOneByPathinfoAndHostname($pathInfo, $hostname);
+                    $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
                 }
             }
+            /**/
             if ($slug !== null) {
-                $element = $slug->findTargetElementInfo();
-                if (isset($element['type']) && isset($element['id'])) {
-                    $route = RouteEncoder::encode($element['type'], $element['id']);
+                $element = $slug->getElement()->active()->one();
+                if ($element !== null) {
+                    $elementClass = get_class($element);
+                    $route = RouteEncoder::encode($elementClass::getElementType(), $element->id);
+                    if ($route !== false) {
+                        if ($action !== null) {
+                            $route .= '/'.$action;
+                        }
+                        $prettyUrlToRoute = [
+                            $route,
+                            []
+                        ];
+                    }
+                } elseif (empty($slug->targetUrl) === false) {
+                    $elementClass = get_class($slug);
+                    $route = RouteEncoder::encode($elementClass::getElementType(), $slug->id);
                     if ($route !== false) {
                         if ($action !== null) {
                             $route .= '/'.$action;

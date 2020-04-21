@@ -71,6 +71,8 @@ class PreviewManager extends Component implements PreviewManagerInterface
     {
         if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}(\s[0-9]{2}:[0-9]{2}:[0-9]{2})?$/', $simulateDate) > 0) {
             Yii::$app->session->set('preview_simulate_date', $simulateDate);
+        } else {
+            Yii::$app->session->remove('preview_simulate_date');
         }
     }
 
