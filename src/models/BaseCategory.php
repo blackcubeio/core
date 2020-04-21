@@ -14,6 +14,8 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\components\RouteEncoder;
+use blackcube\core\interfaces\RoutableInterface;
 use blackcube\core\Module;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\ActiveTrait;
@@ -53,7 +55,7 @@ use Yii;
  * @property Bloc[] $blocs
  * @property Tag[] $tags
  */
-abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInterface
+abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInterface, RoutableInterface
 {
     use TypeTrait;
     use BlocTrait;
@@ -66,6 +68,14 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     public static function getDb()
     {
         return Module::getInstance()->db;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoute()
+    {
+        return RouteEncoder::encode(static::getElementType(), $this->id);
     }
 
     /**

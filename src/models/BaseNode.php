@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\components\RouteEncoder;
 use blackcube\core\Module;
 use blackcube\core\exceptions\InvalidNodeConfigurationException;
 use blackcube\core\helpers\MatrixHelper;
@@ -85,6 +86,14 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     public static function getDb()
     {
         return Module::getInstance()->db;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoute()
+    {
+        return RouteEncoder::encode(static::getElementType(), $this->id);
     }
 
     /**

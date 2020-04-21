@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\components\RouteEncoder;
 use blackcube\core\Module;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\interfaces\TaggableInterface;
@@ -77,6 +78,13 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
         return Module::getInstance()->db;
     }
 
+    /**
+     * @return string
+     */
+    public function getRoute()
+    {
+        return RouteEncoder::encode(static::getElementType(), $this->id);
+    }
     /**
      * {@inheritDoc}
      */

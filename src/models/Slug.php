@@ -14,6 +14,8 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\components\RouteEncoder;
+use blackcube\core\interfaces\RoutableInterface;
 use blackcube\core\Module;
 use yii\base\InvalidArgumentException;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -51,7 +53,7 @@ use yii\helpers\StringHelper;
  * @property Seo $seo
  * @property Tag $tag
  */
-class Slug extends \yii\db\ActiveRecord
+class Slug extends \yii\db\ActiveRecord implements RoutableInterface
 {
     public const SCENARIO_REDIRECT = 'redirect';
 
@@ -61,6 +63,14 @@ class Slug extends \yii\db\ActiveRecord
     public static function getDb()
     {
         return Module::getInstance()->db;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoute()
+    {
+        return RouteEncoder::encode(static::getElementType(), $this->id);
     }
 
     /**
@@ -330,14 +340,19 @@ class Slug extends \yii\db\ActiveRecord
             case Tag::getElementType():
                 $query = Tag::find();
                 break;
+            case Slug::getElementType():
+                $query = Slug::find();
+                break;
         }
         if ($query !== null) {
             $query->where(['id' => $id]);
             $query->active();
         }
         $element = $query->one();
-        if ($element !== null) {
+        if ($element !== null && !$element instanceof Slug) {
             $slug = $element->getSlug()->active()->one();
+        } elseif($element instanceof Slug) {
+            $slug = $element;
         }
         return $slug;
 
