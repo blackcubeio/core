@@ -62,6 +62,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     use SlugTrait;
     use ActiveTrait;
 
+    public const SCENARIO_TOGGLE_ACTIVE = 'toggle_active';
+
     /**
      * {@inheritDoc}
      */

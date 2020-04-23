@@ -158,28 +158,32 @@ class Type extends \yii\db\ActiveRecord
     public function getElementsCount()
     {
         $compositeQuery = Composite::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Composite::getElementType().'" AS type']);
         $compositeQuery->select([
-            new Expression('"'.Composite::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['typeId' => $this->id]);
         $nodeQuery = Node::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Node::getElementType().'" AS type']);
         $nodeQuery->select([
-            new Expression('"'.Node::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['typeId' => $this->id]);
 
         $tagQuery = Tag::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Tag::getElementType().']"AS type']);
         $tagQuery->select([
-            new Expression('"'.Tag::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['typeId' => $this->id]);
 
         $categoryQuery = Category::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Category::getElementType().'" AS type']);
         $categoryQuery->select([
-            new Expression('"'.Category::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['typeId' => $this->id]);

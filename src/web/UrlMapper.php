@@ -20,8 +20,15 @@ use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
+use blackcube\core\models\Type;
+use blackcube\core\Module;
 use blackcube\core\web\controllers\RedirectController;
 use yii\base\BaseObject;
+use yii\caching\DbDependency;
+use yii\caching\DbQueryDependency;
+use yii\caching\Dependency;
+use yii\db\Expression;
+use yii\db\Query;
 use yii\web\NotFoundHttpException;
 use ArrayAccess;
 use Yii;
@@ -163,7 +170,25 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 throw new NotFoundHttpException();
                 break;
         }
-        $element = $query->where(['id' => $data['id']])->active()->one();
+        if (Module::getInstance()->cache !== null) {
+            $cacheQuery = Yii::createObject(Query::class);
+            $maxQueryResult = Node::find()->select('[[dateUpdate]] as date')
+                ->union(Composite::find()->select('[[dateUpdate]] as date'))
+                ->union(Category::find()->select('[[dateUpdate]] as date'))
+                ->union(Tag::find()->select('[[dateUpdate]] as date'))
+                ->union(Slug::find()->select('[[dateUpdate]] as date'))
+                ->union(Type::find()->select('[[dateUpdate]] as date'));
+                // ->max('dateUpdate');
+            $expression = Yii::createObject(Expression::class, ['MAX(date)']);
+            $cacheQuery->select($expression)->from($maxQueryResult);
+            $cacheDependency = Yii::createObject([
+                'class' => DbQueryDependency::class,
+                'db' => Module::getInstance()->db,
+                'query' => $cacheQuery,
+            ]);
+            $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
+        }
+        $element = $query->andWhere(['id' => $data['id']])->active()->one();
         /* @var $element \blackcube\core\models\Node|\blackcube\core\models\Composite|\blackcube\core\models\Category|\blackcube\core\models\Tag */
         if ($element === null) {
             throw new NotFoundHttpException();

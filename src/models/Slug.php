@@ -20,8 +20,10 @@ use blackcube\core\Module;
 use yii\base\InvalidArgumentException;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\caching\DbQueryDependency;
 use yii\db\Expression;
 use Yii;
+use yii\db\Query;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
@@ -56,6 +58,11 @@ use yii\helpers\StringHelper;
 class Slug extends \yii\db\ActiveRecord implements RoutableInterface
 {
     public const SCENARIO_REDIRECT = 'redirect';
+
+    /**
+     * @var int
+     */
+    public static $CACHE_EXPIRE = 3600;
 
     /**
      * {@inheritDoc}
@@ -237,29 +244,33 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     public function findTargetElementInfo()
     {
         $compositeQuery = Composite::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Composite::getElementType().'" AS type']);
         $compositeQuery->select([
-            new Expression('"'.Composite::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['slugId' => $this->id]);
 
         $nodeQuery = Node::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Node::getElementType().'" AS type']);
         $nodeQuery->select([
-            new Expression('"'.Node::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['slugId' => $this->id]);
 
         $tagQuery = Tag::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Tag::getElementType().'" AS type']);
         $tagQuery->select([
-            new Expression('"'.Tag::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['slugId' => $this->id]);
 
         $categoryQuery = Category::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Category::getElementType().'" AS type']);
         $categoryQuery->select([
-            new Expression('"'.Category::getElementType().'" AS type'),
+            $expression,
             'id'
         ])
             ->where(['slugId' => $this->id]);
@@ -344,13 +355,33 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
                 $query = Slug::find();
                 break;
         }
-        if ($query !== null) {
+        // if ($query !== null) {
             $query->where(['id' => $id]);
-            $query->active();
+            // $query->active();
+        // }
+        if (Module::getInstance()->cache !== null) {
+            $cacheQuery = Yii::createObject(Query::class);
+            $maxQueryResult = Node::find()->select('[[dateUpdate]] as date')
+                ->union(Composite::find()->select('[[dateUpdate]] as date'))
+                ->union(Category::find()->select('[[dateUpdate]] as date'))
+                ->union(Tag::find()->select('[[dateUpdate]] as date'))
+                ->union(Slug::find()->select('[[dateUpdate]] as date'));
+            $expression = Yii::createObject(Expression::class, ['MAX(date)']);
+            $cacheQuery->select($expression)->from($maxQueryResult);
+            /**/
+            $cacheDependency = Yii::createObject([
+                'class' => DbQueryDependency::class,
+                'db' => Module::getInstance()->db,
+                'query' => $cacheQuery,
+            ]);
+            /**/
+            $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
+
         $element = $query->one();
         if ($element !== null && !$element instanceof Slug) {
-            $slug = $element->getSlug()->active()->one();
+            // $slug = $element->getSlug()->active()->one();
+            $slug = $element->getSlug()->one();
         } elseif($element instanceof Slug) {
             $slug = $element;
         }
@@ -375,6 +406,19 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             ->orderBy(['host' => SORT_DESC])
             ->limit(1);
         $slugQuery->multiple = false;
+        if (Module::getInstance()->cache !== null) {
+            $cacheQuery = Yii::createObject(Query::class);
+            $expression = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']);
+            $cacheQuery
+                ->select($expression)
+                ->from(static::tableName());
+            $cacheDependency = Yii::createObject([
+                'class' => DbQueryDependency::class,
+                'db' => Module::getInstance()->db,
+                'query' => $cacheQuery,
+            ]);
+            $slugQuery->cache(static::$CACHE_EXPIRE, $cacheDependency);
+        }
         return $slugQuery;
     }
 }

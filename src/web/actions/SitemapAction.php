@@ -56,7 +56,7 @@ class SitemapAction extends ViewAction
         $timeZone = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
         foreach($sitemaps->each() as $sitemap) {
             /* @var $sitemap \blackcube\core\models\Sitemap */
-            $currentSlug = Slug::findOneByPathinfoAndHostname($sitemap->slug->path, $hostname);
+            $currentSlug = Slug::findByPathinfoAndHostname($sitemap->slug->path, $hostname)->active()->one();
             if ($currentSlug !== null && $currentSlug->active) {
                 $element = $currentSlug->getElement()->active()->one();
                 if ($element !== null) {
