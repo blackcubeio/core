@@ -56,17 +56,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
     /**
      * @var string
      */
-    public $routePrefix = 'blackcube';
-
-    /**
-     * @var string
-     */
     public $defaultController = 'Blackcube';
-
-    /**
-     * @var string
-     */
-    public $routeSeparator = '-';
 
     /**
      * @var string

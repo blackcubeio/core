@@ -15,7 +15,11 @@
 namespace blackcube\core\web;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\models\Category;
+use blackcube\core\models\Composite;
+use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
+use blackcube\core\models\Tag;
 use yii\base\BaseObject;
 use yii\web\UrlRuleInterface;
 use Yii;
@@ -35,16 +39,6 @@ use Yii;
 class UrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
-     * @var string route prefix for CMS
-     */
-    public $routePrefix = 'blackcube';
-
-    /**
-     * @var string route separator
-     */
-    public $routeSeparator = '-';
-
-    /**
      * @var string  suffix used for faked url
      */
     public $suffix;
@@ -54,41 +48,35 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
-        $routeToPrettyUrl = false;
-        if (preg_match('/blackcube-([^-]+)-([0-9]+)(.*)/', $route, $matches) > 0) {
-            $route = 'blackcube-'.$matches[1].'-'.$matches[2].$matches[3];
-        } else {
-            return false;
-        }
-        $action = null;
-        if (strpos($route, '/') !== false) {
-            $data = explode('/', $route);
-            $action = array_pop($data);
-            $route = implode('/', $data);
-        }
-        $extractedRoute = RouteEncoder::decode($route);
-        //TODO: make better code
         $type = null;
         $id = null;
-        if (is_array($extractedRoute) === true && isset($extractedRoute['type']) === true) {
-            $type = $extractedRoute['type'];
-            if (isset($extractedRoute['id']) === true) {
-                $id = $extractedRoute['id'];
-            }
+        $action = null;
+        $decodedRoute = RouteEncoder::decode($route);
+        if ($decodedRoute === false) {
+            return false;
         }
-        if ($type !== null && $id !== null) {
-            $slug = Slug::findOneByTypeAndId($type, $id);
-            if ($slug !== null) {
-                $routeToPrettyUrl = $slug->path;
-                if ($action !== null) {
-                    $routeToPrettyUrl .= '/' . $action;
-                }
-                if ((empty($params) === false ) && ($query = http_build_query($params)) !== '') {
-                    $routeToPrettyUrl .= '?' . $query;
-                }
-            }
+        if ($type === null || $id === null) {
+            return false;
         }
-        return $routeToPrettyUrl;
+        $slug = Slug::findOneByTypeAndId($type, $id);
+        if ($slug === null) {
+            return false;
+        }
+        $prettyUrl = $slug->path;
+        if ($action !== null) {
+            $prettyUrl .= '/' . $action;
+        }
+        if ($this->suffix === null) {
+            $this->suffix = $manager->suffix;
+        }
+        $suffix = (string) $this->suffix;
+        if (empty($suffix) === false) {
+            $prettyUrl .= $suffix;
+        }
+        if ((empty($params) === false ) && ($query = http_build_query($params)) !== '') {
+            $prettyUrl .= '?' . $query;
+        }
+        return $prettyUrl;
     }
 
     /**
@@ -96,65 +84,64 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function parseRequest($manager, $request)
     {
-        $prettyUrlToRoute = false;
         $pathInfo = $request->getPathInfo();
         $hostname = $request->getHostName();
         $action = null;
-        if (empty($pathInfo) === false) {
-            if ($this->suffix === null) {
-                $this->suffix = $manager->suffix;
-            }
-            $suffix = (string) $this->suffix;
-            if (empty($suffix) === false) {
-                $suffixLength = strlen($suffix);
-                if (substr($pathInfo, - $suffixLength) === $suffix) {
-                    $pathInfo = substr($pathInfo, 0, - $suffixLength);
-                }
-            }
-
-            $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
-            /*/
-            //TODO: check if overriding an action in the URL is correct... I'm not sure
-            if ($slug === null) {
-                if (strpos($pathInfo, '/') !== false) {
-                    $parts = explode('/', $pathInfo);
-                    $action = array_pop($parts);
-                    $pathInfo = implode('/', $parts);
-                    //TODO: handle preview (active)
-                    $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
-                }
-            }
-            /**/
-            if ($slug !== null) {
-                $element = $slug->getElement()->active()->one();
-                if ($element !== null) {
-                    $elementClass = get_class($element);
-                    $route = RouteEncoder::encode($elementClass::getElementType(), $element->id);
-                    if ($route !== false) {
-                        if ($action !== null) {
-                            $route .= '/'.$action;
-                        }
-                        $prettyUrlToRoute = [
-                            $route,
-                            []
-                        ];
-                    }
-                } elseif (empty($slug->targetUrl) === false) {
-                    $elementClass = get_class($slug);
-                    $route = RouteEncoder::encode($elementClass::getElementType(), $slug->id);
-                    if ($route !== false) {
-                        if ($action !== null) {
-                            $route .= '/'.$action;
-                        }
-                        $prettyUrlToRoute = [
-                            $route,
-                            []
-                        ];
-                    }
-                }
+        if (empty($pathInfo) === true) {
+            return false;
+        }
+        if ($this->suffix === null) {
+            $this->suffix = $manager->suffix;
+        }
+        $suffix = (string) $this->suffix;
+        if (empty($suffix) === false) {
+            $suffixLength = strlen($suffix);
+            if (substr($pathInfo, - $suffixLength) === $suffix) {
+                $pathInfo = substr($pathInfo, 0, - $suffixLength);
             }
         }
-        return $prettyUrlToRoute;
+
+        $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
+        if ($slug === null) {
+            return false;
+        }
+        /*/
+        //TODO: check if overriding an action in the URL is correct... I'm not sure
+        if ($slug === null) {
+            if (strpos($pathInfo, '/') !== false) {
+                $parts = explode('/', $pathInfo);
+                $action = array_pop($parts);
+                $pathInfo = implode('/', $parts);
+                //TODO: handle preview (active)
+                $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
+            }
+        }
+        /**/
+        $element = $slug->getElement()->active()->one();
+        if ($element !== null) {
+            $elementClass = get_class($element);
+            $route = RouteEncoder::encode($elementClass::getElementType(), $element->id);
+            if ($action !== null) {
+                $route .= '/'.$action;
+            }
+            $prettyUrl = [
+                $route,
+                []
+            ];
+        } elseif (empty($slug->targetUrl) === false) {
+            $elementClass = get_class($slug);
+            $route = RouteEncoder::encode($elementClass::getElementType(), $slug->id);
+            if ($action !== null) {
+                $route .= '/'.$action;
+            }
+            $prettyUrl = [
+                $route,
+                []
+            ];
+        } else {
+            return false;
+        }
+        return $prettyUrl;
     }
 
 }

@@ -174,12 +174,14 @@ class Module extends BaseModule implements BootstrapInterface
             ], true);
         }
 
+        /**/
         $app->controllerMap = Yii::createObject([
             'class' => UrlMapper::class,
             'defaultController' => $this->cmsDefaultController,
             'controllerNamespace' => ($this->cmsControllerNamespace === null) ? $app->controllerNamespace : $this->cmsControllerNamespace,
             'additionalMap' => $app->controllerMap,
         ]);
+        /**/
 
     }
 

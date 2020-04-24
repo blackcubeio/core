@@ -14,6 +14,11 @@
 
 namespace blackcube\core\components;
 
+use blackcube\core\models\Category;
+use blackcube\core\models\Composite;
+use blackcube\core\models\Node;
+use blackcube\core\models\Slug;
+use blackcube\core\models\Tag;
 use Yii;
 
 /**
@@ -38,12 +43,12 @@ class RouteEncoder
     /**
      * @var string regex pattern used to match routes
      */
-    private static $routePattern = '/^blackcube-(?P<type>[a-zA-Z]+)(-(?P<id>\d+))?$/';
+    private static $routePattern = '/^blackcube-(?P<type>[^-]+)-(?P<id>[0-9]+)(?P<action>.*)$/';
 
     /**
      * @var string route prefix
      */
-    private static $routePrefix = 'blackcube-';
+    private static $routePrefix = '/blackcube-';
 
     /**
      * @param string $type
@@ -70,11 +75,20 @@ class RouteEncoder
         if (isset(static::$routes[$route]) === false)
         {
             if (preg_match(static::$routePattern, $route, $matches) === 1) {
-                static::$routes[$route] = [
-                    'type' => $matches['type'],
-                ];
-                if (isset($matches['id']) === true) {
-                    static::$routes[$route]['id'] = $matches['id'];
+                if (in_array($matches['type'], [Node::getElementType(), Category::getElementType(), Composite::getElementType(), Tag::getElementType(), Slug::getElementType()]) === false) {
+                    static::$routes[$route] = false;
+                } else {
+                    static::$routes[$route] = [
+                        'type' => $matches['type'],
+                    ];
+                    if (isset($matches['id']) === true) {
+                        static::$routes[$route]['id'] = $matches['id'];
+                    }
+                    if (isset($matches['action']) === true) {
+                        $action = ltrim($matches['action'], '/');
+                        $action = (empty($action) === false) ? $action : null;
+                        static::$routes[$route]['action'] = $action;
+                    }
                 }
             } else {
                 static::$routes[$route] = false;
