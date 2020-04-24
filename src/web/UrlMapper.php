@@ -178,13 +178,13 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 ->union(Tag::find()->select('[[dateUpdate]] as date'))
                 ->union(Slug::find()->select('[[dateUpdate]] as date'))
                 ->union(Type::find()->select('[[dateUpdate]] as date'));
-                // ->max('dateUpdate');
             $expression = Yii::createObject(Expression::class, ['MAX(date)']);
             $cacheQuery->select($expression)->from($maxQueryResult);
             $cacheDependency = Yii::createObject([
                 'class' => DbQueryDependency::class,
                 'db' => Module::getInstance()->db,
                 'query' => $cacheQuery,
+                'reusable' => true,
             ]);
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }

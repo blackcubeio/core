@@ -150,6 +150,9 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             [['host', 'path', 'targetUrl'], 'filter', 'filter' => function($value) {
                 return empty(trim($value)) ? null : trim($value);
             }],
+            [['path'], 'filter', 'filter' => function($value) {
+                return ($value === null) ? null : ltrim($value, '/');
+            }],
             [['httpCode'], 'integer'],
             [['active'], 'boolean'],
             [['path'], 'required'],
@@ -304,6 +307,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @todo: Fix ActiveQuery generation, ti's not working as expected for lists an idea would be to create a fake element based on a view
      */
     public function getElement()
     {
@@ -311,25 +315,33 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
         if ($result !== null && is_array($result)) {
             switch ($result['type']) {
                 case Node::getElementType():
-                    $query = Node::find();
+                    $query = $this->hasOne(Node::class, ['slugId' => 'id']);
+                    // $query = Node::find();
                     break;
                 case Composite::getElementType():
-                    $query = Composite::find();
+                    $query = $this->hasOne(Composite::class, ['slugId' => 'id']);
+                    // $query = Composite::find();
                     break;
                 case Category::getElementType():
-                    $query = Category::find();
+                    $query = $this->hasOne(Category::class, ['slugId' => 'id']);
+                    // $query = Category::find();
                     break;
                 case Tag::getElementType():
-                    $query = Tag::find();
+                    $query = $this->hasOne(Tag::class, ['slugId' => 'id']);
+                    // $query = Tag::find();
                     break;
                 default:
                     throw new InvalidArgumentException();
                     break;
             }
-            $query->where(['id' => $result['id']]);
+            // $query->where(['id' => $result['id']]);
         } else {
             // fake query to allow the active query trick
-            $query = static::find()->where('1 = 0');
+            $query = static::find()->where('1 = 0');;
+            $query->primaryModel = $this;
+            $query->link = ['id' => 'id'];
+            $query->multiple = false;
+            // $query = static::find()->where('1 = 0');
         }
         return $query;
     }
@@ -365,7 +377,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
                 ->union(Composite::find()->select('[[dateUpdate]] as date'))
                 ->union(Category::find()->select('[[dateUpdate]] as date'))
                 ->union(Tag::find()->select('[[dateUpdate]] as date'))
-                ->union(Slug::find()->select('[[dateUpdate]] as date'));
+                ->union(Slug::find()->select('[[dateUpdate]] as date'))
+                ->union(Type::find()->select('[[dateUpdate]] as date'));
             $expression = Yii::createObject(Expression::class, ['MAX(date)']);
             $cacheQuery->select($expression)->from($maxQueryResult);
             /**/
@@ -373,6 +386,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
                 'class' => DbQueryDependency::class,
                 'db' => Module::getInstance()->db,
                 'query' => $cacheQuery,
+                'reusable' => true,
             ]);
             /**/
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
@@ -416,6 +430,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
                 'class' => DbQueryDependency::class,
                 'db' => Module::getInstance()->db,
                 'query' => $cacheQuery,
+                'reusable' => true,
             ]);
             $slugQuery->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
