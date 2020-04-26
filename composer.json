@@ -3,7 +3,7 @@
     "description": "Blackcube CMS Application",
     "keywords": ["blackcube", "cms"],
     "homepage": "https://code.redcat.io/blackcube/cms",
-    "type": "project",
+    "type": "yii2-extension",
     "license": "proprietary",
     "support": {
         "issues": "https://code.redcat.io/blackcube/cms/issues",
