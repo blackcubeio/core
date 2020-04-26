@@ -25,6 +25,7 @@ use yii\console\Application as ConsoleApplication;
 use yii\console\controllers\MigrateController;
 use yii\db\Connection;
 use yii\di\Instance;
+use yii\helpers\Inflector;
 use yii\i18n\GettextMessageSource;
 use yii\web\Application as WebApplication;
 use Yii;
@@ -248,6 +249,15 @@ class Module extends BaseModule implements BootstrapInterface
                 $realRoute = $controllerMap['realRoute'];
                 unset($controllerMap['moduleUid'], $controllerMap['realRoute']);
                 $module = empty($moduleUid) ? Yii::$app : Yii::$app->getModule($moduleUid);
+                $controllerClass = $controllerMap['class'];
+                if (($pos = strrpos($controllerClass, '\\')) !== false) {
+                    $controllerClass = substr($controllerClass, $pos + 1);
+                }
+                if (($pos = strrpos($controllerClass, 'Controller')) !== false) {
+                    $controllerClass = substr($controllerClass, 0, $pos);
+                }
+                $id = Inflector::camel2id($controllerClass);
+
                 $controller = Yii::createObject($controllerMap, [$id, $module]);
                 return [$controller, $realRoute];
             } else {

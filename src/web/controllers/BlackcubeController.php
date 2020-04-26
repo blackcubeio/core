@@ -15,6 +15,7 @@
 namespace blackcube\core\web\controllers;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\interfaces\BlackcubeControllerInterface;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
@@ -39,7 +40,7 @@ use Yii;
  *
  * @property-read Node|Composite|Category|Tag|ElementInterface $element
  */
-class BlackcubeController extends Controller
+class BlackcubeController extends Controller implements BlackcubeControllerInterface
 {
 
     /**
@@ -56,31 +57,6 @@ class BlackcubeController extends Controller
      * @var Node|Composite|Category|Tag|ElementInterface
      */
     private $_element;
-
-    /**
-     * Constructor
-     *
-     * @param string $id     the ID of this controller.
-     * @param Module $module the module that this controller belongs to.
-     * @param array  $config name-value pairs that will be used to initialize the object properties.
-     *
-     * @return Controller
-     * @since XXX
-     */
-    public function __construct($id, $module, $config = [])
-    {
-        if (RouteEncoder::decode($id) !== false) {
-            $class = get_class($this);
-            if (($pos = strrpos($class, '\\')) !== false) {
-                $class = substr($class, $pos + 1);
-            }
-            if (($pos = strrpos($class, 'Controller')) !== false) {
-                $class = substr($class, 0, $pos);
-            }
-            $id = Inflector::camel2id($class);
-        }
-        parent::__construct($id, $module, $config);
-    }
 
     /**
      * Return element if it exists
@@ -113,6 +89,10 @@ class BlackcubeController extends Controller
         return $this->_element;
     }
 
+    /**
+     * @param string $info element information
+     * @throws \yii\base\NotSupportedException
+     */
     public function setElementInfo($info)
     {
         $data = RouteEncoder::decode($info);
