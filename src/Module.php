@@ -249,10 +249,12 @@ class Module extends BaseModule implements BootstrapInterface
                 unset($controllerMap['moduleUid'], $controllerMap['realRoute']);
                 $module = empty($moduleUid) ? Yii::$app : Yii::$app->getModule($moduleUid);
                 $controller = Yii::createObject($controllerMap, [$id, $module]);
+                return [$controller, $realRoute];
             } else {
                 $controller = Yii::createObject($controllerMap, [$id, $this]);
+                return [$controller, ''];
             }
-            return [$controller, $realRoute];
+
         }
         $module = $this->getModule($id);
         if ($module !== null) {

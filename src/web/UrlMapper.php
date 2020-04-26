@@ -15,6 +15,7 @@
 namespace blackcube\core\web;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
@@ -30,6 +31,7 @@ use yii\caching\DbQueryDependency;
 use yii\caching\Dependency;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use ArrayAccess;
 use Yii;
@@ -76,12 +78,17 @@ class UrlMapper extends BaseObject implements ArrayAccess
             return null;
         }
         list($controllerClass, $moduleUid, $realRoute) = static::fetchControllerForElement($data['type'], $data['id']);
-        return [
+        $mapper = [
             'class' => $controllerClass,
-            'moduleUid' => $moduleUid,
-            'realRoute' => $realRoute,
             'elementInfo' => RouteEncoder::encode($data['type'], $data['id'], true),
         ];
+        if ($moduleUid !== null) {
+            $mapper['moduleUid'] = $moduleUid;
+        }
+        if ($realRoute !== null) {
+            $mapper['realRoute'] = $realRoute;
+        }
+        return $mapper;
     }
 
     /**
@@ -127,21 +134,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 break;
         }
         if (Module::getInstance()->cache !== null) {
-            $cacheQuery = Yii::createObject(Query::class);
-            $maxQueryResult = Node::find()->select('[[dateUpdate]] as date')
-                ->union(Composite::find()->select('[[dateUpdate]] as date'))
-                ->union(Category::find()->select('[[dateUpdate]] as date'))
-                ->union(Tag::find()->select('[[dateUpdate]] as date'))
-                ->union(Slug::find()->select('[[dateUpdate]] as date'))
-                ->union(Type::find()->select('[[dateUpdate]] as date'));
-            $expression = Yii::createObject(Expression::class, ['MAX(date)']);
-            $cacheQuery->select($expression)->from($maxQueryResult);
-            $cacheDependency = Yii::createObject([
-                'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
-                'query' => $cacheQuery,
-                'reusable' => true,
-            ]);
+            $cacheDependency = QueryCache::getCmsDependencies();
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
         $element = $query->andWhere(['id' => $id])->active()->one();
@@ -164,6 +157,11 @@ class UrlMapper extends BaseObject implements ArrayAccess
             $controllerClass = get_class($controllerRef);
             $prefix = trim($moduleUid.'/'.$controllerId, '/');
             $finalRoutePart = trim(str_replace($prefix, '', $element->type->route), '/');
+        } elseif ($element->type === null) {
+            throw new BadRequestHttpException(Module::t('web', 'Element "{type}-{id}" is not routable', [
+                'type' => $type,
+                'id' => $id,
+            ]));
         } else {
             throw new NotSupportedException();
         }

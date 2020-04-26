@@ -15,6 +15,7 @@
 namespace blackcube\core\models;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\interfaces\RoutableInterface;
 use blackcube\core\Module;
 use yii\base\InvalidArgumentException;
@@ -372,22 +373,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             // $query->active();
         // }
         if (Module::getInstance()->cache !== null) {
-            $cacheQuery = Yii::createObject(Query::class);
-            $maxQueryResult = Node::find()->select('[[dateUpdate]] as date')
-                ->union(Composite::find()->select('[[dateUpdate]] as date'))
-                ->union(Category::find()->select('[[dateUpdate]] as date'))
-                ->union(Tag::find()->select('[[dateUpdate]] as date'))
-                ->union(Slug::find()->select('[[dateUpdate]] as date'))
-                ->union(Type::find()->select('[[dateUpdate]] as date'));
-            $expression = Yii::createObject(Expression::class, ['MAX(date)']);
-            $cacheQuery->select($expression)->from($maxQueryResult);
-            /**/
-            $cacheDependency = Yii::createObject([
-                'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
-                'query' => $cacheQuery,
-                'reusable' => true,
-            ]);
+            $cacheDependency = QueryCache::getCmsDependencies();
             /**/
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
@@ -421,17 +407,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             ->limit(1);
         $slugQuery->multiple = false;
         if (Module::getInstance()->cache !== null) {
-            $cacheQuery = Yii::createObject(Query::class);
-            $expression = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']);
-            $cacheQuery
-                ->select($expression)
-                ->from(static::tableName());
-            $cacheDependency = Yii::createObject([
-                'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
-                'query' => $cacheQuery,
-                'reusable' => true,
-            ]);
+            $cacheDependency = QueryCache::getSlugDependencies();
             $slugQuery->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
         return $slugQuery;
