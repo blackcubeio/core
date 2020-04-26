@@ -30,19 +30,11 @@ trait TypeTrait
     /**
      * @return string controller
      */
-    public function getController()
+    public function getRoute()
     {
-        return (($this->type === null) || empty($this->type->controller) === true) ? null : $this->type->controller;
+        return (($this->type === null) || empty($this->type->route) === true) ? null : $this->type->route;
     }
-
-    /**
-     * @return string action
-     */
-    public function getAction()
-    {
-        return (($this->type === null) || empty($this->type->action) === true) ? null : $this->type->action;
-    }
-
+    
     /**
      * @return integer|null
      */

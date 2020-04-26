@@ -19,7 +19,10 @@ use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
+use blackcube\core\Module;
+use phpDocumentor\Reflection\Types\Static_;
 use Yii;
+use yii\base\NotSupportedException;
 
 /**
  * Encode CMS parameters into a string
@@ -36,33 +39,37 @@ class RouteEncoder
 {
 
     /**
-     * @var array routes
-     */
-    private static $routes = [];
-
-    /**
      * @var string regex pattern used to match routes
      */
-    private static $routePattern = '/^blackcube-(?P<type>[^-]+)-(?P<id>[0-9]+)(?P<action>.*)$/';
+    private static $routePattern = '/^(?P<type>[^-]+)-(?P<id>[0-9]+)$/';
 
     /**
-     * @var string route prefix
+     * @return array list of allowed types
      */
-    private static $routePrefix = '/blackcube-';
+    private static function getAllowedTypes()
+    {
+        return [
+            Node::getElementType(),
+            Composite::getElementType(),
+            Category::getElementType(),
+            Tag::getElementType(),
+            Slug::getElementType()
+        ];
+    }
 
     /**
      * @param string $type
-     * @param null|integer $id
+     * @param integer $id
+     * @param boolean $relative
      * @return string
      * @since XXX
      */
-    public static function encode($type, $id = null)
+    public static function encode($type, $id, $relative = false)
     {
-        $route = static::$routePrefix.$type;
-        if ($id !== null) {
-            $route .= '-'.$id;
+        if (in_array($type,  static::getAllowedTypes()) === false) {
+            throw new NotSupportedException(Module::t('routing', 'Type {type} is not supported.', ['type' => $type]));
         }
-        return $route;
+        return (($relative === false) ? '/'.Module::getInstance()->uniqueId.'/' : '').$type.'-'.$id;
     }
 
     /**
@@ -72,29 +79,17 @@ class RouteEncoder
      */
     public static function decode($route)
     {
-        if (isset(static::$routes[$route]) === false)
-        {
             if (preg_match(static::$routePattern, $route, $matches) === 1) {
-                if (in_array($matches['type'], [Node::getElementType(), Category::getElementType(), Composite::getElementType(), Tag::getElementType(), Slug::getElementType()]) === false) {
-                    static::$routes[$route] = false;
-                } else {
-                    static::$routes[$route] = [
-                        'type' => $matches['type'],
-                    ];
-                    if (isset($matches['id']) === true) {
-                        static::$routes[$route]['id'] = $matches['id'];
-                    }
-                    if (isset($matches['action']) === true) {
-                        $action = ltrim($matches['action'], '/');
-                        $action = (empty($action) === false) ? $action : null;
-                        static::$routes[$route]['action'] = $action;
-                    }
+                if (in_array($matches['type'], static::getAllowedTypes()) === false) {
+                    throw new NotSupportedException(Module::t('routing', 'Type {type} is not supported.', ['type' => $matches['type']]));
                 }
+                return [
+                    'type' => $matches['type'],
+                    'id' => $matches['id'],
+                ];
             } else {
-                static::$routes[$route] = false;
+                return false;
             }
-        }
-        return static::$routes[$route];
     }
 
 }

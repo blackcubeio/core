@@ -24,6 +24,7 @@ use blackcube\core\models\Type;
 use blackcube\core\Module;
 use blackcube\core\web\controllers\RedirectController;
 use yii\base\BaseObject;
+use yii\base\NotSupportedException;
 use yii\caching\DbDependency;
 use yii\caching\DbQueryDependency;
 use yii\caching\Dependency;
@@ -54,27 +55,12 @@ class UrlMapper extends BaseObject implements ArrayAccess
     public static $CACHE_EXPIRE = 3600;
 
     /**
-     * @var string
-     */
-    public $defaultController = 'Blackcube';
-
-    /**
-     * @var string
-     */
-    public $controllerNamespace;
-
-    /**
-     * @var array 
-     */
-    public $additionalMap = [];
-
-    /**
      * Check if current route is handled by the mapper
      * {@inheritDoc}
      */
     public function offsetExists($offset)
     {
-        return (isset($this->additionalMap[$offset]) === true) || (RouteEncoder::decode($offset) !== false);
+        return (RouteEncoder::decode($offset) !== false);
     }
 
     /**
@@ -85,37 +71,17 @@ class UrlMapper extends BaseObject implements ArrayAccess
      */
     public function offsetGet($offset)
     {
-        $mappedController = null;
-        if (isset($this->additionalMap[$offset]) === true) {
-            $mappedController = $this->additionalMap[$offset];
-        } elseif (($data = RouteEncoder::decode($offset)) !== false) {
-            // $data = ['type' => 'elementType', 'id' => 1234]
-            list ($controller, $action) = static::fetchControllerForElement($data);
-            if ($data['type'] === Slug::getElementType()) {
-                $mappedController = [
-                    'class' => $controller,
-                    'slugId' => $data['id'],
-                ];
-            } else {
-                if (empty($controller) === true) {
-                    $controller = $this->defaultController;
-                }
-                if ($this->controllerNamespace !== null) {
-                    $class = $this->controllerNamespace . '\\' . $controller.'Controller';
-                } else {
-                    $class = $controller.'Controller';
-                }
-                $mappedController = [
-                    'class' => $class,
-                    'elementType' => $data['type'],
-                    'elementId' => $data['id'],
-                ];
-            }
-            if (empty($action) === false) {
-                $mappedController['defaultAction'] = $action;
-            }
+        $data = RouteEncoder::decode($offset);
+        if ($data  === false) {
+            return null;
         }
-        return $mappedController;
+        list($controllerClass, $moduleUid, $realRoute) = static::fetchControllerForElement($data['type'], $data['id']);
+        return [
+            'class' => $controllerClass,
+            'moduleUid' => $moduleUid,
+            'realRoute' => $realRoute,
+            'elementInfo' => RouteEncoder::encode($data['type'], $data['id'], true),
+        ];
     }
 
     /**
@@ -124,7 +90,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        $this->additionalMap[$offset] = $value;
+        // $this->additionalMap[$offset] = $value;
     }
 
     /**
@@ -133,13 +99,13 @@ class UrlMapper extends BaseObject implements ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        unset($this->additionalMap[$offset]);
+        // unset($this->additionalMap[$offset]);
     }
 
-    protected static function fetchControllerForElement($data)
+    protected static function fetchControllerForElement($type, $id)
     {
         $element = null;
-        switch ($data['type']) {
+        switch ($type) {
             case Node::getElementType():
                 $query = Node::find();
                 break;
@@ -154,7 +120,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 break;
             case Slug::getElementType():
                 // Special case to handle redirect
-                return [RedirectController::class, null];
+                $query = Slug::find();
                 break;
             default:
                 throw new NotFoundHttpException();
@@ -178,11 +144,29 @@ class UrlMapper extends BaseObject implements ArrayAccess
             ]);
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
-        $element = $query->andWhere(['id' => $data['id']])->active()->one();
+        $element = $query->andWhere(['id' => $id])->active()->one();
         /* @var $element \blackcube\core\models\Node|\blackcube\core\models\Composite|\blackcube\core\models\Category|\blackcube\core\models\Tag */
         if ($element === null) {
             throw new NotFoundHttpException();
         }
-        return [$element->getController(), $element->getAction()];
+        //TODO: set caching
+        if ($element instanceof Slug) {
+            $moduleUid = null;
+            $controllerClass = RedirectController::class;
+            $finalRoutePart = null;
+        } elseif ($element->type !== null && empty($element->type->route) === false) {
+            list($controllerRef, ) = Yii::$app->createController($element->type->route);
+            if ($controllerRef === null) {
+                throw new NotSupportedException();
+            }
+            $controllerId = $controllerRef->id;
+            $moduleUid = $controllerRef->module->uniqueId;
+            $controllerClass = get_class($controllerRef);
+            $prefix = trim($moduleUid.'/'.$controllerId, '/');
+            $finalRoutePart = trim(str_replace($prefix, '', $element->type->route), '/');
+        } else {
+            throw new NotSupportedException();
+        }
+        return [$controllerClass, $moduleUid, $finalRoutePart];
     }
 }

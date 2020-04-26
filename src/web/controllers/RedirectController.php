@@ -23,6 +23,7 @@ use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
 use yii\base\InvalidArgumentException;
 use yii\base\Module;
+use yii\base\NotSupportedException;
 use yii\helpers\Inflector;
 use yii\web\Controller;
 use Yii;
@@ -38,7 +39,7 @@ use Yii;
  * @package blackcube\core\web\controllers
  * @since XXX
  *
- * @property-read Slug $slug
+ * @property-read Slug $element
  */
 class RedirectController extends Controller
 {
@@ -46,12 +47,17 @@ class RedirectController extends Controller
     /**
      * @var integer
      */
-    public $slugId;
+    private $_elementId;
+
+    /**
+     * @var string
+     */
+    private $_elementType;
 
     /**
      * @var Slug
      */
-    private $_slug;
+    private $_element;
 
     /**
      * Constructor
@@ -78,18 +84,29 @@ class RedirectController extends Controller
         parent::__construct($id, $module, $config);
     }
 
+    public function setElementInfo($info)
+    {
+        $data = RouteEncoder::decode($info);
+        if ($data['type'] !== Slug::getElementType()) {
+            throw new NotSupportedException();
+        }
+        $this->_elementId = $data['id'];
+        $this->_elementType = $data['type'];
+        $this->_element = null;
+    }
+
     /**
      * Return element if it exists
      *
-     * @return Node|Composite|Category|Tag
+     * @return Slug
      * @since XXX
      */
-    public function getSlug()
+    public function getElement()
     {
-        if (($this->_slug === null) && ($this->slugId !== null)) {
-            $this->_slug = Slug::find()->andWhere(['id' => $this->slugId])->active()->one();
+        if (($this->_element === null) && ($this->_elementId !== null)) {
+            $this->_element = Slug::find()->andWhere(['id' => $this->_elementId])->active()->one();
         }
-        return $this->_slug;
+        return $this->_element;
     }
 
     /**
@@ -97,8 +114,8 @@ class RedirectController extends Controller
      */
     public function actionIndex()
     {
-        $targetUrl = $this->slug->targetUrl;
-        $httpCode = $this->slug->httpCode;
+        $targetUrl = $this->element->targetUrl;
+        $httpCode = $this->element->httpCode;
         return $this->redirect($targetUrl, $httpCode);
     }
 }

@@ -15,7 +15,6 @@
 namespace blackcube\core;
 
 use blackcube\core\models\Parameter;
-use blackcube\core\web\helpers\editorjs\Paragraph;
 use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
 use creocoder\flysystem\Filesystem;
@@ -44,14 +43,13 @@ use Yii;
 class Module extends BaseModule implements BootstrapInterface
 {
     /**
-     * @var string cms controller name space. if not set, default app namespace will be used
+     * The modules should be listed using their uniqueId. Default module enabled is '' which is the main
+     * application. Foreach module set their uniqueId (for example 'my-module/my-sub-module'.
+     * In order to allow autodiscover of allowed controllers, each module should have his alias
+     * defined `Yii::setAlias('@'.$this->id, __DIR__)` in the init of the module or in your global configuration
+     * @var array list of modules which can handle CMS content
      */
-    public $cmsControllerNamespace;
-
-    /**
-     * @var string cms controller which will be used in case realcontroller does not exists
-     */
-    public $cmsDefaultController = 'Blackcube';
+    public $cmsEnabledmodules = [''];
 
     /**
      * @var string alias where we should upload temporary files
@@ -124,6 +122,12 @@ class Module extends BaseModule implements BootstrapInterface
         if (empty($this->allowedParameterDomains) === false && in_array(Parameter::HOST_DOMAIN, $this->allowedParameterDomains) === false) {
             $this->allowedParameterDomains[] = Parameter::HOST_DOMAIN;
         }
+        if (Yii::$app instanceof WebApplication) {
+            $this->initWeb(Yii::$app);
+        } elseif (Yii::$app instanceof ConsoleApplication) {
+            $this->initConsole(Yii::$app);
+        }
+
         $this->registerTranslations();
     }
 
@@ -139,6 +143,17 @@ class Module extends BaseModule implements BootstrapInterface
         if ($app instanceof WebApplication) {
             $this->bootstrapWeb($app);
         }
+    }
+
+    /**
+     * Init console stuff
+     *
+     * @param ConsoleApplication $app
+     * @since XXX
+     */
+    protected function initConsole(ConsoleApplication $app)
+    {
+
     }
 
     /**
@@ -160,6 +175,20 @@ class Module extends BaseModule implements BootstrapInterface
     }
 
     /**
+     * Init web stuff
+     *
+     * @param WebApplication $app
+     * @throws \yii\base\InvalidConfigException
+     * @since XXX
+     */
+    protected function initWeb(WebApplication $app)
+    {
+        $this->controllerMap = Yii::createObject([
+            'class' => UrlMapper::class,
+        ]);
+    }
+
+    /**
      * Bootstrap web stuff
      *
      * @param WebApplication $app
@@ -173,16 +202,6 @@ class Module extends BaseModule implements BootstrapInterface
                 $this->cmsUrlRule
             ], true);
         }
-
-        /**/
-        $app->controllerMap = Yii::createObject([
-            'class' => UrlMapper::class,
-            'defaultController' => $this->cmsDefaultController,
-            'controllerNamespace' => ($this->cmsControllerNamespace === null) ? $app->controllerNamespace : $this->cmsControllerNamespace,
-            'additionalMap' => $app->controllerMap,
-        ]);
-        /**/
-
     }
 
     /**
@@ -198,6 +217,61 @@ class Module extends BaseModule implements BootstrapInterface
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function createController($route)
+    {
+        if ($route === '') {
+            $route = $this->defaultRoute;
+        }
+
+        // double slashes or leading/ending slashes may cause substr problem
+        $route = trim($route, '/');
+        if (strpos($route, '//') !== false) {
+            return false;
+        }
+
+        if (strpos($route, '/') !== false) {
+            list($id, $route) = explode('/', $route, 2);
+        } else {
+            $id = $route;
+            $route = '';
+        }
+
+        // module and controller map take precedence
+        if (isset($this->controllerMap[$id])) {
+            // do not pass $this but correct module
+            $controllerMap = $this->controllerMap[$id];
+            if (isset($controllerMap['moduleUid'], $controllerMap['realRoute'])) {
+                $moduleUid = $controllerMap['moduleUid'];
+                $realRoute = $controllerMap['realRoute'];
+                unset($controllerMap['moduleUid'], $controllerMap['realRoute']);
+                $module = empty($moduleUid) ? Yii::$app : Yii::$app->getModule($moduleUid);
+                $controller = Yii::createObject($controllerMap, [$id, $module]);
+            } else {
+                $controller = Yii::createObject($controllerMap, [$id, $this]);
+            }
+            return [$controller, $realRoute];
+        }
+        $module = $this->getModule($id);
+        if ($module !== null) {
+            return $module->createController($route);
+        }
+
+        if (($pos = strrpos($route, '/')) !== false) {
+            $id .= '/' . substr($route, 0, $pos);
+            $route = substr($route, $pos + 1);
+        }
+
+        $controller = $this->createControllerByID($id);
+        if ($controller === null && $route !== '') {
+            $controller = $this->createControllerByID($id . '/' . $route);
+            $route = '';
+        }
+
+        return $controller === null ? false : [$controller, $route];
+    }
     /**
      * Translates a message to the specified language.
      *

@@ -32,8 +32,7 @@ use Yii;
  *
  * @property int $id
  * @property string $name
- * @property string $controller
- * @property string|null $action
+ * @property string $route
  * @property int|null $minBlocs
  * @property int|null $maxBlocs
  * @property string $dateCreate
@@ -84,16 +83,16 @@ class Type extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['controller', 'action'], 'filter', 'filter' => function($value) {
+            [['route'], 'filter', 'filter' => function($value) {
                 return empty(trim($value)) ? null : trim($value);
             }],
             [['minBlocs', 'maxBlocs'], 'filter', 'filter' => function($value) {
                 return (trim($value) > 0 ) ? trim($value) : null;
             }],
-            [['name', 'controller'], 'required'],
+            [['name', 'route'], 'required'],
             [['minBlocs', 'maxBlocs'], 'integer'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['name', 'controller', 'action'], 'string', 'max' => 255],
+            [['name', 'route'], 'string', 'max' => 255],
             [['name'], 'unique'],
         ];
     }
@@ -106,8 +105,7 @@ class Type extends \yii\db\ActiveRecord
         return [
             'id' => Module::t('models/type', 'ID'),
             'name' => Module::t('models/type', 'Name'),
-            'controller' => Module::t('models/type', 'Controller'),
-            'action' => Module::t('models/type', 'Action'),
+            'route' => Module::t('models/type', 'Route'),
             'minBlocs' => Module::t('models/type', 'Min Blocs'),
             'maxBlocs' => Module::t('models/type', 'Max Blocs'),
             'dateCreate' => Module::t('models/type', 'Date Create'),

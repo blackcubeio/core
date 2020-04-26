@@ -48,24 +48,22 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
-        $type = null;
-        $id = null;
-        $action = null;
-        $decodedRoute = RouteEncoder::decode($route);
-        if ($decodedRoute === false) {
+        // $params = ['elementTarget' => 'tag-1']
+        // $route = 'modules/controller?/action?/element-id
+        $info = explode('/', $route);
+        $element = array_pop($info);
+        if (preg_match('/^(?P<type>tag|category|node|composite|slug)-(?P<id>[0-9]+)$/', $element, $matches) === 0) {
             return false;
         }
-        if ($type === null || $id === null) {
-            return false;
-        }
+        $realRoute = implode('/', $info);
+        $type = $matches['type'];
+        $id = $matches['id'];
+
         $slug = Slug::findOneByTypeAndId($type, $id);
         if ($slug === null) {
             return false;
         }
         $prettyUrl = $slug->path;
-        if ($action !== null) {
-            $prettyUrl .= '/' . $action;
-        }
         if ($this->suffix === null) {
             $this->suffix = $manager->suffix;
         }
@@ -86,7 +84,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     {
         $pathInfo = $request->getPathInfo();
         $hostname = $request->getHostName();
-        $action = null;
         if (empty($pathInfo) === true) {
             return false;
         }
@@ -105,43 +102,21 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if ($slug === null) {
             return false;
         }
-        /*/
-        //TODO: check if overriding an action in the URL is correct... I'm not sure
-        if ($slug === null) {
-            if (strpos($pathInfo, '/') !== false) {
-                $parts = explode('/', $pathInfo);
-                $action = array_pop($parts);
-                $pathInfo = implode('/', $parts);
-                //TODO: handle preview (active)
-                $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
-            }
-        }
-        /**/
         $element = $slug->getElement()->active()->one();
         if ($element !== null) {
             $elementClass = get_class($element);
-            $route = RouteEncoder::encode($elementClass::getElementType(), $element->id);
-            if ($action !== null) {
-                $route .= '/'.$action;
-            }
-            $prettyUrl = [
-                $route,
-                []
-            ];
+            $elementId = $element->id;
         } elseif (empty($slug->targetUrl) === false) {
             $elementClass = get_class($slug);
-            $route = RouteEncoder::encode($elementClass::getElementType(), $slug->id);
-            if ($action !== null) {
-                $route .= '/'.$action;
-            }
-            $prettyUrl = [
-                $route,
-                []
-            ];
+            $elementId = $slug->id;
         } else {
             return false;
         }
-        return $prettyUrl;
+        $route = RouteEncoder::encode($elementClass::getElementType(), $elementId);
+        return [
+            $route,
+            []
+        ];
     }
 
 }

@@ -45,12 +45,12 @@ class BlackcubeController extends Controller
     /**
      * @var integer
      */
-    public $elementId;
+    private $_elementId;
 
     /**
      * @var string
      */
-    public $elementType;
+    private $_elementType;
 
     /**
      * @var Node|Composite|Category|Tag|ElementInterface
@@ -90,8 +90,8 @@ class BlackcubeController extends Controller
      */
     public function getElement()
     {
-        if (($this->_element === null) && ($this->elementId !== null) && ($this->elementType !== null)) {
-            switch ($this->elementType) {
+        if (($this->_element === null) && ($this->_elementId !== null) && ($this->_elementType !== null)) {
+            switch ($this->_elementType) {
                 case Node::getElementType():
                     $query = Node::find();
                     break;
@@ -108,9 +108,16 @@ class BlackcubeController extends Controller
                     throw new InvalidArgumentException();
                     break;
             }
-            $this->_element = $query->where(['id' => $this->elementId])->active()->one();
+            $this->_element = $query->andWhere(['id' => $this->_elementId])->active()->one();
         }
         return $this->_element;
     }
 
+    public function setElementInfo($info)
+    {
+        $data = RouteEncoder::decode($info);
+        $this->_elementId = $data['id'];
+        $this->_elementType = $data['type'];
+        $this->_element = null;
+    }
 }
