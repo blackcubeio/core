@@ -15,11 +15,13 @@
 namespace blackcube\core\web;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
+use blackcube\core\Module;
 use yii\base\BaseObject;
 use yii\web\UrlRuleInterface;
 use Yii;
@@ -48,6 +50,8 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
+        $cache = Module::getInstance()->cache;
+        $prettyUrl = false;
         // $params = ['elementTarget' => 'tag-1']
         // $route = 'modules/controller?/action?/element-id
         $info = explode('/', $route);
@@ -55,24 +59,31 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if (preg_match('/^(?P<type>tag|category|node|composite|slug)-(?P<id>[0-9]+)$/', $element, $matches) === 0) {
             return false;
         }
-        $realRoute = implode('/', $info);
         $type = $matches['type'];
         $id = $matches['id'];
-
-        $slug = Slug::findOneByTypeAndId($type, $id);
-        if ($slug === null) {
-            return false;
+        if ($cache !== null) {
+            $cacheId = Module::getInstance()->uniqueId.':web:urlrule:'. $route;
+            $prettyUrl = $cache->get($cacheId);
         }
-        $prettyUrl = $slug->path;
-        if ($this->suffix === null) {
-            $this->suffix = $manager->suffix;
-        }
-        $suffix = (string) $this->suffix;
-        if (empty($suffix) === false) {
-            $prettyUrl .= $suffix;
-        }
-        if ((empty($params) === false ) && ($query = http_build_query($params)) !== '') {
-            $prettyUrl .= '?' . $query;
+        if ($prettyUrl === false) {
+            $slug = Slug::findOneByTypeAndId($type, $id);
+            if ($slug !== null) {
+                $prettyUrl = $slug->path;
+                if ($this->suffix === null) {
+                    $this->suffix = $manager->suffix;
+                }
+                $suffix = (string) $this->suffix;
+                if (empty($suffix) === false) {
+                    $prettyUrl .= $suffix;
+                }
+                if ((empty($params) === false ) && ($query = http_build_query($params)) !== '') {
+                    $prettyUrl .= '?' . $query;
+                }
+            }
+            if ($cache !== null) {
+                $cacheId = Module::getInstance()->uniqueId.':web:urlrule:'. $route;
+                $cache->set($cacheId, $prettyUrl, 3600, QueryCache::getCmsDependencies());
+            }
         }
         return $prettyUrl;
     }

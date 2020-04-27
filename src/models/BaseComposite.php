@@ -15,6 +15,7 @@
 namespace blackcube\core\models;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\interfaces\TaggableInterface;
@@ -209,7 +210,9 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public function getLanguage()
     {
-        return $this->hasOne(Language::class, ['id' => 'languageId']);
+        return $this
+            ->hasOne(Language::class, ['id' => 'languageId'])
+            ->cache(3600, QueryCache::getLanguageDependencies());
     }
 
     /**
@@ -229,7 +232,9 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public function getType()
     {
-        return $this->hasOne(Type::class, ['id' => 'typeId']);
+        return $this
+            ->hasOne(Type::class, ['id' => 'typeId'])
+            ->cache(3600, QueryCache::getTypeDependencies());
     }
 
     /**

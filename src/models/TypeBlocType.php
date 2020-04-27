@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -140,6 +141,8 @@ class TypeBlocType extends \yii\db\ActiveRecord
      */
     public function getType()
     {
-        return $this->hasOne(Type::class, ['id' => 'typeId']);
+        return $this
+            ->hasOne(Type::class, ['id' => 'typeId'])
+            ->cache(3600, QueryCache::getTypeDependencies());
     }
 }

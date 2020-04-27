@@ -15,6 +15,7 @@
 namespace blackcube\core\models;
 
 use blackcube\core\components\RouteEncoder;
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\traits\ActiveTrait;
@@ -230,6 +231,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getType()
     {
-        return $this->hasOne(Type::class, ['id' => 'typeId']);
+        return $this
+            ->hasOne(Type::class, ['id' => 'typeId'])
+            ->cache(3600, QueryCache::getTypeDependencies());
     }
 }

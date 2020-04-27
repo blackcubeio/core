@@ -338,7 +338,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             // $query->where(['id' => $result['id']]);
         } else {
             // fake query to allow the active query trick
-            $query = static::find()->where('1 = 0');;
+            $query = Composite::find()->where('1 = 0');;
             $query->primaryModel = $this;
             $query->link = ['id' => 'id'];
             $query->multiple = false;

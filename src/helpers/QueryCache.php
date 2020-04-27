@@ -16,6 +16,7 @@ namespace blackcube\core\helpers;
 
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
+use blackcube\core\models\Language;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
@@ -74,6 +75,45 @@ class QueryCache {
         $cacheQuery
             ->select($expression)
             ->from(Slug::tableName());
+        $cacheDependency = Yii::createObject([
+            'class' => DbQueryDependency::class,
+            'db' => Module::getInstance()->db,
+            'query' => $cacheQuery,
+            'reusable' => true,
+        ]);
+        return $cacheDependency;
+    }
+
+    /**
+     * @return DbQueryDependency
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getLanguageDependencies()
+    {
+        $cacheQuery = Yii::createObject(Query::class);
+        $expression = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']);
+        $cacheQuery
+            ->select($expression)
+            ->from(Language::tableName());
+        $cacheDependency = Yii::createObject([
+            'class' => DbQueryDependency::class,
+            'db' => Module::getInstance()->db,
+            'query' => $cacheQuery,
+            'reusable' => true,
+        ]);
+        return $cacheDependency;
+    }
+    /**
+     * @return DbQueryDependency
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getTypeDependencies()
+    {
+        $cacheQuery = Yii::createObject(Query::class);
+        $expression = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']);
+        $cacheQuery
+            ->select($expression)
+            ->from(Type::tableName());
         $cacheDependency = Yii::createObject([
             'class' => DbQueryDependency::class,
             'db' => Module::getInstance()->db,
