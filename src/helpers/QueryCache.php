@@ -73,7 +73,7 @@ class QueryCache {
         $expression = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']);
         $cacheQuery
             ->select($expression)
-            ->from(static::tableName());
+            ->from(Slug::tableName());
         $cacheDependency = Yii::createObject([
             'class' => DbQueryDependency::class,
             'db' => Module::getInstance()->db,
