@@ -136,7 +136,7 @@ class CompositeCest extends CompositeBase
 
         $slug = Slug::find()->where(['id' => 21])->active()->one();
         $I->assertInstanceOf(Slug::class, $slug);
-        $composite = $slug->element;
+        $composite = $slug->getElement()->active()->one();
         $I->assertNull($composite);
     }
 

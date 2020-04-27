@@ -79,7 +79,7 @@ JSON;
         1 => ['host' => null, 'path' => 'home', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         2 => ['host' => null, 'path' => 'node', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         3 => ['host' => null, 'path' => 'tag', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
-        4 => ['host' => 'www.basehost.com', 'path' => '/home-base', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
+        4 => ['host' => 'www.basehost.com', 'path' => 'home-base', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         5 => ['host' => null, 'path' => 'composite', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         6 => ['host' => null, 'path' => 'composite-disabled', 'targetUrl' => null, 'httpCode' => null, 'active' => false],
         7 => ['host' => null, 'path' => 'redirect-google', 'targetUrl' => 'https://www.google.com', 'httpCode' => 301, 'active' => true],
@@ -116,12 +116,12 @@ JSON;
     ];
 
     protected $typeList = [
-        1 =>  ['name' => 'home', 'controller' => 'Home', 'action' => null, 'minBlocs' => null, 'maxBlocs' => null ],
-        2 =>  ['name' => 'home-landing', 'controller' => 'Home', 'action' => 'landing', 'minBlocs' => null, 'maxBlocs' => null ],
-        3 =>  ['name' => 'subhome', 'controller' => 'SubHome', 'action' => null, 'minBlocs' => 1, 'maxBlocs' => 4 ],
-        4 =>  ['name' => 'taglist', 'controller' => 'Tag', 'action' => null, 'minBlocs' => null, 'maxBlocs' => 3 ],
-        5 =>  ['name' => 'demo-type', 'controller' => 'Demo', 'action' => null, 'minBlocs' => null, 'maxBlocs' => 3 ],
-        6 =>  ['name' => 'composite-test', 'controller' => 'Composite', 'action' => null, 'minBlocs' => null, 'maxBlocs' => 3 ],
+        1 =>  ['name' => 'home', 'route' => 'home', 'minBlocs' => null, 'maxBlocs' => null ],
+        2 =>  ['name' => 'home-landing', 'route' => 'home', 'landing', 'minBlocs' => null, 'maxBlocs' => null ],
+        3 =>  ['name' => 'subhome', 'route' => 'sub-home', 'minBlocs' => 1, 'maxBlocs' => 4 ],
+        4 =>  ['name' => 'taglist', 'route' => 'tag', 'minBlocs' => null, 'maxBlocs' => 3 ],
+        5 =>  ['name' => 'demo-type', 'route' => 'demo', 'minBlocs' => null, 'maxBlocs' => 3 ],
+        6 =>  ['name' => 'composite-test', 'route' => 'composite', 'minBlocs' => null, 'maxBlocs' => 3 ],
     ];
 
     protected $blocTypeList = [

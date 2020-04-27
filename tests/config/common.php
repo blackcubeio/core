@@ -41,7 +41,6 @@ $config = [
     'modules' => [
         'blackcube' => [
             'class' => blackcube\core\Module::class,
-            'cmsControllerNamespace' => 'webapp\controllers',
         ],
     ],
     'components' => [
