@@ -2,13 +2,13 @@
     "name": "blackcube/core",
     "description": "Blackcube CMS Application",
     "keywords": ["blackcube", "cms"],
-    "homepage": "https://code.redcat.io/blackcube/cms",
+    "homepage": "https://code.redcat.io/blackcube/core",
     "type": "yii2-extension",
     "license": "proprietary",
     "support": {
-        "issues": "https://code.redcat.io/blackcube/cms/issues",
-        "wiki": "https://code.redcat.io/blackcube/cms/wikis/home",
-        "source": "https://code.redcat.io/blackcube/cms/tree/devel"
+        "issues": "https://code.redcat.io/blackcube/core/issues",
+        "wiki": "https://code.redcat.io/blackcube/core/wikis/home",
+        "source": "https://code.redcat.io/blackcube/core/tree/devel"
     },
     "authors": [
         {
