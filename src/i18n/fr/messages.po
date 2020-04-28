@@ -12,6 +12,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 2.3\n"
 
+msgctxt "blackcube/core/helpers"
+msgid "Unable to render block"
+msgstr "Impossible d’afficher le bloc"
+
 msgctxt "blackcube/core/models/bloc"
 msgid "Active"
 msgstr "Actif"
@@ -533,14 +537,6 @@ msgid "Tag ID"
 msgstr "ID Tag"
 
 msgctxt "blackcube/core/models/type"
-msgid "Action"
-msgstr "Action"
-
-msgctxt "blackcube/core/models/type"
-msgid "Controller"
-msgstr "Contrôleur"
-
-msgctxt "blackcube/core/models/type"
 msgid "Date Create"
 msgstr "Date de création"
 
@@ -564,6 +560,10 @@ msgctxt "blackcube/core/models/type"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "blackcube/core/models/type"
+msgid "Route"
+msgstr "Route"
+
 msgctxt "blackcube/core/models/type-bloc-type"
 msgid "Allowed"
 msgstr "Autorisé"
@@ -584,6 +584,22 @@ msgctxt "blackcube/core/models/type-bloc-type"
 msgid "Type ID"
 msgstr "ID Type"
 
+msgctxt "blackcube/core/routing"
+msgid "Type {type} is not supported."
+msgstr "Le type {type} n’est pas supporté."
+
+msgctxt "blackcube/core/web"
+msgid "Element \"{type}-{id}\" is not routable"
+msgstr "L’élément « {type}-{id} » n’est pas rouable"
+
 msgctxt "blackcube/core/validators"
 msgid "Submodel \"{attribute}\" is invalid"
-msgstr "Le sous modèle « {attribué} » est invalide"
+msgstr "Le sous modèle « {attribute} » est invalide"
+
+#~ msgctxt "blackcube/core/models/type"
+#~ msgid "Action"
+#~ msgstr "Action"
+
+#~ msgctxt "blackcube/core/models/type"
+#~ msgid "Controller"
+#~ msgstr "Contrôleur"
