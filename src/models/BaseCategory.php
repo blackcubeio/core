@@ -106,6 +106,14 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()

@@ -103,6 +103,14 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()

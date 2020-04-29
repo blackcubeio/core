@@ -119,6 +119,14 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()

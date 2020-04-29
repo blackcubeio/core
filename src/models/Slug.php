@@ -115,6 +115,14 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()

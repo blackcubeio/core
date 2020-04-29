@@ -65,6 +65,14 @@ class NodeComposite extends \yii\db\ActiveRecord
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()

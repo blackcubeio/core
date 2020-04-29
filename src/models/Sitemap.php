@@ -90,6 +90,14 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()

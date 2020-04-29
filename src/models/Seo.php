@@ -55,6 +55,11 @@ use Yii;
 class Seo extends \yii\db\ActiveRecord implements SluggedInterface
 {
     /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE = 'pre_validate';
+
+    /**
      * {@inheritDoc}
      */
     public static function getDb()
@@ -63,9 +68,12 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     }
 
     /**
-     * @var string
+     * {@inheritDoc}
      */
-    public const SCENARIO_PRE_VALIDATE = 'pre_validate';
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
 
     /**
      * {@inheritdoc}

@@ -65,6 +65,15 @@ class BlocType extends \yii\db\ActiveRecord
         ];
         return $behaviors;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
     /**
      * {@inheritdoc}
      */

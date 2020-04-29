@@ -43,14 +43,6 @@ use Yii;
 class TypeBlocType extends \yii\db\ActiveRecord
 {
     /**
-     * {@inheritDoc}
-     */
-    public static function getDb()
-    {
-        return Module::getInstance()->db;
-    }
-
-    /**
      * @var string
      */
     public const SCENARIO_PRE_VALIDATE_TYPE = 'pre_validate_type';
@@ -59,6 +51,14 @@ class TypeBlocType extends \yii\db\ActiveRecord
      * @var string
      */
     public const SCENARIO_PRE_VALIDATE_BLOCTYPE = 'pre_validate_bloctype';
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
 
     /**
      * {@inheritdoc}
@@ -73,6 +73,14 @@ class TypeBlocType extends \yii\db\ActiveRecord
             'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
