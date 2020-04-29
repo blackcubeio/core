@@ -212,7 +212,7 @@ class Module extends BaseModule implements BootstrapInterface
     {
         Yii::$app->i18n->translations['blackcube/core/*'] = [
             'class' => GettextMessageSource::class,
-            'useMoFile' => false,
+            'useMoFile' => true,
             'sourceLanguage' => 'en',
             'basePath' => '@blackcube/core/i18n',
         ];
