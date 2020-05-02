@@ -14,6 +14,7 @@
 
 namespace blackcube\core;
 
+use blackcube\core\commands\InitController;
 use blackcube\core\models\Parameter;
 use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
@@ -172,7 +173,9 @@ class Module extends BaseModule implements BootstrapInterface
             ],
             'db' => $this->db,
         ];
-
+        $app->controllerMap[$this->commandNameSpace.'init'] = [
+            'class' => InitController::class
+        ];
     }
 
     /**
