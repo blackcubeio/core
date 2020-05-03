@@ -18,6 +18,7 @@ use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use Yii;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "{{%blocTypes}}".
@@ -140,4 +141,23 @@ class BlocType extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Type::class, ['id' => 'typeId'])->viaTable(TypeBlocType::tableName(), ['blocTypeId' => 'id']);
     }
+
+    public function getAdminView($pathAlias, $asAlias = false)
+    {
+        if ($pathAlias !== null) {
+            $targetView = (empty($this->view) ? Inflector::underscore($this->name) : $this->view);
+            $targetView = preg_replace('/[-_\s]+/', '_', $targetView);
+            if ($asAlias === true) {
+                return$pathAlias.'/'.$targetView.'.php';
+            } else {
+                $templatePath = Yii::getAlias($pathAlias);
+                $filePath = $templatePath . '/' . $targetView . '.php';
+                if (file_exists($filePath) === true) {
+                    return $pathAlias.'/'.$targetView.'.php';
+                }
+            }
+        }
+        return false;
+    }
+
 }

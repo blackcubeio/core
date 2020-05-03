@@ -206,16 +206,10 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
         return preg_replace('/\s+/', '_', $targetView);
     }
 
-    public function getAdminView($pathAlias)
+    public function getAdminView($pathAlias, $asAlias = false)
     {
         if ($pathAlias !== null && $this->blocType !== null) {
-            $targetView = (empty($this->blocType->view) ? Inflector::underscore($this->blocType->name) : $this->blocType->view);
-            $targetView = preg_replace('/\s+/', '_', $targetView);
-            $templatePath = Yii::getAlias($pathAlias);
-            $filePath = $templatePath . '/' . $targetView . '.php';
-            if (file_exists($filePath) === true) {
-                return $pathAlias.'/'.$targetView.'.php';
-            }
+            return $this->blocType->getAdminView($pathAlias, $asAlias);
         }
         return false;
     }
