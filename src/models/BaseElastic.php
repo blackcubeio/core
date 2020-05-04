@@ -579,7 +579,7 @@ abstract class BaseElastic extends Model {
                 foreach($mapping['parameters'] as $originalName => $targetName ) {
                     if (isset($property->{$originalName}) === true) {
                         if ($originalName === 'pattern') {
-                            $rule[$targetName] = '/'.$property->{$originalName}.'/';
+                            $rule[$targetName] = '/'.str_replace('/', '\/', $property->{$originalName}).'/';
                         } else {
                             $rule[$targetName] = $property->{$originalName};
                         }
