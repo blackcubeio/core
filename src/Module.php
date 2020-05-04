@@ -130,7 +130,6 @@ class Module extends BaseModule implements BootstrapInterface
             $this->initConsole(Yii::$app);
         }
 
-        $this->registerTranslations();
     }
 
     /**
@@ -139,6 +138,7 @@ class Module extends BaseModule implements BootstrapInterface
     public function bootstrap($app)
     {
         Yii::setAlias('@blackcube/core', __DIR__);
+        $this->registerTranslations();
         if ($app instanceof ConsoleApplication) {
             $this->bootstrapConsole($app);
         }
