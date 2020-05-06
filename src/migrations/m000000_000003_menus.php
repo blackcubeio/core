@@ -48,7 +48,7 @@ class m000000_000003_menus extends Migration
             'id' => $this->bigPrimaryKey(),
             'menuId' => $this->bigInteger(),
             'parentId' => $this->bigInteger()->defaultValue(null),
-            'name' => $this->string(255)->unique()->notNull(),
+            'name' => $this->string(255)->notNull(),
             'route' => $this->string(255)->notNull(),
             'queryString' => $this->string(255)->defaultValue(null),
             'order' => $this->integer(),
@@ -57,6 +57,7 @@ class m000000_000003_menus extends Migration
         ]);
         $this->createIndex('items__menuId_idx', '{{%menus_items}}', 'menuId', false);
         $this->createIndex('items__parentId_idx', '{{%menus_items}}', 'parentId', false);
+        $this->createIndex('items__name_menuId_idx', '{{%menus_items}}', ['name', 'menuId'], true);
         $this->addForeignKey('items__menuId__menus_id_fk', '{{%menus_items}}', 'menuId', '{{%menus}}', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey('items__parentId__items_id_fk', '{{%menus_items}}', 'parentId', '{{%menus_items}}', 'id', 'CASCADE', 'CASCADE');
 
@@ -70,6 +71,7 @@ class m000000_000003_menus extends Migration
     {
         $this->dropForeignKey('items__parentId__items_id_fk', '{{%menus_items}}');
         $this->dropForeignKey('items__menuId__menus_id_fk', '{{%menus_items}}');
+        $this->dropIndex('items__name_menuId_idx', '{{%menus_items}}');
         $this->dropIndex('items__parentId_idx', '{{%menus_items}}');
         $this->dropIndex('items__menuId_idx', '{{%menus_items}}');
 

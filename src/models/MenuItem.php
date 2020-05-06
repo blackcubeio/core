@@ -101,7 +101,7 @@ class MenuItem extends \yii\db\ActiveRecord
             [['name', 'route'], 'required'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['name', 'route', 'queryString'], 'string', 'max' => 255],
-            [['name'], 'unique'],
+            [['name'], 'unique', 'targetAttribute', ['name', 'menuId']],
             [['menuId'], 'exist', 'skipOnError' => true, 'targetClass' => Menu::class, 'targetAttribute' => ['menuId' => 'id']],
             [['parentId'], 'exist', 'skipOnError' => true, 'targetClass' => static::class, 'targetAttribute' => ['parentId' => 'id']],
         ];
