@@ -80,6 +80,10 @@ class RouteEncoder
     public static function decode($route)
     {
             if (preg_match(static::$routePattern, $route, $matches) === 1) {
+                $absoluteRoutePrefix = '/'.Module::getInstance()->uniqueId.'/';
+                if (strncmp($absoluteRoutePrefix, $matches['type'], strlen($absoluteRoutePrefix)) === 0) {
+                    $matches['type'] = str_replace($absoluteRoutePrefix, '', $matches['type']);
+                }
                 if (in_array($matches['type'], static::getAllowedTypes()) === false) {
                     throw new NotSupportedException(Module::t('routing', 'Type {type} is not supported.', ['type' => $matches['type']]));
                 }
