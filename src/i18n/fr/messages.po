@@ -12,6 +12,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 2.3\n"
 
+msgctxt "blackcube/core/console"
+msgid "Init CMS Data\n"
+msgstr ""
+
+msgctxt "blackcube/core/console"
+msgid "Root node already exists\n"
+msgstr ""
+
 msgctxt "blackcube/core/helpers"
 msgid "Unable to render block"
 msgstr "Impossible d’afficher le bloc"
@@ -219,6 +227,66 @@ msgstr "Principal"
 msgctxt "blackcube/core/models/language"
 msgid "Name"
 msgstr "Nom"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/menus"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Language ID"
+msgstr "ID Langue"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Menu ID"
+msgstr "ID Menu"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Parent ID"
+msgstr "ID Parent"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Query String"
+msgstr "Query String"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Route"
+msgstr "Route"
 
 msgctxt "blackcube/core/models/node"
 msgid "Active"

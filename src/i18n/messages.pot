@@ -10,6 +10,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgctxt "blackcube/core/console"
+msgid "Init CMS Data\n"
+msgstr ""
+
+msgctxt "blackcube/core/console"
+msgid "Root node already exists\n"
+msgstr ""
+
 msgctxt "blackcube/core/helpers"
 msgid "Unable to render block"
 msgstr ""
@@ -216,6 +224,66 @@ msgstr ""
 
 msgctxt "blackcube/core/models/language"
 msgid "Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus"
+msgid "Active"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus"
+msgid "Date Create"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus"
+msgid "Date Update"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus"
+msgid "ID"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus"
+msgid "Language ID"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus"
+msgid "Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Date Create"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Date Update"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "ID"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Menu ID"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Order"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Parent ID"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Query String"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Route"
 msgstr ""
 
 msgctxt "blackcube/core/models/node"
