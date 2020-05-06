@@ -20,9 +20,8 @@ use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
 use blackcube\core\Module;
-use phpDocumentor\Reflection\Types\Static_;
-use Yii;
 use yii\base\NotSupportedException;
+use Yii;
 
 /**
  * Encode CMS parameters into a string

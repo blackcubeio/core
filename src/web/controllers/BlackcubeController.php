@@ -14,6 +14,7 @@
 
 namespace blackcube\core\web\controllers;
 
+use blackcube\core\components\Element;
 use blackcube\core\components\RouteEncoder;
 use blackcube\core\interfaces\BlackcubeControllerInterface;
 use blackcube\core\interfaces\ElementInterface;
@@ -44,14 +45,9 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
 {
 
     /**
-     * @var integer
+     * @var array
      */
-    private $_elementId;
-
-    /**
-     * @var string
-     */
-    private $_elementType;
+    private $_elementRoute;
 
     /**
      * @var Node|Composite|Category|Tag|ElementInterface
@@ -66,25 +62,8 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
      */
     public function getElement()
     {
-        if (($this->_element === null) && ($this->_elementId !== null) && ($this->_elementType !== null)) {
-            switch ($this->_elementType) {
-                case Node::getElementType():
-                    $query = Node::find();
-                    break;
-                case Composite::getElementType():
-                    $query = Composite::find();
-                    break;
-                case Category::getElementType():
-                    $query = Category::find();
-                    break;
-                case Tag::getElementType():
-                    $query = Tag::find();
-                    break;
-                default:
-                    throw new InvalidArgumentException();
-                    break;
-            }
-            $this->_element = $query->andWhere(['id' => $this->_elementId])->active()->one();
+        if (($this->_element === null) && ($this->_elementRoute !== null)) {
+            $this->_element = Element::instanciate($this->_elementRoute);
         }
         return $this->_element;
     }
@@ -95,9 +74,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
      */
     public function setElementInfo($info)
     {
-        $data = RouteEncoder::decode($info);
-        $this->_elementId = $data['id'];
-        $this->_elementType = $data['type'];
+        $this->_elementRoute = $info;
         $this->_element = null;
     }
 }
