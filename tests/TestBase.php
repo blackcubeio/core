@@ -307,37 +307,37 @@ JSON
         // Yii::$app->db->createCommand()->resetSequence(Parameter::tableName());
 
         Sitemap::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Sitemap::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Sitemap::tableName())->execute();
 
         Node::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Node::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Node::tableName())->execute();
 
         Composite::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Composite::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Composite::tableName())->execute();
 
         Category::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Category::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Category::tableName())->execute();
 
         Tag::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Tag::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Tag::tableName())->execute();
 
         Slug::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Slug::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Slug::tableName())->execute();
 
         TypeBlocType::deleteAll();
         // Yii::$app->db->createCommand()->resetSequence(TypeBlocType::tableName())->execute();
 
         Type::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Type::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Type::tableName())->execute();
 
         BlocType::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(BlocType::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(BlocType::tableName())->execute();
 
         Bloc::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Bloc::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Bloc::tableName())->execute();
 
         Seo::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Seo::tableName())->execute();
+        // Yii::$app->db->createCommand()->resetSequence(Seo::tableName())->execute();
 
         CompositeBloc::deleteAll();
         // Yii::$app->db->createCommand()->resetSequence(CompositeBloc::tableName())->execute();
