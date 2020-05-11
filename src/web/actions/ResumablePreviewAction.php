@@ -96,6 +96,11 @@ class ResumablePreviewAction extends ViewAction
                 $image = Image::thumbnail($handle, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
                 // $image = Image::resize($realName, $width, $height, true, true);
                 $thumbnailName = Yii::getAlias($uploadAlias.'thumb_'.$width.'x'.$height.'_'.$fileName);
+                $tmpPath = pathinfo($thumbnailName, PATHINFO_DIRNAME);
+                if (file_exists($tmpPath) === false) {
+                    mkdir($tmpPath, 0777, true);
+                }
+
                 $image->save($thumbnailName);
                 $realName = $thumbnailName;
                 fclose($handle);
