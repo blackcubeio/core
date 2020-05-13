@@ -275,8 +275,8 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     public static function findOrphans()
     {
         $compositeQuery = static::find()
-            ->leftJoin(NodeComposite::tableName().' linktable', 'linktable.[[compositeId]] = id')
-            ->andWhere(['linktable.nodeId' => null]);
+            ->leftJoin(NodeComposite::tableName(), NodeComposite::tableName().'.[[compositeId]] = '.static::tableName().'.[[id]]')
+            ->andWhere([NodeComposite::tableName().'.[[nodeId]]' => null]);
         $compositeQuery->multiple = true;
         return $compositeQuery;
     }
