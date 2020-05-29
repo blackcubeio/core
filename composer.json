@@ -2,13 +2,13 @@
     "name": "blackcube/core",
     "description": "Blackcube CMS Application",
     "keywords": ["blackcube", "cms"],
-    "homepage": "https://code.redcat.io/blackcube/cms",
-    "type": "project",
+    "homepage": "https://code.redcat.io/blackcube/core",
+    "type": "yii2-extension",
     "license": "proprietary",
     "support": {
-        "issues": "https://code.redcat.io/blackcube/cms/issues",
-        "wiki": "https://code.redcat.io/blackcube/cms/wikis/home",
-        "source": "https://code.redcat.io/blackcube/cms/tree/devel"
+        "issues": "https://code.redcat.io/blackcube/core/issues",
+        "wiki": "https://code.redcat.io/blackcube/core/wikis/home",
+        "source": "https://code.redcat.io/blackcube/core/tree/devel"
     },
     "authors": [
         {
@@ -26,12 +26,15 @@
         "php": ">=7.2",
         "ext-intl": "*",
         "ext-json": "*",
+        "ext-fileinfo": "*",
+        "ext-dom": "*",
         "creocoder/yii2-flysystem": "~0.9",
         "hashids/hashids": "~4.0",
         "league/flysystem-aws-s3-v3": "~1.0",
         "league/flysystem-cached-adapter": "~1.0",
         "swaggest/json-schema": "~0.12",
         "vlucas/phpdotenv": "~4.1",
+        "yiisoft/yii2-imagine": "~2.2",
         "yiisoft/yii2": "~2.0"
     },
     "require-dev" : {

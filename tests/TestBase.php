@@ -22,6 +22,7 @@ use blackcube\core\models\NodeBloc;
 use blackcube\core\models\NodeComposite;
 use blackcube\core\models\NodeTag;
 use blackcube\core\models\Parameter;
+use blackcube\core\models\Seo;
 use blackcube\core\models\Sitemap;
 use blackcube\core\models\Slug;
 use blackcube\core\models\BlocType;
@@ -78,7 +79,7 @@ JSON;
         1 => ['host' => null, 'path' => 'home', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         2 => ['host' => null, 'path' => 'node', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         3 => ['host' => null, 'path' => 'tag', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
-        4 => ['host' => 'www.basehost.com', 'path' => '/home-base', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
+        4 => ['host' => 'www.basehost.com', 'path' => 'home-base', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         5 => ['host' => null, 'path' => 'composite', 'targetUrl' => null, 'httpCode' => null, 'active' => true],
         6 => ['host' => null, 'path' => 'composite-disabled', 'targetUrl' => null, 'httpCode' => null, 'active' => false],
         7 => ['host' => null, 'path' => 'redirect-google', 'targetUrl' => 'https://www.google.com', 'httpCode' => 301, 'active' => true],
@@ -107,13 +108,20 @@ JSON;
         4 => ['slugId' => 4, 'frequency' => 'daily', 'priority' => 0.5, 'active' => true],
     ];
 
+    protected $seoList = [
+        1 => ['slugId' => 1, 'canonicalSlugId' => null, 'title' => 'home title', 'description' => 'home description', 'active' => true],
+        2 => ['slugId' => 2, 'canonicalSlugId' => null, 'title' => 'node title', 'description' => 'node description', 'active' => true],
+        3 => ['slugId' => 3, 'canonicalSlugId' => null, 'title' => 'tag title', 'description' => 'tag description', 'active' => true],
+        4 => ['slugId' => 4, 'canonicalSlugId' => null, 'title' => 'base host title', 'description' => 'base host description', 'active' => true],
+    ];
+
     protected $typeList = [
-        1 =>  ['name' => 'home', 'controller' => 'Home', 'action' => null, 'minBlocs' => null, 'maxBlocs' => null ],
-        2 =>  ['name' => 'home-landing', 'controller' => 'Home', 'action' => 'landing', 'minBlocs' => null, 'maxBlocs' => null ],
-        3 =>  ['name' => 'subhome', 'controller' => 'SubHome', 'action' => null, 'minBlocs' => 1, 'maxBlocs' => 4 ],
-        4 =>  ['name' => 'taglist', 'controller' => 'Tag', 'action' => null, 'minBlocs' => null, 'maxBlocs' => 3 ],
-        5 =>  ['name' => 'demo-type', 'controller' => 'Demo', 'action' => null, 'minBlocs' => null, 'maxBlocs' => 3 ],
-        6 =>  ['name' => 'composite-test', 'controller' => 'Composite', 'action' => null, 'minBlocs' => null, 'maxBlocs' => 3 ],
+        1 =>  ['name' => 'home', 'route' => 'home', 'minBlocs' => null, 'maxBlocs' => null ],
+        2 =>  ['name' => 'home-landing', 'route' => 'home', 'landing', 'minBlocs' => null, 'maxBlocs' => null ],
+        3 =>  ['name' => 'subhome', 'route' => 'sub-home', 'minBlocs' => 1, 'maxBlocs' => 4 ],
+        4 =>  ['name' => 'taglist', 'route' => 'tag', 'minBlocs' => null, 'maxBlocs' => 3 ],
+        5 =>  ['name' => 'demo-type', 'route' => 'demo', 'minBlocs' => null, 'maxBlocs' => 3 ],
+        6 =>  ['name' => 'composite-test', 'route' => 'composite', 'minBlocs' => null, 'maxBlocs' => 3 ],
     ];
 
     protected $blocTypeList = [
@@ -299,49 +307,52 @@ JSON
         // Yii::$app->db->createCommand()->resetSequence(Parameter::tableName());
 
         Sitemap::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Sitemap::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Sitemap::tableName())->execute();
 
         Node::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Node::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Node::tableName())->execute();
 
         Composite::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Composite::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Composite::tableName())->execute();
 
         Category::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Category::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Category::tableName())->execute();
 
         Tag::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Tag::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Tag::tableName())->execute();
 
         Slug::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Slug::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Slug::tableName())->execute();
 
         TypeBlocType::deleteAll();
-        // Yii::$app->db->createCommand()->resetSequence(TypeBlocType::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(TypeBlocType::tableName())->execute();
 
         Type::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Type::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Type::tableName())->execute();
 
         BlocType::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(BlocType::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(BlocType::tableName())->execute();
 
         Bloc::deleteAll();
-        Yii::$app->db->createCommand()->resetSequence(Bloc::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(Bloc::tableName())->execute();
+
+        Seo::deleteAll();
+        // Yii::$app->db->createCommand()->resetSequence(Seo::tableName())->execute();
 
         CompositeBloc::deleteAll();
-        // Yii::$app->db->createCommand()->resetSequence(CompositeBloc::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(CompositeBloc::tableName())->execute();
 
         NodeBloc::deleteAll();
-        // Yii::$app->db->createCommand()->resetSequence(NodeBloc::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(NodeBloc::tableName())->execute();
 
         CategoryBloc::deleteAll();
-        // Yii::$app->db->createCommand()->resetSequence(CategoryBloc::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(CategoryBloc::tableName())->execute();
 
         TagBloc::deleteAll();
-        // Yii::$app->db->createCommand()->resetSequence(TagBloc::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(TagBloc::tableName())->execute();
 
         NodeComposite::deleteAll();
-        // Yii::$app->db->createCommand()->resetSequence(NodeComposite::tableName());
+        // Yii::$app->db->createCommand()->resetSequence(NodeComposite::tableName())->execute();
 
         foreach($this->parameterList as $config) {
             $parameter = new Parameter();
@@ -361,6 +372,13 @@ JSON
             $sitemap->attributes = $config;
             $sitemap->id = $id;
             $sitemap->save();
+        }
+
+        foreach($this->seoList as $id => $config) {
+            $seo = new Seo();
+            $seo->attributes = $config;
+            $seo->id = $id;
+            $seo->save();
         }
 
         foreach($this->typeList as $id => $config) {

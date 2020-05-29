@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,64 +14,85 @@
 
 namespace blackcube\core\components;
 
-use yii\helpers\Inflector;
+use blackcube\core\models\Category;
+use blackcube\core\models\Composite;
+use blackcube\core\models\Node;
+use blackcube\core\models\Slug;
+use blackcube\core\models\Tag;
+use blackcube\core\Module;
+use yii\base\NotSupportedException;
 use Yii;
 
 /**
  * Encode CMS parameters into a string
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\components
- *
+ * @since XXX
  */
-
 class RouteEncoder
 {
 
-    private static $routes = [];
+    /**
+     * @var string regex pattern used to match routes
+     */
+    private static $routePattern = '/^(?P<type>[^-]+)-(?P<id>[0-9]+)$/';
 
-    private static $routePattern = '/^blackcube-(?P<type>[a-zA-Z]+)(-(?P<id>\d+))?$/';
-
-    private static $routePrefix = 'blackcube-';
+    /**
+     * @return array list of allowed types
+     */
+    private static function getAllowedTypes()
+    {
+        return [
+            Node::getElementType(),
+            Composite::getElementType(),
+            Category::getElementType(),
+            Tag::getElementType(),
+            Slug::getElementType()
+        ];
+    }
 
     /**
      * @param string $type
-     * @param null|integer $id
+     * @param integer $id
+     * @param boolean $relative
      * @return string
+     * @since XXX
      */
-    public static function encode($type, $id = null)
+    public static function encode($type, $id, $relative = false)
     {
-        $route = static::$routePrefix.$type;
-        if ($id !== null) {
-            $route .= '-'.$id;
+        if (in_array($type,  static::getAllowedTypes()) === false) {
+            throw new NotSupportedException(Module::t('routing', 'Type {type} is not supported.', ['type' => $type]));
         }
-        return $route;
+        return (($relative === false) ? '/'.Module::getInstance()->uniqueId.'/' : '').$type.'-'.$id;
     }
 
     /**
      * @param string $route
      * @return array|false ['type' => 'xxx'[, 'id' => 'YYY']]
+     * @since XXX
      */
     public static function decode($route)
     {
-        if (isset(static::$routes[$route]) === false)
-        {
             if (preg_match(static::$routePattern, $route, $matches) === 1) {
-                static::$routes[$route] = [
-                    'type' => $matches['type'],
-                ];
-                if (isset($matches['id']) === true) {
-                    static::$routes[$route]['id'] = $matches['id'];
+                $absoluteRoutePrefix = '/'.Module::getInstance()->uniqueId.'/';
+                if (strncmp($absoluteRoutePrefix, $matches['type'], strlen($absoluteRoutePrefix)) === 0) {
+                    $matches['type'] = str_replace($absoluteRoutePrefix, '', $matches['type']);
                 }
+                if (in_array($matches['type'], static::getAllowedTypes()) === false) {
+                    throw new NotSupportedException(Module::t('routing', 'Type {type} is not supported.', ['type' => $matches['type']]));
+                }
+                return [
+                    'type' => $matches['type'],
+                    'id' => $matches['id'],
+                ];
             } else {
-                static::$routes[$route] = false;
+                return false;
             }
-        }
-        return static::$routes[$route];
     }
 
 }

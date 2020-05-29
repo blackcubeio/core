@@ -8,7 +8,7 @@ class TypeCest extends TypeBase
     {
         $type = new Type();
         $type->name = 'hometest';
-        $type->controller = 'Home';
+        $type->route = 'home';
         $I->assertTrue($type->validate());
         $I->assertTrue($type->save());
 
@@ -16,8 +16,7 @@ class TypeCest extends TypeBase
         $I->assertInstanceOf(Type::class, $dbType);
 
         $I->assertEquals('hometest', $type->name);
-        $I->assertEquals('Home', $type->controller);
-        $I->assertNull($type->action);
+        $I->assertEquals('home', $type->route);
         $nullType = Type::find()->where(['name' => 'plop'])->one();
         $I->assertNull($nullType);
     }

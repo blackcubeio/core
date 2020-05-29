@@ -1,12 +1,34 @@
 <?php
+/**
+ * TagTrait.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ */
 
 namespace blackcube\core\traits;
 
-
-use blackcube\core\models\Composite;
 use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\Tag;
+use Yii;
 
+/**
+ * Tag trait
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ * @since XXX
+ */
 trait TagTrait
 {
     /**
@@ -44,7 +66,7 @@ trait TagTrait
         $transaction = static::getDb()->beginTransaction();
         try {
             // open space to add composite
-            $elementTag = new $elementTagClass();
+            $elementTag = Yii::createObject($elementTagClass);
             $elementTag->{$this->getElementIdColumn()} = $this->id;
             $elementTag->{$this->getTagIdColumn()} = $tag->id;
             $status = $elementTag->save();

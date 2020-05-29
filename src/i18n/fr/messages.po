@@ -1,0 +1,673 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.3\n"
+
+msgctxt "blackcube/core/console"
+msgid "Init CMS Data\n"
+msgstr ""
+
+msgctxt "blackcube/core/console"
+msgid "Root node already exists\n"
+msgstr ""
+
+msgctxt "blackcube/core/helpers"
+msgid "Unable to render block"
+msgstr "Impossible d’afficher le bloc"
+
+msgctxt "blackcube/core/models/bloc"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/bloc"
+msgid "Bloc Type ID"
+msgstr "ID Type de Bloc"
+
+msgctxt "blackcube/core/models/bloc"
+msgid "Data"
+msgstr "Données"
+
+msgctxt "blackcube/core/models/bloc"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/bloc"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/bloc"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/bloc-type"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/bloc-type"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/bloc-type"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/bloc-type"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/bloc-type"
+msgid "Template"
+msgstr "Modèle"
+
+msgctxt "blackcube/core/models/bloc-type"
+msgid "View"
+msgstr "Vue"
+
+msgctxt "blackcube/core/models/category"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/category"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/category"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/category"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/category"
+msgid "Language ID"
+msgstr "ID Langue"
+
+msgctxt "blackcube/core/models/category"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/category"
+msgid "Slug ID"
+msgstr "ID Slug"
+
+msgctxt "blackcube/core/models/category"
+msgid "Type ID"
+msgstr "ID Type"
+
+msgctxt "blackcube/core/models/category-bloc"
+msgid "Bloc ID"
+msgstr "ID Bloc"
+
+msgctxt "blackcube/core/models/category-bloc"
+msgid "Category ID"
+msgstr "ID Catégorie"
+
+msgctxt "blackcube/core/models/category-bloc"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/category-bloc"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/category-bloc"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Date End"
+msgstr "Date de fin"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Date Start"
+msgstr "Date de début"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/composite"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Language ID"
+msgstr "ID Langue"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Slug ID"
+msgstr "ID Slug"
+
+msgctxt "blackcube/core/models/composite"
+msgid "Type ID"
+msgstr "ID Type"
+
+msgctxt "blackcube/core/models/composite-bloc"
+msgid "Bloc ID"
+msgstr "ID Bloc"
+
+msgctxt "blackcube/core/models/composite-bloc"
+msgid "Composite ID"
+msgstr "ID Composite"
+
+msgctxt "blackcube/core/models/composite-bloc"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/composite-bloc"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/composite-bloc"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "blackcube/core/models/composite-tag"
+msgid "Composite ID"
+msgstr "ID Composite"
+
+msgctxt "blackcube/core/models/composite-tag"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/composite-tag"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/composite-tag"
+msgid "Tag ID"
+msgstr "ID Tag"
+
+msgctxt "blackcube/core/models/elastic"
+msgid "{class} has no attribute named \"{attribute}\""
+msgstr "L’objet {class} n’a pas d’attribut  « {attribute} »"
+
+msgctxt "blackcube/core/models/language"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/language"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/language"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/language"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/language"
+msgid "Main"
+msgstr "Principal"
+
+msgctxt "blackcube/core/models/language"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/menus"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Language ID"
+msgstr "ID Langue"
+
+msgctxt "blackcube/core/models/menus"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Menu ID"
+msgstr "ID Menu"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Parent ID"
+msgstr "ID Parent"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Query String"
+msgstr "Query String"
+
+msgctxt "blackcube/core/models/menus_items"
+msgid "Route"
+msgstr "Route"
+
+msgctxt "blackcube/core/models/node"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/node"
+msgid "Cannot \"saveAfter()\" a new record with a node path"
+msgstr "Impossible de « saveAfter() » un nouvel enregistrement avec un « node path »"
+
+msgctxt "blackcube/core/models/node"
+msgid "Cannot \"saveBefore()\" a new record with a node path"
+msgstr "Impossible de « saveBefore() » un nouvel enregistrement avec un « node path »"
+
+msgctxt "blackcube/core/models/node"
+msgid "Cannot \"saveInto()\" a new record with a node path"
+msgstr "Impossible de « saveInto() » un nouvel enregistrement avec un « node path »"
+
+msgctxt "blackcube/core/models/node"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/node"
+msgid "Date End"
+msgstr "Date de fin"
+
+msgctxt "blackcube/core/models/node"
+msgid "Date Start"
+msgstr "Date de début"
+
+msgctxt "blackcube/core/models/node"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/node"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/node"
+msgid "Language ID"
+msgstr "ID Langue"
+
+msgctxt "blackcube/core/models/node"
+msgid "Left"
+msgstr "Gauche"
+
+msgctxt "blackcube/core/models/node"
+msgid "Level"
+msgstr "Niveau"
+
+msgctxt "blackcube/core/models/node"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/node"
+msgid "Path"
+msgstr "Chemin"
+
+msgctxt "blackcube/core/models/node"
+msgid "Right"
+msgstr "Droit"
+
+msgctxt "blackcube/core/models/node"
+msgid "Slug ID"
+msgstr "ID Slug"
+
+msgctxt "blackcube/core/models/node"
+msgid "Type ID"
+msgstr "ID Type"
+
+msgctxt "blackcube/core/models/node-bloc"
+msgid "Bloc ID"
+msgstr "ID Bloc"
+
+msgctxt "blackcube/core/models/node-bloc"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/node-bloc"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/node-bloc"
+msgid "Node ID"
+msgstr "ID Noeud"
+
+msgctxt "blackcube/core/models/node-bloc"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "blackcube/core/models/node-composite"
+msgid "Composite ID"
+msgstr "ID Composite"
+
+msgctxt "blackcube/core/models/node-composite"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/node-composite"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/node-composite"
+msgid "Node ID"
+msgstr "ID Noeud"
+
+msgctxt "blackcube/core/models/node-composite"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "blackcube/core/models/node-tag"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/node-tag"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/node-tag"
+msgid "Node ID"
+msgstr "ID Noeud"
+
+msgctxt "blackcube/core/models/node-tag"
+msgid "Tag ID"
+msgstr "ID Tag"
+
+msgctxt "blackcube/core/models/parameter"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/parameter"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/parameter"
+msgid "Domain"
+msgstr "Domaine"
+
+msgctxt "blackcube/core/models/parameter"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/parameter"
+msgid "Value"
+msgstr "Valeur"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Canonical Slug ID"
+msgstr "ID Slug canonique"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Description"
+msgstr "Description"
+
+msgctxt "blackcube/core/models/seo"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Image"
+msgstr "Image"
+
+msgctxt "blackcube/core/models/seo"
+msgid "No Follow"
+msgstr "No Follow"
+
+msgctxt "blackcube/core/models/seo"
+msgid "No Index"
+msgstr "No Index"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Og"
+msgstr "Og"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Og Type"
+msgstr "Type Og"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Slug ID"
+msgstr "ID Slug"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Title"
+msgstr "Titre"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Twitter"
+msgstr "Twitter"
+
+msgctxt "blackcube/core/models/seo"
+msgid "Twitter Card"
+msgstr "Carte Twitter"
+
+msgctxt "blackcube/core/models/sitemap"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/sitemap"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/sitemap"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/sitemap"
+msgid "Frequency"
+msgstr "Fréquence"
+
+msgctxt "blackcube/core/models/sitemap"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/sitemap"
+msgid "Priority"
+msgstr "Priorité"
+
+msgctxt "blackcube/core/models/sitemap"
+msgid "Slug ID"
+msgstr "ID Slug"
+
+msgctxt "blackcube/core/models/slug"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/slug"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/slug"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/slug"
+msgid "Host"
+msgstr "Hôte"
+
+msgctxt "blackcube/core/models/slug"
+msgid "Http Code"
+msgstr "Code HTTP"
+
+msgctxt "blackcube/core/models/slug"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/slug"
+msgid "Path"
+msgstr "Chemin"
+
+msgctxt "blackcube/core/models/slug"
+msgid "Target Url"
+msgstr "URL Cible"
+
+msgctxt "blackcube/core/models/tag"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/tag"
+msgid "Category ID"
+msgstr "ID Catégorie"
+
+msgctxt "blackcube/core/models/tag"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/tag"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/tag"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/tag"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/tag"
+msgid "Slug ID"
+msgstr "ID Slug"
+
+msgctxt "blackcube/core/models/tag"
+msgid "Type ID"
+msgstr "ID Type"
+
+msgctxt "blackcube/core/models/tag-bloc"
+msgid "Bloc ID"
+msgstr "ID Bloc"
+
+msgctxt "blackcube/core/models/tag-bloc"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/tag-bloc"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/tag-bloc"
+msgid "Order"
+msgstr "Ordre"
+
+msgctxt "blackcube/core/models/tag-bloc"
+msgid "Tag ID"
+msgstr "ID Tag"
+
+msgctxt "blackcube/core/models/type"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/type"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/type"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/type"
+msgid "Max Blocs"
+msgstr "Nombre maximal"
+
+msgctxt "blackcube/core/models/type"
+msgid "Min Blocs"
+msgstr "Nombre minimal"
+
+msgctxt "blackcube/core/models/type"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/type"
+msgid "Route"
+msgstr "Route"
+
+msgctxt "blackcube/core/models/type-bloc-type"
+msgid "Allowed"
+msgstr "Autorisé"
+
+msgctxt "blackcube/core/models/type-bloc-type"
+msgid "Bloc Type ID"
+msgstr "ID Type de Bloc"
+
+msgctxt "blackcube/core/models/type-bloc-type"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/type-bloc-type"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/type-bloc-type"
+msgid "Type ID"
+msgstr "ID Type"
+
+msgctxt "blackcube/core/routing"
+msgid "Type {type} is not supported."
+msgstr "Le type {type} n’est pas supporté."
+
+msgctxt "blackcube/core/web"
+msgid "Element \"{type}-{id}\" is not routable"
+msgstr "L’élément « {type}-{id} » n’est pas rouable"
+
+msgctxt "blackcube/core/validators"
+msgid "Submodel \"{attribute}\" is invalid"
+msgstr "Le sous modèle « {attribute} » est invalide"
+
+#~ msgctxt "blackcube/core/models/type"
+#~ msgid "Action"
+#~ msgstr "Action"
+
+#~ msgctxt "blackcube/core/models/type"
+#~ msgid "Controller"
+#~ msgstr "Contrôleur"

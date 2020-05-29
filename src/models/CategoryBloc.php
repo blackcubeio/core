@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,19 +14,21 @@
 
 namespace blackcube\core\models;
 
-use Yii;
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%categories_blocs}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $categoryId
  * @property int $blocId
@@ -40,6 +42,14 @@ use yii\db\Expression;
 class CategoryBloc extends \yii\db\ActiveRecord
 {
     /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -49,9 +59,17 @@ class CategoryBloc extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
@@ -83,11 +101,11 @@ class CategoryBloc extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'categoryId' => Yii::t('blackcube.core', 'Category ID'),
-            'blocId' => Yii::t('blackcube.core', 'Bloc ID'),
-            'order' => Yii::t('blackcube.core', 'Order'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'categoryId' => Module::t('models/category-bloc', 'Category ID'),
+            'blocId' => Module::t('models/category-bloc', 'Bloc ID'),
+            'order' => Module::t('models/category-bloc', 'Order'),
+            'dateCreate' => Module::t('models/category-bloc', 'Date Create'),
+            'dateUpdate' => Module::t('models/category-bloc', 'Date Update'),
         ];
     }
 

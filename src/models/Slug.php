@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,22 +14,30 @@
 
 namespace blackcube\core\models;
 
-use blackcube\core\components\PreviewManager;
-use Yii;
+use blackcube\core\components\RouteEncoder;
+use blackcube\core\helpers\QueryCache;
+use blackcube\core\interfaces\RoutableInterface;
+use blackcube\core\Module;
 use yii\base\InvalidArgumentException;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\caching\DbQueryDependency;
 use yii\db\Expression;
+use Yii;
 use yii\db\Query;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%slugs}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property string|null $host
@@ -45,10 +53,41 @@ use yii\db\Query;
  * @property Composite $composite
  * @property Node $node
  * @property Sitemap $sitemap
+ * @property Seo $seo
  * @property Tag $tag
  */
-class Slug extends \yii\db\ActiveRecord
+class Slug extends \yii\db\ActiveRecord implements RoutableInterface
 {
+    public const SCENARIO_REDIRECT = 'redirect';
+
+    /**
+     * @var int
+     */
+    public static $CACHE_EXPIRE = 3600;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoute()
+    {
+        return RouteEncoder::encode(static::getElementType(), $this->id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getElementType()
+    {
+        return Inflector::camel2id(StringHelper::basename(static::class));
+    }
 
     /**
      * {@inheritdoc}
@@ -60,9 +99,27 @@ class Slug extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
+        ];
+        $behaviors['typecast'] = [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterFind' => true,
+            'typecastAfterSave' => true,
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => true,
         ];
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
@@ -80,7 +137,17 @@ class Slug extends \yii\db\ActiveRecord
      */
     public static function find()
     {
-        return new FilterActiveQuery(static::class);
+        return Yii::createObject(FilterActiveQuery::class, [static::class]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_REDIRECT] = ['httpCode', 'path', 'host', 'targetUrl', 'active'];
+        return $scenarios;
     }
 
     /**
@@ -90,11 +157,16 @@ class Slug extends \yii\db\ActiveRecord
     {
         return [
             [['host', 'path', 'targetUrl'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : $value;
+                return empty(trim($value)) ? null : trim($value);
+            }],
+            [['path'], 'filter', 'filter' => function($value) {
+                return ($value === null) ? null : ltrim($value, '/');
             }],
             [['httpCode'], 'integer'],
             [['active'], 'boolean'],
             [['path'], 'required'],
+            [['targetUrl'], 'url'],
+            [['httpCode', 'targetUrl'], 'required', 'on' => [static::SCENARIO_REDIRECT]],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['host', 'path', 'targetUrl'], 'string', 'max' => 255],
             [['host', 'path'], 'unique', 'targetAttribute' => ['host', 'path']],
@@ -107,14 +179,14 @@ class Slug extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'host' => Yii::t('blackcube.core', 'Host'),
-            'path' => Yii::t('blackcube.core', 'Path'),
-            'targetUrl' => Yii::t('blackcube.core', 'Target Url'),
-            'httpCode' => Yii::t('blackcube.core', 'Http Code'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/slug', 'ID'),
+            'host' => Module::t('models/slug', 'Host'),
+            'path' => Module::t('models/slug', 'Path'),
+            'targetUrl' => Module::t('models/slug', 'Target Url'),
+            'httpCode' => Module::t('models/slug', 'Http Code'),
+            'active' => Module::t('models/slug', 'Active'),
+            'dateCreate' => Module::t('models/slug', 'Date Create'),
+            'dateUpdate' => Module::t('models/slug', 'Date Update'),
         ];
     }
 
@@ -159,6 +231,16 @@ class Slug extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Seo]].
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getSeo()
+    {
+        return $this->hasOne(Seo::class, ['slugId' => 'id']);
+    }
+
+    /**
      * Gets query for [[Tag]].
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
@@ -174,36 +256,36 @@ class Slug extends \yii\db\ActiveRecord
     public function findTargetElementInfo()
     {
         $compositeQuery = Composite::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Composite::getElementType().'" AS type']);
         $compositeQuery->select([
-            new Expression('"'.Composite::TYPE.'" AS type'),
+            $expression,
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $nodeQuery = Node::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Node::getElementType().'" AS type']);
         $nodeQuery->select([
-            new Expression('"'.Node::TYPE.'" AS type'),
+            $expression,
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $tagQuery = Tag::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Tag::getElementType().'" AS type']);
         $tagQuery->select([
-            new Expression('"'.Tag::TYPE.'" AS type'),
+            $expression,
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $categoryQuery = Category::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Category::getElementType().'" AS type']);
         $categoryQuery->select([
-            new Expression('"'.Category::TYPE.'" AS type'),
+            $expression,
             'id'
         ])
-            ->where(['slugId' => $this->id])
-            ->active();
+            ->where(['slugId' => $this->id]);
 
         $compositeQuery->union($nodeQuery)
             ->union($tagQuery)
@@ -234,32 +316,41 @@ class Slug extends \yii\db\ActiveRecord
 
     /**
      * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @todo: Fix ActiveQuery generation, ti's not working as expected for lists an idea would be to create a fake element based on a view
      */
     public function getElement()
     {
         $result = $this->findTargetElementInfo();
         if ($result !== null && is_array($result)) {
             switch ($result['type']) {
-                case Node::TYPE:
-                    $query = Node::find();
+                case Node::getElementType():
+                    $query = $this->hasOne(Node::class, ['slugId' => 'id']);
+                    // $query = Node::find();
                     break;
-                case Composite::TYPE:
-                    $query = Composite::find();
+                case Composite::getElementType():
+                    $query = $this->hasOne(Composite::class, ['slugId' => 'id']);
+                    // $query = Composite::find();
                     break;
-                case Category::TYPE:
-                    $query = Category::find();
+                case Category::getElementType():
+                    $query = $this->hasOne(Category::class, ['slugId' => 'id']);
+                    // $query = Category::find();
                     break;
-                case Tag::TYPE:
-                    $query = Tag::find();
+                case Tag::getElementType():
+                    $query = $this->hasOne(Tag::class, ['slugId' => 'id']);
+                    // $query = Tag::find();
                     break;
                 default:
                     throw new InvalidArgumentException();
                     break;
             }
-            $query->where(['id' => $result['id']])->active();
+            // $query->where(['id' => $result['id']]);
         } else {
             // fake query to allow the active query trick
-            $query = static::find()->where('1 = 0');
+            $query = Composite::find()->where('1 = 0');;
+            $query->primaryModel = $this;
+            $query->link = ['id' => 'id'];
+            $query->multiple = false;
+            // $query = static::find()->where('1 = 0');
         }
         return $query;
     }
@@ -269,32 +360,49 @@ class Slug extends \yii\db\ActiveRecord
         $query = null;
         $slug = null;
         switch($type) {
-            case Composite::TYPE:
+            case Composite::getElementType():
                 $query = Composite::find();
                 break;
-            case Node::TYPE:
+            case Node::getElementType():
                 $query = Node::find();
                 break;
-            case Category::TYPE:
+            case Category::getElementType():
                 $query = Category::find();
                 break;
-            case Tag::TYPE:
+            case Tag::getElementType():
                 $query = Tag::find();
                 break;
+            case Slug::getElementType():
+                $query = Slug::find();
+                break;
         }
-        if ($query !== null) {
+        // if ($query !== null) {
             $query->where(['id' => $id]);
-            $query->active();
+            // $query->active();
+        // }
+        if (Module::getInstance()->cache !== null) {
+            $cacheDependency = QueryCache::getCmsDependencies();
+            /**/
+            $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
+
         $element = $query->one();
-        if ($element !== null) {
-            $slug = $element->getSlug()->active()->one();
+        if ($element !== null && !$element instanceof Slug) {
+            // $slug = $element->getSlug()->active()->one();
+            $slug = $element->getSlug()->one();
+        } elseif($element instanceof Slug) {
+            $slug = $element;
         }
         return $slug;
 
     }
 
-    public static function findOneByPathinfoAndHostname($pathInfo, $hostname = null)
+    /**
+     * @param string $pathInfo
+     * @param string|null $hostname
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function findByPathinfoAndHostname($pathInfo, $hostname = null)
     {
         $slugQuery = static::find()->where([
             'path' => $pathInfo,
@@ -303,9 +411,13 @@ class Slug extends \yii\db\ActiveRecord
                 ['host' => $hostname],
                 ['IS', 'host', null]
             ])
-            ->active();
-        $slugQuery->orderBy(['host' => SORT_DESC])
+            ->orderBy(['host' => SORT_DESC])
             ->limit(1);
-        return $slugQuery->one();
+        $slugQuery->multiple = false;
+        if (Module::getInstance()->cache !== null) {
+            $cacheDependency = QueryCache::getSlugDependencies();
+            $slugQuery->cache(static::$CACHE_EXPIRE, $cacheDependency);
+        }
+        return $slugQuery;
     }
 }

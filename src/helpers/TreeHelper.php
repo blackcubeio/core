@@ -15,6 +15,7 @@
 namespace blackcube\core\helpers;
 
 use blackcube\core\exceptions\InvalidTreeSegmentException;
+use Yii;
 
 /**
  * Helper class to ease node creation / management
@@ -56,10 +57,10 @@ class TreeHelper
 
     public static function convertPathToMatrix($path)
     {
-        $matrix = new MatrixHelper([
+        $matrix = Yii::createObject(MatrixHelper::class, [[
             0, 1,
             1, 0,
-        ]);
+        ]]);
         $nodePath = explode(self::PATH_SEPARATOR, $path);
         foreach ($nodePath as $segment) {
             $matrix->multiply(self::buildSegmentMatrix($segment));
@@ -142,10 +143,10 @@ class TreeHelper
         if ($segment <= 0) {
             throw new InvalidTreeSegmentException();
         }
-        return new MatrixHelper([
+        return Yii::createObject(MatrixHelper::class, [[
             1, 1,
             $segment, $segment + 1,
-        ]);
+        ]]);
     }
 
     /**
@@ -154,10 +155,10 @@ class TreeHelper
      */
     public static function buildBumpMatrix($offset = 0)
     {
-        return new MatrixHelper([
+        return Yii::createObject(MatrixHelper::class, [[
             1, 0,
             $offset, 1,
-        ]);
+        ]]);
     }
 
     /**

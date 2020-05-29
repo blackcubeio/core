@@ -1,11 +1,34 @@
 <?php
+/**
+ * CompositeTrait.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ */
 
 namespace blackcube\core\traits;
 
-
 use blackcube\core\models\Composite;
 use blackcube\core\models\FilterActiveQuery;
+use Yii;
 
+/**
+ * Composite trait
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ * @since XXX
+ */
 trait CompositeTrait
 {
     /**
@@ -60,7 +83,7 @@ trait CompositeTrait
             } else {
                 $position = $compositeCount + 1;
             }
-            $elementComposite = new $elementCompositeClass();
+            $elementComposite = Yii::createObject($elementCompositeClass);
             $elementComposite->{$this->getElementIdColumn()} = $this->id;
             $elementComposite->{$this->getCompositeIdColumn()} = $composite->id;
             $elementComposite->order = $position;
@@ -143,7 +166,7 @@ trait CompositeTrait
                 } else {
                     $position = $compositeCount + 1;
                 }
-                $elementComposite = new $elementCompositeClass();
+                $elementComposite = Yii::createObject($elementCompositeClass);
                 $elementComposite->attributes = $currentAttributes;
                 $elementComposite->order = $position;
                 $elementComposite->save();
@@ -155,6 +178,52 @@ trait CompositeTrait
 
         }
         return $status;
+    }
+
+    /**
+     * @param Composite $composite
+     * @return bool
+     */
+    public function moveCompositeUp(Composite $composite)
+    {
+        $elementCompositeClass = $this->getElementCompositeClass();
+        $compositeCount = $this->getComposites()->count();
+        $currentElementComposite = $elementCompositeClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getCompositeIdColumn() => $composite->id
+        ]);
+        if ($currentElementComposite === null) {
+            return false;
+        }
+        $position = $currentElementComposite->order - 1;
+        if ($position < 1) {
+            return true;
+        } else {
+            return $this->moveComposite($composite, $position);
+        }
+    }
+
+    /**
+     * @param Composite $composite
+     * @return bool
+     */
+    public function moveCompositeDown(Composite $composite)
+    {
+        $elementCompositeClass = $this->getElementCompositeClass();
+        $compositeCount = $this->getComposites()->count();
+        $currentElementComposite = $elementCompositeClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getCompositeIdColumn() => $composite->id
+        ]);
+        if ($currentElementComposite === null) {
+            return false;
+        }
+        $position = $currentElementComposite->order + 1;
+        if ($position > $compositeCount) {
+            return true;
+        } else {
+            return $this->moveComposite($composite, $position);
+        }
     }
 
     /**

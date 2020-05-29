@@ -1,11 +1,32 @@
 <?php
+/**
+ * SlugTrait.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ */
 
 namespace blackcube\core\traits;
 
-
-
 use blackcube\core\models\Slug;
 
+/**
+ * Slug trait
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ * @since XXX
+ */
 trait SlugTrait
 {
     /**
@@ -26,17 +47,17 @@ trait SlugTrait
             $slugIdColumn = $this->getSlugIdColumn();
             $transaction = static::getDb()->beginTransaction();
             try {
+                $currentSlugId = $this->{$slugIdColumn};
                 if (empty($this->{$slugIdColumn}) === true) {
                     // no slug
                     $currentSlugId = null;
                     $this->{$slugIdColumn} = $slug->id;
                 } elseif ($slug->id != $this->{$slugIdColumn}) {
                     // replace slug
-                    $currentSlugId = $this->{$slugIdColumn};
                     $this->{$slugIdColumn} = $slug->id;
                 }
                 $status = $this->save(false, [$slugIdColumn]);
-                if ($currentSlugId !== null) {
+                if ($currentSlugId !== null && $currentSlugId != $slug->id ) {
                     Slug::deleteAll(['id' => $currentSlugId]);
                 }
                 $transaction->commit();

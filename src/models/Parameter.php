@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,19 +14,21 @@
 
 namespace blackcube\core\models;
 
-use Yii;
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%parameters}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property string $domain
  * @property string $name
@@ -36,6 +38,16 @@ use yii\db\Expression;
  */
 class Parameter extends \yii\db\ActiveRecord
 {
+    public const HOST_DOMAIN = 'HOSTS';
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -46,9 +58,17 @@ class Parameter extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
@@ -79,11 +99,33 @@ class Parameter extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'domain' => Yii::t('blackcube.core', 'Domain'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'value' => Yii::t('blackcube.core', 'Value'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'domain' => Module::t('models/parameter', 'Domain'),
+            'name' => Module::t('models/parameter', 'Name'),
+            'value' => Module::t('models/parameter', 'Value'),
+            'dateCreate' => Module::t('models/parameter', 'Date Create'),
+            'dateUpdate' => Module::t('models/parameter', 'Date Update'),
         ];
     }
+
+    /**
+     * @return array
+     */
+    public static function getAllowedHosts()
+    {
+        $parameters = static::find()
+            ->andWhere(['domain' => static::HOST_DOMAIN])
+            ->select(['value'])
+            ->orderBy(['name' => SORT_ASC])
+            ->asArray()
+            ->all();
+        $allowedHosts = array_map(function($item) {
+            return [
+                'id' => $item['value'] === '*' ? '' : $item['value'],
+                'value' => $item['value'],
+            ];
+        }, $parameters);
+        array_unshift($allowedHosts, ['id' => '', 'value' => '*']);
+        return $allowedHosts;
+    }
+
 }

@@ -1,55 +1,61 @@
 <?php
 /**
- * BlackcubeController.php
+ * RedirectController.php
  *
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\web
+ * @package blackcube\core\web\controllers
  */
 
-namespace blackcube\core\web;
+namespace blackcube\core\web\controllers;
 
 use blackcube\core\components\RouteEncoder;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
+use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
-use blackcube\core\models\TypeBlocType;
-use yii\base\BaseObject;
-use ArrayAccess;
-use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\Module;
+use yii\base\NotSupportedException;
 use yii\helpers\Inflector;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use Yii;
 
 /**
- * This is class allow transcoding url from route to DB
+ * This is class allow to use easy redirect
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package app\models
+ * @package blackcube\core\web\controllers
+ * @since XXX
  *
- * @property-read Node|Composite|Category|Tag|ElementInterface $element
+ * @property-read Slug $element
  */
-class BlackcubeController extends Controller
+class RedirectController extends Controller
 {
 
-    public $elementId;
-
-    public $elementType;
     /**
-     * @var Node|Composite|Category|Tag|ElementInterface
+     * @var integer
+     */
+    private $_elementId;
+
+    /**
+     * @var string
+     */
+    private $_elementType;
+
+    /**
+     * @var Slug
      */
     private $_element;
 
@@ -78,35 +84,38 @@ class BlackcubeController extends Controller
         parent::__construct($id, $module, $config);
     }
 
+    public function setElementInfo($info)
+    {
+        $data = RouteEncoder::decode($info);
+        if ($data['type'] !== Slug::getElementType()) {
+            throw new NotSupportedException();
+        }
+        $this->_elementId = $data['id'];
+        $this->_elementType = $data['type'];
+        $this->_element = null;
+    }
+
     /**
      * Return element if it exists
      *
-     * @return Node|Composite|Category|Tag
+     * @return Slug
      * @since XXX
      */
     public function getElement()
     {
-        if (($this->_element === null) && ($this->elementId !== null) && ($this->elementType !== null)) {
-            switch ($this->elementType) {
-                case Node::TYPE:
-                    $query = Node::find();
-                    break;
-                case Composite::TYPE:
-                    $query = Composite::find();
-                    break;
-                case Category::TYPE:
-                    $query = Category::find();
-                    break;
-                case Tag::TYPE:
-                    $query = Tag::find();
-                    break;
-                default:
-                    throw new InvalidArgumentException();
-                    break;
-            }
-            $this->_element = $query->where(['id' => $this->elementId])->active()->one();
+        if (($this->_element === null) && ($this->_elementId !== null)) {
+            $this->_element = Slug::find()->andWhere(['id' => $this->_elementId])->active()->one();
         }
         return $this->_element;
     }
 
+    /**
+     * @return \yii\web\Response|string
+     */
+    public function actionIndex()
+    {
+        $targetUrl = $this->element->targetUrl;
+        $httpCode = $this->element->httpCode;
+        return $this->redirect($targetUrl, $httpCode);
+    }
 }

@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,19 +14,22 @@
 
 namespace blackcube\core\models;
 
-use Yii;
+use blackcube\core\Module;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%languages}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property string $id
  * @property string $name
@@ -42,6 +45,14 @@ use yii\db\Expression;
 class Language extends \yii\db\ActiveRecord
 {
     /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -51,9 +62,28 @@ class Language extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
+        ];
+        $behaviors['typecast'] = [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'main' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterFind' => true,
+            'typecastAfterSave' => true,
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => true,
         ];
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
@@ -62,6 +92,16 @@ class Language extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%languages}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     * Add FilterActiveQuery
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
 
     /**
@@ -85,12 +125,12 @@ class Language extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'main' => Yii::t('blackcube.core', 'Main'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/language', 'ID'),
+            'name' => Module::t('models/language', 'Name'),
+            'main' => Module::t('models/language', 'Main'),
+            'active' => Module::t('models/language', 'Active'),
+            'dateCreate' => Module::t('models/language', 'Date Create'),
+            'dateUpdate' => Module::t('models/language', 'Date Update'),
         ];
     }
 

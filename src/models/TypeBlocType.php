@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,19 +14,22 @@
 
 namespace blackcube\core\models;
 
-use Yii;
+use blackcube\core\helpers\QueryCache;
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%types_blocTypes}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $typeId
  * @property int $blocTypeId
@@ -40,6 +43,24 @@ use yii\db\Expression;
 class TypeBlocType extends \yii\db\ActiveRecord
 {
     /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE_TYPE = 'pre_validate_type';
+
+    /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE_BLOCTYPE = 'pre_validate_bloctype';
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -49,9 +70,17 @@ class TypeBlocType extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
@@ -60,6 +89,17 @@ class TypeBlocType extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%types_blocTypes}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_PRE_VALIDATE_TYPE] = ['allowed', 'typeId'];
+        $scenarios[static::SCENARIO_PRE_VALIDATE_BLOCTYPE] = ['allowed', 'blocTypeId'];
+        return $scenarios;
     }
 
     /**
@@ -84,11 +124,11 @@ class TypeBlocType extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'typeId' => Yii::t('blackcube.core', 'Type ID'),
-            'blocTypeId' => Yii::t('blackcube.core', 'Bloc Type ID'),
-            'allowed' => Yii::t('blackcube.core', 'Allowed'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'typeId' => Module::t('models/type-bloc-type', 'Type ID'),
+            'blocTypeId' => Module::t('models/type-bloc-type', 'Bloc Type ID'),
+            'allowed' => Module::t('models/type-bloc-type', 'Allowed'),
+            'dateCreate' => Module::t('models/type-bloc-type', 'Date Create'),
+            'dateUpdate' => Module::t('models/type-bloc-type', 'Date Update'),
         ];
     }
 
@@ -109,6 +149,8 @@ class TypeBlocType extends \yii\db\ActiveRecord
      */
     public function getType()
     {
-        return $this->hasOne(Type::class, ['id' => 'typeId']);
+        return $this
+            ->hasOne(Type::class, ['id' => 'typeId'])
+            ->cache(3600, QueryCache::getTypeDependencies());
     }
 }

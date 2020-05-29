@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,24 +14,25 @@
 
 namespace blackcube\core\models;
 
-use Yii;
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%types}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property string $name
- * @property string $controller
- * @property string|null $action
+ * @property string $route
  * @property int|null $minBlocs
  * @property int|null $maxBlocs
  * @property string $dateCreate
@@ -46,6 +47,14 @@ use yii\db\Expression;
 class Type extends \yii\db\ActiveRecord
 {
     /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -55,9 +64,17 @@ class Type extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
@@ -74,10 +91,16 @@ class Type extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'controller'], 'required'],
+            [['route'], 'filter', 'filter' => function($value) {
+                return empty(trim($value)) ? null : trim($value);
+            }],
+            [['minBlocs', 'maxBlocs'], 'filter', 'filter' => function($value) {
+                return (trim($value) > 0 ) ? trim($value) : null;
+            }],
+            [['name', 'route'], 'required'],
             [['minBlocs', 'maxBlocs'], 'integer'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['name', 'controller', 'action'], 'string', 'max' => 255],
+            [['name', 'route'], 'string', 'max' => 255],
             [['name'], 'unique'],
         ];
     }
@@ -88,14 +111,13 @@ class Type extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'controller' => Yii::t('blackcube.core', 'Controller'),
-            'action' => Yii::t('blackcube.core', 'Action'),
-            'minBlocs' => Yii::t('blackcube.core', 'Min Blocs'),
-            'maxBlocs' => Yii::t('blackcube.core', 'Max Blocs'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/type', 'ID'),
+            'name' => Module::t('models/type', 'Name'),
+            'route' => Module::t('models/type', 'Route'),
+            'minBlocs' => Module::t('models/type', 'Min Blocs'),
+            'maxBlocs' => Module::t('models/type', 'Max Blocs'),
+            'dateCreate' => Module::t('models/type', 'Date Create'),
+            'dateUpdate' => Module::t('models/type', 'Date Update'),
         ];
     }
 
@@ -139,6 +161,45 @@ class Type extends \yii\db\ActiveRecord
         return $this->hasMany(Tag::class, ['typeId' => 'id']);
     }
 
+    public function getElementsCount()
+    {
+        $compositeQuery = Composite::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Composite::getElementType().'" AS type']);
+        $compositeQuery->select([
+            $expression,
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+        $nodeQuery = Node::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Node::getElementType().'" AS type']);
+        $nodeQuery->select([
+            $expression,
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+
+        $tagQuery = Tag::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Tag::getElementType().']"AS type']);
+        $tagQuery->select([
+            $expression,
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+
+        $categoryQuery = Category::find();
+        $expression = Yii::createObject(Expression::class, ['"'.Category::getElementType().'" AS type']);
+        $categoryQuery->select([
+            $expression,
+            'id'
+        ])
+            ->where(['typeId' => $this->id]);
+
+        $compositeQuery->union($nodeQuery)
+            ->union($tagQuery)
+            ->union($categoryQuery);
+        return $compositeQuery->count();
+    }
+
     /**
      * Gets query for [[BlocType]].
      *
@@ -146,6 +207,9 @@ class Type extends \yii\db\ActiveRecord
      */
     public function getBlocTypes()
     {
-        return $this->hasMany(BlocType::class, ['id' => 'blocTypeId'])->viaTable(TypeBlocType::tableName(), ['typeId' => 'id']);
+        return $this->hasMany(BlocType::class, ['id' => 'blocTypeId'])->viaTable(TypeBlocType::tableName(), ['typeId' => 'id'], function ($query) {
+            /* @var $query \yii\db\ActiveQuery */
+            $query->andWhere(['allowed' => true]);
+        });
     }
 }

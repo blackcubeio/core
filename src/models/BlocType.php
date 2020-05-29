@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,19 +14,22 @@
 
 namespace blackcube\core\models;
 
-use Yii;
+use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "{{%blocTypes}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property string $name
@@ -42,6 +45,14 @@ use yii\db\Expression;
 class BlocType extends \yii\db\ActiveRecord
 {
     /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -51,10 +62,19 @@ class BlocType extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
         return $behaviors;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -83,12 +103,12 @@ class BlocType extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'name' => Yii::t('blackcube.core', 'Name'),
-            'template' => Yii::t('blackcube.core', 'Template'),
-            'view' => Yii::t('blackcube.core', 'View'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/bloc-type', 'ID'),
+            'name' => Module::t('models/bloc-type', 'Name'),
+            'template' => Module::t('models/bloc-type', 'Template'),
+            'view' => Module::t('models/bloc-type', 'View'),
+            'dateCreate' => Module::t('models/bloc-type', 'Date Create'),
+            'dateUpdate' => Module::t('models/bloc-type', 'Date Update'),
         ];
     }
 
@@ -121,4 +141,23 @@ class BlocType extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Type::class, ['id' => 'typeId'])->viaTable(TypeBlocType::tableName(), ['blocTypeId' => 'id']);
     }
+
+    public function getAdminView($pathAlias, $asAlias = false)
+    {
+        if ($pathAlias !== null) {
+            $targetView = (empty($this->view) ? Inflector::underscore($this->name) : $this->view);
+            $targetView = preg_replace('/[-_\s]+/', '_', $targetView);
+            if ($asAlias === true) {
+                return$pathAlias.'/'.$targetView.'.php';
+            } else {
+                $templatePath = Yii::getAlias($pathAlias);
+                $filePath = $templatePath . '/' . $targetView . '.php';
+                if (file_exists($filePath) === true) {
+                    return $pathAlias.'/'.$targetView.'.php';
+                }
+            }
+        }
+        return false;
+    }
+
 }

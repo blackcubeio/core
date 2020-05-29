@@ -1,11 +1,38 @@
 <?php
+/**
+ * BlocTrait.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ */
 
 namespace blackcube\core\traits;
 
-
 use blackcube\core\models\Bloc;
+use blackcube\core\models\CategoryBloc;
+use blackcube\core\models\CompositeBloc;
 use blackcube\core\models\FilterActiveQuery;
+use blackcube\core\models\NodeBloc;
+use blackcube\core\models\TagBloc;
+use Yii;
 
+/**
+ * Bloc trait
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ * @since XXX
+ */
 trait BlocTrait
 {
     /**
@@ -17,11 +44,6 @@ trait BlocTrait
      * @return string name of the column used to link element with blocs ("element"Id)
      */
     abstract protected function getElementIdColumn();
-
-    /**
-     * @return FilterActiveQuery|\yii\db\ActiveQuery
-     */
-    abstract public function getBlocs();
 
 
     /**
@@ -61,7 +83,7 @@ trait BlocTrait
             } else {
                 $position = $blocCount + 1;
             }
-            $elementBloc = new $elementBlocClass();
+            $elementBloc = Yii::createObject($elementBlocClass);
             $elementBloc->{$this->getElementIdColumn()} = $this->id;
             $elementBloc->{$this->getBlocIdColumn()} = $bloc->id;
             $elementBloc->order = $position;
@@ -78,21 +100,14 @@ trait BlocTrait
      * Detach the bloc from the element but do not delete it
      * @param Bloc $bloc
      * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function detachBloc(Bloc $bloc)
     {
-        $status = false;
-        $elementBlocClass = $this->getElementBlocClass();
-        $elementBloc = $elementBlocClass::findOne([
-            $this->getElementIdColumn() => $this->id,
-            $this->getBlocIdColumn() => $bloc->id
-        ]);
-        if ($elementBloc !== null) {
-            $elementBloc->delete();
-            $status = true;
-        }
+        $bloc->delete();
         $this->reorderBlocs();
-        return $status;
+        return true;
     }
 
     /**
@@ -144,10 +159,11 @@ trait BlocTrait
                 } else {
                     $position = $blocCount + 1;
                 }
-                $elementBloc = new $elementBlocClass();
+                $elementBloc = Yii::createObject($elementBlocClass);
                 $elementBloc->attributes = $currentAttributes;
                 $elementBloc->order = $position;
                 $elementBloc->save();
+                $this->reorderBlocs();
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
@@ -156,6 +172,52 @@ trait BlocTrait
 
         }
         return $status;
+    }
+
+    /**
+     * @param Bloc $bloc
+     * @return bool
+     */
+    public function moveBlocUp(Bloc $bloc)
+    {
+        $elementBlocClass = $this->getElementBlocClass();
+        $blocCount = $this->getBlocs()->count();
+        $currentElementBloc = $elementBlocClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getBlocIdColumn() => $bloc->id
+        ]);
+        if ($currentElementBloc === null) {
+            return false;
+        }
+        $position = $currentElementBloc->order - 1;
+        if ($position < 1) {
+            return true;
+        } else {
+            return $this->moveBloc($bloc, $position);
+        }
+    }
+
+    /**
+     * @param Bloc $bloc
+     * @return bool
+     */
+    public function moveBlocDown(Bloc $bloc)
+    {
+        $elementBlocClass = $this->getElementBlocClass();
+        $blocCount = $this->getBlocs()->count();
+        $currentElementBloc = $elementBlocClass::findOne([
+            $this->getElementIdColumn() => $this->id,
+            $this->getBlocIdColumn() => $bloc->id
+        ]);
+        if ($currentElementBloc === null) {
+            return false;
+        }
+        $position = $currentElementBloc->order + 1;
+        if ($position > $blocCount) {
+            return true;
+        } else {
+            return $this->moveBloc($bloc, $position);
+        }
     }
 
     /**
@@ -183,6 +245,39 @@ trait BlocTrait
             $status = false;
         }
         return $status;
+    }
+
+    /**
+     * @return CategoryBloc[]|TagBloc[]|CompositeBloc[]|NodeBloc[]
+     */
+    public function getElementBlocs()
+    {
+        $elementBlocs = [];
+        if ($this->getIsNewRecord() === false) {
+            $elementBlocClass = $this->getElementBlocClass();
+            $elementBlocs = $elementBlocClass::find()
+                ->andWhere([$this->getElementIdColumn() => $this->id])
+                ->orderBy(['order' => SORT_ASC])
+                ->all();
+
+        }
+        return $elementBlocs;
+    }
+
+    /**
+     * Gets query for [[Bloc]].
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getBlocs() {
+        $elementBlocClass = $this->getElementBlocClass();
+        $blocQuery = Bloc::find()
+            ->rightJoin($elementBlocClass::tableName().' linktable', 'linktable.[[blocId]] = id')
+            ->andWhere(['linktable.'.$this->getElementIdColumn() => $this->id])
+            ->orderBy(['linktable.[[order]]' => SORT_ASC]);
+        $blocQuery->multiple = true;
+        return $blocQuery;
+
     }
 
 }

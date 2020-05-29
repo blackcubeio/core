@@ -16,6 +16,7 @@ namespace blackcube\core\traits;
 
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
+use Yii;
 
 /**
  * Trait used to handle tree node management
@@ -39,10 +40,12 @@ trait NodeTreeTrait
      * @var string node path in dot notation
      */
     protected $nodePath;
+
     /**
      * @var MatrixHelper node path in matrix notation
      */
     protected $nodeMatrix;
+
     /**
      * @return string node path in dot notation
      * @since XXX
@@ -51,6 +54,7 @@ trait NodeTreeTrait
     {
         return $this->nodePath;
     }
+
     /**
      * @param string $path node path in dot notation (1.1.2)
      * @return static
@@ -61,6 +65,7 @@ trait NodeTreeTrait
         $this->nodePath = $path;
         $this->nodeMatrix = TreeHelper::convertPathToMatrix($path);
     }
+
     /**
      * @return MatrixHelper node path in matrix notation
      * @since XXX
@@ -69,16 +74,18 @@ trait NodeTreeTrait
     {
         return $this->nodeMatrix;
     }
+
     /**
      * Create a node object from a matrix
      * @param array $matrix node path in matrix notation [a, b, c, d]
      * @return static
+     * @throws \yii\base\InvalidConfigException
      * @since XXX
      */
     public function setNodeMatrix($matrix)
     {
         if (is_array($matrix) === true) {
-            $matrix = new MatrixHelper($matrix);
+            $matrix = Yii::createObject(MatrixHelper::class, [$matrix]);
         }
         $this->nodeMatrix = $matrix;
         $this->nodePath = TreeHelper::convertMatrixToPath($matrix);

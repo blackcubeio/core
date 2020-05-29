@@ -36,8 +36,7 @@ class m000000_000001_types_blocTypes extends Migration
         $this->createTable('{{%types}}', [
             'id' => $this->bigPrimaryKey(),
             'name' => $this->string()->notNull(),
-            'controller' => $this->string()->notNull(),
-            'action' => $this->string()->defaultValue(null),
+            'route' => $this->string()->notNull(),
             'minBlocs' => $this->integer()->defaultValue(null),
             'maxBlocs' => $this->integer()->defaultValue(null),
             'dateCreate' => $this->dateTime()->notNull(),

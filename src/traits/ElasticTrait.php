@@ -1,11 +1,35 @@
 <?php
+/**
+ * ElasticTrait.php
+ *
+ * PHP version 7.2+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ */
 
 namespace blackcube\core\traits;
 
 use blackcube\core\models\BlocType;
 use blackcube\core\models\Elastic;
 use yii\helpers\Json;
+use Yii;
 
+/**
+ * Elastic trait
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2020 Redcat
+ * @license https://www.redcat.io/license license
+ * @version XXX
+ * @link https://www.redcat.io
+ * @package blackcube\core\traits
+ * @since XXX
+ */
 trait ElasticTrait
 {
 
@@ -19,6 +43,10 @@ trait ElasticTrait
      */
     public $defaultJsonSchema = '{"type":"object"}';
 
+    public function getElasticAttributes($names = null, $except = [])
+    {
+        return $this->elastic->getAttributes($names, $except);
+    }
     /**
      * {@inheritDoc}
      */
@@ -265,7 +293,12 @@ trait ElasticTrait
         } else {
             $jsonSchema = $this->defaultJsonSchema;
         }
-        $this->elastic = new Elastic(['schema' => $jsonSchema]);
+        $this->elastic =  Yii::createObject(['class' => Elastic::class, 'schema' => $jsonSchema]);
+    }
+
+    public function getStructure()
+    {
+        return $this->elastic->getModelStructure();
     }
 
     /**
@@ -333,8 +366,9 @@ trait ElasticTrait
      */
     public function beforeValidate()
     {
+        $status = parent::beforeValidate();
         $this->fillModel();
-        return parent::beforeValidate();
+        return $status;
     }
 
     /**
@@ -342,8 +376,9 @@ trait ElasticTrait
      */
     public function beforeSave($insert)
     {
+        $status = parent::beforeSave($insert);
         $this->fillModel();
-        return parent::beforeSave($insert);
+        return $status;
     }
 
 }

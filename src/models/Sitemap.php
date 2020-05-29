@@ -5,7 +5,7 @@
  * PHP version 7.2+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,19 +14,23 @@
 
 namespace blackcube\core\models;
 
-use Yii;
+use blackcube\core\Module;
+use blackcube\core\interfaces\SluggedInterface;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use Yii;
 
 /**
  * This is the model class for table "{{%sitemaps}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
+ * @copyright 2010-2020 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\models
+ * @since XXX
  *
  * @property int $id
  * @property int $slugId
@@ -38,8 +42,27 @@ use yii\db\Expression;
  *
  * @property Slug $slug
  */
-class Sitemap extends \yii\db\ActiveRecord
+class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
 {
+    /**
+     * @var string
+     */
+    public const SCENARIO_PRE_VALIDATE = 'pre_validate';
+
+    // public const PRIORITY = ['0.0' => 0.0, '0.1' => 0.1, '0.2' => 0.2, '0.3' => 0.3, '0.4' => 0.4, '0.5' => 0.5, '0.6' => 0.6, '0.7' => 0.7, '0.8' => 0.8, '0.9' => 0.9, '1.0' => 1.0];
+    public const PRIORITY = ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0'];
+
+    // public const FREQUENCY = ['always' => 'always', 'hourly' => 'hourly', 'daily' => 'daily', 'weekly' => 'weekly', 'monthly' => 'monthly', 'yearly' => 'yearly', 'never' => 'never'];
+    public const FREQUENCY = ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never'];
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function getDb()
+    {
+        return Module::getInstance()->db;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -50,9 +73,28 @@ class Sitemap extends \yii\db\ActiveRecord
             'class' => TimestampBehavior::class,
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
-            'value' => new Expression('NOW()'),
+            'value' => Yii::createObject(Expression::class, ['NOW()']),
         ];
+        $behaviors['typecast'] = [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterFind' => true,
+            'typecastAfterSave' => true,
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => true,
+        ];
+
         return $behaviors;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function instantiate($row)
+    {
+        return Yii::createObject(static::class);
     }
 
     /**
@@ -70,7 +112,17 @@ class Sitemap extends \yii\db\ActiveRecord
      */
     public static function find()
     {
-        return new FilterActiveQuery(static::class);
+        return Yii::createObject(FilterActiveQuery::class, [static::class]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[static::SCENARIO_PRE_VALIDATE] = ['active', 'priority', 'frequency'];
+        return $scenarios;
     }
 
     /**
@@ -96,13 +148,13 @@ class Sitemap extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('blackcube.core', 'ID'),
-            'slugId' => Yii::t('blackcube.core', 'Slug ID'),
-            'frequency' => Yii::t('blackcube.core', 'Frequency'),
-            'priority' => Yii::t('blackcube.core', 'Priority'),
-            'active' => Yii::t('blackcube.core', 'Active'),
-            'dateCreate' => Yii::t('blackcube.core', 'Date Create'),
-            'dateUpdate' => Yii::t('blackcube.core', 'Date Update'),
+            'id' => Module::t('models/sitemap', 'ID'),
+            'slugId' => Module::t('models/sitemap', 'Slug ID'),
+            'frequency' => Module::t('models/sitemap', 'Frequency'),
+            'priority' => Module::t('models/sitemap', 'Priority'),
+            'active' => Module::t('models/sitemap', 'Active'),
+            'dateCreate' => Module::t('models/sitemap', 'Date Create'),
+            'dateUpdate' => Module::t('models/sitemap', 'Date Update'),
         ];
     }
 
