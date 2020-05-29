@@ -83,7 +83,7 @@ class Module extends BaseModule implements BootstrapInterface
     /**
      * @var string command prefix
      */
-    public $commandNameSpace = 'bcc:';
+    public $commandNameSpace = 'bcore:';
 
     /**
      * @var Connection|array|string database access

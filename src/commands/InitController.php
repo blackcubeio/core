@@ -22,7 +22,7 @@ use ReflectionClass;
 use Yii;
 
 /**
- * Class InitController
+ * Blackcube Core database initialisation
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2020 Redcat
@@ -35,7 +35,7 @@ class InitController extends Controller
 {
 
     /**
-     * Update permissions and roles
+     * Init database with one node
      * @return int
      * @throws \yii\base\InvalidConfigException
      */
