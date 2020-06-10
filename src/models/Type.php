@@ -97,7 +97,7 @@ class Type extends \yii\db\ActiveRecord
             [['minBlocs', 'maxBlocs'], 'filter', 'filter' => function($value) {
                 return (trim($value) > 0 ) ? trim($value) : null;
             }],
-            [['name', 'route'], 'required'],
+            [['name'], 'required'],
             [['minBlocs', 'maxBlocs'], 'integer'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['name', 'route'], 'string', 'max' => 255],
