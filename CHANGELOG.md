@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Adding `plugins` management
+ 
 Release 1.1.0 June, 10th 2020 <pgaultier@redcat.io>
 ---------------------------------------------------
 
