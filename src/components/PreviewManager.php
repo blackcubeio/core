@@ -17,6 +17,7 @@ namespace blackcube\core\components;
 use blackcube\core\interfaces\PreviewManagerInterface;
 use yii\base\Component;
 use Yii;
+use yii\web\Application as WebApplication;
 
 /**
  * Handle preview mode
@@ -37,7 +38,10 @@ class PreviewManager extends Component implements PreviewManagerInterface
      */
     public function check()
     {
-        return Yii::$app->session->get('preview', false);
+        if (Yii::$app instanceof WebApplication) {
+            return Yii::$app->session->get('preview', false);
+        }
+        return false;
     }
 
     /**
@@ -45,7 +49,9 @@ class PreviewManager extends Component implements PreviewManagerInterface
      */
     public function activate()
     {
-        Yii::$app->session->set('preview', true);
+        if (Yii::$app instanceof WebApplication) {
+            Yii::$app->session->set('preview', true);
+        }
     }
 
     /**
@@ -53,7 +59,9 @@ class PreviewManager extends Component implements PreviewManagerInterface
      */
     public function deactivate()
     {
-        Yii::$app->session->remove('preview');
+        if (Yii::$app instanceof WebApplication) {
+            Yii::$app->session->remove('preview');
+        }
     }
 
     /**
@@ -61,7 +69,10 @@ class PreviewManager extends Component implements PreviewManagerInterface
      */
     public function getSimulateDate()
     {
-        return Yii::$app->session->get('preview_simulate_date', null);
+        if (Yii::$app instanceof WebApplication) {
+            return Yii::$app->session->get('preview_simulate_date', null);
+        }
+        return null;
     }
 
     /**
@@ -69,10 +80,12 @@ class PreviewManager extends Component implements PreviewManagerInterface
      */
     public function setSimulateDate($simulateDate = null)
     {
-        if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}(\s[0-9]{2}:[0-9]{2}:[0-9]{2})?$/', $simulateDate) > 0) {
-            Yii::$app->session->set('preview_simulate_date', $simulateDate);
-        } else {
-            Yii::$app->session->remove('preview_simulate_date');
+        if (Yii::$app instanceof WebApplication) {
+            if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}(\s[0-9]{2}:[0-9]{2}:[0-9]{2})?$/', $simulateDate) > 0) {
+                Yii::$app->session->set('preview_simulate_date', $simulateDate);
+            } else {
+                Yii::$app->session->remove('preview_simulate_date');
+            }
         }
     }
 
