@@ -430,6 +430,38 @@ msgctxt "blackcube/core/models/parameter"
 msgid "Value"
 msgstr ""
 
+msgctxt "blackcube/core/models/plugin"
+msgid "Active"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Bootstrap"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Class Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Date Create"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Date Update"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "ID"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Version"
+msgstr ""
+
 msgctxt "blackcube/core/models/seo"
 msgid "Active"
 msgstr ""

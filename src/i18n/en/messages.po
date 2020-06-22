@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 msgctxt "blackcube/core/console"
 msgid "Init CMS Data\n"
@@ -429,6 +429,38 @@ msgstr ""
 
 msgctxt "blackcube/core/models/parameter"
 msgid "Value"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Active"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Bootstrap"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Class Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Date Create"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Date Update"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "ID"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Version"
 msgstr ""
 
 msgctxt "blackcube/core/models/seo"
