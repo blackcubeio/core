@@ -10,15 +10,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 msgctxt "blackcube/core/console"
 msgid "Init CMS Data\n"
-msgstr ""
+msgstr "Initialisation des données CMS\n"
 
 msgctxt "blackcube/core/console"
 msgid "Root node already exists\n"
-msgstr ""
+msgstr "La rubrique racine existe déjà\n"
 
 msgctxt "blackcube/core/helpers"
 msgid "Unable to render block"
@@ -431,6 +431,38 @@ msgstr "Nom"
 msgctxt "blackcube/core/models/parameter"
 msgid "Value"
 msgstr "Valeur"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Active"
+msgstr "Actif"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Bootstrap"
+msgstr "Bootstrap"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Class Name"
+msgstr "Classe"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Date Create"
+msgstr "Date de création"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Date Update"
+msgstr "Date de mise à jour"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Version"
+msgstr "Version"
 
 msgctxt "blackcube/core/models/seo"
 msgid "Active"
