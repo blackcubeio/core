@@ -1,7 +1,11 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 1.2.0 June, 23th 2020 <pgaultier@redcat.io>
+---------------------------------------------------
+
  * Adding `plugins` management
+ * Fix `previewManager` in console mode
  
 Release 1.1.0 June, 10th 2020 <pgaultier@redcat.io>
 ---------------------------------------------------
