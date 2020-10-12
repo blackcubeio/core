@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Refactor `plugins` management
+
 Release 1.2.2 September, 5th 2020 <pgaultier@redcat.io>
 -------------------------------------------------------
 
