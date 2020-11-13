@@ -35,7 +35,7 @@ class m000000_000003_menus extends Migration
     {
         $this->createTable('{{%menus}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string(255)->unique()->notNull(),
+            'name' => $this->string(190)->unique()->notNull(),
             'languageId' => $this->string(6)->notNull(),
             'active' => $this->boolean()->defaultValue(true)->notNull(),
             'dateCreate' => $this->dateTime()->notNull(),
@@ -48,9 +48,9 @@ class m000000_000003_menus extends Migration
             'id' => $this->bigPrimaryKey(),
             'menuId' => $this->bigInteger(),
             'parentId' => $this->bigInteger()->defaultValue(null),
-            'name' => $this->string(255)->notNull(),
-            'route' => $this->string(255)->notNull(),
-            'queryString' => $this->string(255)->defaultValue(null),
+            'name' => $this->string(190)->notNull(),
+            'route' => $this->string(190)->notNull(),
+            'queryString' => $this->string(190)->defaultValue(null),
             'order' => $this->integer(),
             'dateCreate' => $this->dateTime()->notNull(),
             'dateUpdate' => $this->dateTime(),

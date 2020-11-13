@@ -35,8 +35,8 @@ class m000000_000001_types_blocTypes extends Migration
     {
         $this->createTable('{{%types}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string()->notNull(),
-            'route' => $this->string()->notNull(),
+            'name' => $this->string(190)->notNull(),
+            'route' => $this->string(190)->notNull(),
             'minBlocs' => $this->integer()->defaultValue(null),
             'maxBlocs' => $this->integer()->defaultValue(null),
             'dateCreate' => $this->dateTime()->notNull(),
@@ -46,9 +46,9 @@ class m000000_000001_types_blocTypes extends Migration
 
         $this->createTable('{{%blocTypes}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string()->notNull(),
+            'name' => $this->string(190)->notNull(),
             'template' => $this->binary(),
-            'view' => $this->string(),
+            'view' => $this->string(190),
             'dateCreate' => $this->dateTime()->notNull(),
             'dateUpdate' => $this->dateTime()
         ]);

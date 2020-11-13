@@ -35,7 +35,7 @@ class m000000_000003_categories_tags extends Migration
     {
         $this->createTable('{{%categories}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string(255)->unique()->notNull(),
+            'name' => $this->string(190)->unique()->notNull(),
             'slugId' => $this->bigInteger(),
             'languageId' => $this->string(6)->notNull(),
             'typeId' => $this->bigInteger(),
@@ -66,7 +66,7 @@ class m000000_000003_categories_tags extends Migration
 
         $this->createTable('{{%tags}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string(255)->notNull(),
+            'name' => $this->string(190)->notNull(),
             'slugId' => $this->bigInteger(),
             'categoryId' => $this->bigInteger()->notNull(),
             'typeId' => $this->bigInteger(),

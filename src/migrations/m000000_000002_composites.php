@@ -35,7 +35,7 @@ class m000000_000002_composites extends Migration
     {
         $this->createTable('{{%composites}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string(255),
+            'name' => $this->string(190),
             'slugId' => $this->bigInteger(),
             'languageId' => $this->string(6)->notNull(),
             'typeId' => $this->bigInteger(),

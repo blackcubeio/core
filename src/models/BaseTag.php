@@ -166,7 +166,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
             [['slugId', 'categoryId', 'typeId'], 'integer'],
             [['active'], 'boolean'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['name'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 190],
             [['name', 'categoryId'], 'unique', 'targetAttribute' => ['name', 'categoryId']],
             [['slugId'], 'unique'],
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],

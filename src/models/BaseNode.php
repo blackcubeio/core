@@ -208,7 +208,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
             [['level', 'slugId', 'typeId'], 'integer'],
             [['active'], 'boolean'],
             [['nodePath', 'dateStart', 'activeDateStart', 'dateEnd', 'activeDateEnd', 'dateCreate', 'dateUpdate'], 'safe'],
-            [['path', 'name'], 'string', 'max' => 255],
+            [['path', 'name'], 'string', 'max' => 190],
             [['languageId'], 'string', 'max' => 6],
             [['path'], 'unique'],
             [['typeId'], 'unique'],
