@@ -33,7 +33,7 @@ class m000000_000005_types extends Migration
      */
     public function safeUp()
     {
-        $this->alterColumn('{{%types}}', 'route', $this->string()->defaultValue(null));
+        $this->alterColumn('{{%types}}', 'route', $this->string(190)->defaultValue(null));
         return true;
     }
 
@@ -42,7 +42,7 @@ class m000000_000005_types extends Migration
      */
     public function safeDown()
     {
-        $this->alterColumn('{{%types}}', 'route', $this->string()->notNull());
+        $this->alterColumn('{{%types}}', 'route', $this->string(190)->notNull());
         return true;
     }
 }

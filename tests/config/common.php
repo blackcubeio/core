@@ -33,7 +33,7 @@ $config = [
         '@npm' => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(__DIR__, 2) . '/vendor',
-    'version' => getenv('APP_VERSION'),
+    'version' => $_ENV['APP_VERSION'],
     'bootstrap' => [
         'log',
         'blackcube',
@@ -47,12 +47,12 @@ $config = [
         'db' => [
             'class' => Connection::class,
             'charset' => 'utf8',
-            'dsn' => getenv('DB_DRIVER').':host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_DATABASE'),
-            'username' => getenv('DB_USER'),
-            'password' => getenv('DB_PASSWORD'),
-            'tablePrefix' => getenv('DB_TABLE_PREFIX'),
-            'enableSchemaCache' => getenv('DB_SCHEMA_CACHE'),
-            'schemaCacheDuration' => getenv('DB_SCHEMA_CACHE_DURATION'),
+            'dsn' => $_ENV['DB_DRIVER'].':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_DATABASE'],
+            'username' => $_ENV['DB_USER'],
+            'password' => $_ENV['DB_PASSWORD'],
+            'tablePrefix' => $_ENV['DB_TABLE_PREFIX'],
+            'enableSchemaCache' => $_ENV['DB_SCHEMA_CACHE'],
+            'schemaCacheDuration' => $_ENV['DB_SCHEMA_CACHE_DURATION'],
         ],
         'cache' => [
             'class' => yii\caching\DummyCache::class,
@@ -83,37 +83,37 @@ $config = [
     ],
 ];
 
-if (getenv('DB_DRIVER') === 'pgsql') {
+if ($_ENV['DB_DRIVER'] === 'pgsql') {
     $config['components']['db']['schemaMap'] = [
-        getenv('DB_DRIVER') => [
-            'class' => getenv('DB_DRIVER') === 'pgsql' ? PgsqlSchema::class : MysqSchema::class,
-            'defaultSchema' => getenv('DB_SCHEMA')
+        $_ENV['DB_DRIVER'] => [
+            'class' => $_ENV['DB_DRIVER'] === 'pgsql' ? PgsqlSchema::class : MysqSchema::class,
+            'defaultSchema' => $_ENV['DB_SCHEMA']
         ]
     ];
 }
 
 /**/
-if (getenv('FILESYSTEM_TYPE') === 'local') {
+if ($_ENV['FILESYSTEM_TYPE'] === 'local') {
     $config['components']['fs'] = [
         'class' => LocalFilesystem::class,
-        'path' => getenv('FILESYSTEM_LOCAL_PATH'),
-        'cache' => (getenv('FILESYSTEM_CACHE') == 1) ? 'cache' : null,
-        'cacheKey' => (getenv('FILESYSTEM_CACHE') == 1) ? 'flysystem' : null,
-        'cacheDuration' => (getenv('FILESYSTEM_CACHE') == 1) ? getenv('FILESYSTEM_CACHE_DURATION') : null,
+        'path' => $_ENV['FILESYSTEM_LOCAL_PATH'],
+        'cache' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'cache' : null,
+        'cacheKey' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'flysystem' : null,
+        'cacheDuration' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? $_ENV['FILESYSTEM_CACHE_DURATION'] : null,
     ];
-} elseif (getenv('FILESYSTEM_TYPE') === 's3') {
+} elseif ($_ENV['FILESYSTEM_TYPE'] === 's3') {
     $config['components']['fs'] = [
         'class' => AwsS3Filesystem::class,
-        'key' => getenv('FILESYSTEM_S3_KEY'),
-        'secret' => getenv('FILESYSTEM_S3_SECRET'),
-        'bucket' => getenv('FILESYSTEM_S3_BUCKET'),
+        'key' => $_ENV['FILESYSTEM_S3_KEY'],
+        'secret' => $_ENV['FILESYSTEM_S3_SECRET'],
+        'bucket' => $_ENV['FILESYSTEM_S3_BUCKET'],
         'region' => 'us-east-1',
         'version' => 'latest',
-        'endpoint' => getenv('FILESYSTEM_S3_ENDPOINT'),
-        'pathStyleEndpoint' => (getenv('FILESYSTEM_S3_PATH_STYLE') == 1) ? true : false,
-        'cache' => (getenv('FILESYSTEM_CACHE') == 1) ? 'cache' : null,
-        'cacheKey' => (getenv('FILESYSTEM_CACHE') == 1) ? 'flysystem' : null,
-        'cacheDuration' => (getenv('FILESYSTEM_CACHE') == 1) ? getenv('FILESYSTEM_CACHE_DURATION') : null,
+        'endpoint' => $_ENV['FILESYSTEM_S3_ENDPOINT'],
+        'pathStyleEndpoint' => ($_ENV['FILESYSTEM_S3_PATH_STYLE'] == 1) ? true : false,
+        'cache' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'cache' : null,
+        'cacheKey' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'flysystem' : null,
+        'cacheDuration' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? $_ENV['FILESYSTEM_CACHE_DURATION'] : null,
     ];
 }
 /**/

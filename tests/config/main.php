@@ -24,7 +24,7 @@ $config['name'] = 'Blackcube.io CMS test application';
 // $config['controllerNamespace'] = 'webapp\controllers';
 
 $config['components']['request'] = [
-    'cookieValidationKey' => getenv('YII_COOKIE_VALIDATION_KEY'),
+    'cookieValidationKey' => $_ENV['YII_COOKIE_VALIDATION_KEY'],
     'parsers' => [
         'application/json' => JsonParser::class,
     ],

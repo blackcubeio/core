@@ -18,6 +18,7 @@ use blackcube\core\commands\InitController;
 use blackcube\core\components\Plugins;
 use blackcube\core\components\PluginsHandler;
 use blackcube\core\helpers\PluginHelper;
+use blackcube\core\interfaces\PluginBootstrapInterface;
 use blackcube\core\interfaces\PluginInterface;
 use blackcube\core\interfaces\PluginManagerRoutableInterface;
 use blackcube\core\interfaces\PluginServiceInterface;
@@ -169,16 +170,9 @@ class Module extends BaseModule implements BootstrapInterface
         }
         if ($app instanceof WebApplication) {
             $pluginHandlerUrlManager = Yii::createObject(PluginsHandlerInterface::class);
-            $app->getUrlManager()->addRules([
-                $pluginHandlerUrlManager
-            ], true);
             foreach($pluginHandlerUrlManager->getActivePluginManagers() as $pluginManager) {
-                if ($pluginManager instanceof PluginManagerRoutableInterface) {
-                    foreach($pluginManager->getControllerMap() as $id => $controllerMap) {
-                        if (isset($app->controllerMap[$id]) === false) {
-                            $app->controllerMap[$id] = $controllerMap;
-                        }
-                    }
+                if ($pluginManager instanceof PluginBootstrapInterface) {
+                    $pluginManager->bootstrapCore($this->getUniqueId(), $app);
                 }
             }
         }
@@ -352,4 +346,5 @@ class Module extends BaseModule implements BootstrapInterface
     {
         return Yii::t('blackcube/core/' . $category, $message, $params, $language);
     }
+
 }

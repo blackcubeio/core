@@ -1,6 +1,6 @@
 <?php
 /**
- * PluginManagerConfigurableInterface.php
+ * PluginBootstrapInterface.php
  *
  * PHP version 7.2+
  *
@@ -15,10 +15,11 @@
 namespace blackcube\core\interfaces;
 
 use Yii;
-use yii\base\Action;
+use yii\base\Model;
+use yii\base\Application;
 
 /**
- * Interface PluginManagerConfigurableInterface
+ * Interface PluginBootstrapInterface
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2020 Redcat
@@ -27,10 +28,12 @@ use yii\base\Action;
  * @link https://www.redcat.io
  * @package blackcube\core\interfaces
  */
-interface PluginManagerConfigurableInterface {
+interface PluginBootstrapInterface {
 
     /**
-     * @return array route to configure the plugin
+     * @param string $moduleUid Core module uniqueId
+     * @param Application $app
      */
-    public function getConfigureRoute();
+    public function bootstrapCore($moduleUid, $app);
+
 }

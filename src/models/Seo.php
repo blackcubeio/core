@@ -147,7 +147,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
             [['noindex', 'nofollow', 'og', 'twitter', 'active'], 'boolean'],
             [['description'], 'string'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['title', 'image', 'ogType', 'twitterCard'], 'string', 'max' => 255],
+            [['title', 'image', 'ogType', 'twitterCard'], 'string', 'max' => 190],
             [['slugId'], 'unique'],
             [['canonicalSlugId'], 'exist', 'skipOnError' => true, 'targetClass' => Slug::class, 'targetAttribute' => ['canonicalSlugId' => 'id']],
             [['slugId'], 'exist', 'skipOnError' => true, 'targetClass' => Slug::class, 'targetAttribute' => ['slugId' => 'id']],

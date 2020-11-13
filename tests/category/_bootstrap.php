@@ -25,8 +25,8 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 require dirname(__DIR__).'/vendor/autoload.php';
 
 // get current environment
-$currentEnvironment = getenv('YII_ENV');
-if ($currentEnvironment === false) {
+$currentEnvironment = $_ENV['YII_ENV'] ?? null;
+if ($currentEnvironment === null) {
     // load environment from .env file
     try {
         $dotEnv = Dotenv::createImmutable(dirname(__DIR__));

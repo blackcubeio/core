@@ -168,7 +168,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             [['targetUrl'], 'url'],
             [['httpCode', 'targetUrl'], 'required', 'on' => [static::SCENARIO_REDIRECT]],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['host', 'path', 'targetUrl'], 'string', 'max' => 255],
+            [['host', 'path', 'targetUrl'], 'string', 'max' => 190],
             [['host', 'path'], 'unique', 'targetAttribute' => ['host', 'path']],
         ];
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * PluginManagerConfigurableInterface.php
+ * PluginModuleBootstrapInterface.php
  *
  * PHP version 7.2+
  *
@@ -14,11 +14,13 @@
 
 namespace blackcube\core\interfaces;
 
+use yii\base\BootstrapInterface;
+use yii\web\Application as WebApplication;
+use yii\console\Application as ConsoleApplication;
 use Yii;
-use yii\base\Action;
 
 /**
- * Interface PluginManagerConfigurableInterface
+ * Interface PluginModuleBootstrapInterface
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2020 Redcat
@@ -27,10 +29,17 @@ use yii\base\Action;
  * @link https://www.redcat.io
  * @package blackcube\core\interfaces
  */
-interface PluginManagerConfigurableInterface {
+interface PluginModuleBootstrapInterface extends BootstrapInterface {
 
     /**
-     * @return array route to configure the plugin
+     * Bootstrap web module
+     * @param WebApplication $app
      */
-    public function getConfigureRoute();
+    public function bootstrapWeb(WebApplication $app);
+
+    /**
+     * Bootstrap console module
+     * @param ConsoleApplication $app
+     */
+    public function bootstrapConsole(ConsoleApplication $app);
 }

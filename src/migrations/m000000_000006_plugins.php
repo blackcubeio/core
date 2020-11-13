@@ -37,7 +37,7 @@ class m000000_000006_plugins extends Migration
             'id' => $this->string(32)->notNull(),
             'name' => $this->string(128)->notNull(),
             'version' => $this->string(128)->notNull(),
-            'className' => $this->string()->notNull(),
+            'className' => $this->string(190)->notNull(),
             'bootstrap' => $this->boolean()->defaultValue(true)->notNull(),
             'active' => $this->boolean()->defaultValue(true)->notNull(),
             'dateCreate' => $this->dateTime()->notNull(),
