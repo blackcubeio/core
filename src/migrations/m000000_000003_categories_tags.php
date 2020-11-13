@@ -79,7 +79,7 @@ class m000000_000003_categories_tags extends Migration
         $this->createIndex('tags__categoryId_idx', '{{%tags}}', 'categoryId', false);
         $this->createIndex('tags__typeId_idx', '{{%tags}}', 'typeId', false);
         $this->addForeignKey('tags_categoryId__categories_id_fk', '{{%tags}}', 'categoryId', '{{%categories}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey('tags_typeId__languages_id_fk', '{{%tags}}', 'typeId', '{{%types}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('tags_typeId__types_id_fk', '{{%tags}}', 'typeId', '{{%types}}', 'id', 'CASCADE', 'CASCADE');
         $this->createIndex('tags__slugId_idx', '{{%tags}}', 'slugId', true);
         $this->addForeignKey('tags_slugId__slugs_id_fk', '{{%tags}}', 'slugId', '{{%slugs}}', 'id', 'CASCADE', 'CASCADE');
 
@@ -110,7 +110,7 @@ class m000000_000003_categories_tags extends Migration
         $this->dropIndex('tags_blocs__tagId_idx', '{{%tags_blocs}}');
         $this->dropTable('{{%tags_blocs}}');
 
-        $this->dropForeignKey('tags_typeId__languages_id_fk', '{{%tags}}');
+        $this->dropForeignKey('tags_typeId__types_id_fk', '{{%tags}}');
         $this->dropForeignKey('tags_categoryId__categories_id_fk', '{{%tags}}');
         $this->dropForeignKey('tags_slugId__slugs_id_fk', '{{%tags}}');
         $this->dropIndex('tags__typeId_idx', '{{%tags}}');
