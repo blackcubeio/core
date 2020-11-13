@@ -1,6 +1,12 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.0.0 November, 13th 2020 <pgaultier@redcat.io>
+-------------------------------------------------------
+
+ * Update dependencies - !! breaking changes with dotenv
+ * Change migrations to be compatible with Mysql utf8mb4 (string max size 190)
+ * Fix Mysql string size
  * Refactor `plugins` management
 
 Release 1.2.2 September, 5th 2020 <pgaultier@redcat.io>
