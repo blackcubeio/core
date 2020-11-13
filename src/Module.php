@@ -346,4 +346,5 @@ class Module extends BaseModule implements BootstrapInterface
     {
         return Yii::t('blackcube/core/' . $category, $message, $params, $language);
     }
+
 }

@@ -143,6 +143,14 @@ abstract class PluginManager implements PluginManagerInterface {
     }
 
     /**
+     * @return bool Register plugin
+     */
+    public function register()
+    {
+        return $this->registerDbPlugin();
+    }
+
+    /**
      * Helper function to unregister plugin id DB
      * @return bool
      */
@@ -156,6 +164,14 @@ abstract class PluginManager implements PluginManagerInterface {
             }
         }
         return false;
+    }
+
+    /**
+     * @return bool Unregister plugin
+     */
+    public function unregister()
+    {
+        return $this->unregisterDbPlugin();
     }
 
 }

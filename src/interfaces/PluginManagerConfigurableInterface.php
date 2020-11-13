@@ -30,7 +30,7 @@ use yii\base\Action;
 interface PluginManagerConfigurableInterface {
 
     /**
-     * @return array|Action action to configure the plugin
+     * @return array route to configure the plugin
      */
-    public function getConfigureAction();
+    public function getConfigureRoute();
 }
