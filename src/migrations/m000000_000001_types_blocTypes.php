@@ -35,8 +35,8 @@ class m000000_000001_types_blocTypes extends Migration
     {
         $this->createTable('{{%types}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string()->notNull(),
-            'route' => $this->string()->notNull(),
+            'name' => $this->string(190)->notNull(),
+            'route' => $this->string(190)->notNull(),
             'minBlocs' => $this->integer()->defaultValue(null),
             'maxBlocs' => $this->integer()->defaultValue(null),
             'dateCreate' => $this->dateTime()->notNull(),
@@ -46,9 +46,9 @@ class m000000_000001_types_blocTypes extends Migration
 
         $this->createTable('{{%blocTypes}}', [
             'id' => $this->bigPrimaryKey(),
-            'name' => $this->string()->notNull(),
+            'name' => $this->string(190)->notNull(),
             'template' => $this->binary(),
-            'view' => $this->string(),
+            'view' => $this->string(190),
             'dateCreate' => $this->dateTime()->notNull(),
             'dateUpdate' => $this->dateTime()
         ]);
@@ -62,10 +62,10 @@ class m000000_000001_types_blocTypes extends Migration
             'dateUpdate' => $this->dateTime(),
             'PRIMARY KEY([[typeId]], [[blocTypeId]])'
         ]);
-        $this->createIndex('types_blocTypes__nodeId_idx', '{{%types_blocTypes}}', 'typeId', false);
-        $this->createIndex('types_blocTypes__compositeId_idx', '{{%types_blocTypes}}', 'blocTypeId', false);
-        $this->addForeignKey('types_blocTypes_nodeId__nodes_id_fk', '{{%types_blocTypes}}', 'typeId', '{{%types}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey('types_blocTypes_compositeId__tags_id_fk', '{{%types_blocTypes}}', 'blocTypeId', '{{%blocTypes}}', 'id', 'CASCADE', 'CASCADE');
+        $this->createIndex('types_blocTypes__typeId_idx', '{{%types_blocTypes}}', 'typeId', false);
+        $this->createIndex('types_blocTypes__blocTypeId_idx', '{{%types_blocTypes}}', 'blocTypeId', false);
+        $this->addForeignKey('types_blocTypes_typeId__types_id_fk', '{{%types_blocTypes}}', 'typeId', '{{%types}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('types_blocTypes_blocTypeId__blocTypes_id_fk', '{{%types_blocTypes}}', 'blocTypeId', '{{%blocTypes}}', 'id', 'CASCADE', 'CASCADE');
 
         return true;
     }
@@ -75,10 +75,10 @@ class m000000_000001_types_blocTypes extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('types_blocTypes_compositeId__tags_id_fk', '{{%types_blocTypes}}');
-        $this->dropForeignKey('types_blocTypes_nodeId__nodes_id_fk', '{{%types_blocTypes}}');
-        $this->dropIndex('types_blocTypes__compositeId_idx', '{{%types_blocTypes}}');
-        $this->dropIndex('types_blocTypes__nodeId_idx', '{{%types_blocTypes}}');
+        $this->dropForeignKey('types_blocTypes_blocTypeId__blocTypes_id_fk', '{{%types_blocTypes}}');
+        $this->dropForeignKey('types_blocTypes_typeId__types_id_fk', '{{%types_blocTypes}}');
+        $this->dropIndex('types_blocTypes__blocTypeId_idx', '{{%types_blocTypes}}');
+        $this->dropIndex('types_blocTypes__typeId_idx', '{{%types_blocTypes}}');
         $this->dropTable('{{%types_blocTypes}}');
 
         $this->dropIndex('blocTypes__name_idx', '{{%blocTypes}}');

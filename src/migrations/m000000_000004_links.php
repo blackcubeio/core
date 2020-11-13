@@ -68,7 +68,7 @@ class m000000_000004_links extends Migration
         $this->createIndex('nodes_composites__nodeId_idx', '{{%nodes_composites}}', 'nodeId', false);
         $this->createIndex('nodes_composites__compositeId_idx', '{{%nodes_composites}}', 'compositeId', false);
         $this->addForeignKey('nodes_composites_nodeId__nodes_id_fk', '{{%nodes_composites}}', 'nodeId', '{{%nodes}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey('nodes_composites_compositeId__tags_id_fk', '{{%nodes_composites}}', 'compositeId', '{{%composites}}', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey('nodes_composites_compositeId__composites_id_fk', '{{%nodes_composites}}', 'compositeId', '{{%composites}}', 'id', 'CASCADE', 'CASCADE');
 
         return true;
     }
@@ -78,7 +78,7 @@ class m000000_000004_links extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('nodes_composites_compositeId__tags_id_fk', '{{%nodes_composites}}');
+        $this->dropForeignKey('nodes_composites_compositeId__composites_id_fk', '{{%nodes_composites}}');
         $this->dropForeignKey('nodes_composites_nodeId__nodes_id_fk', '{{%nodes_composites}}');
         $this->dropIndex('nodes_composites__compositeId_idx', '{{%nodes_composites}}');
         $this->dropIndex('nodes_composites__nodeId_idx', '{{%nodes_composites}}');

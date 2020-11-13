@@ -44,7 +44,7 @@ try {
 }
 
 // get wanted debug
-$debug = getenv('YII_DEBUG');
+$debug = $_ENV['YII_DEBUG'] ?? null;
 if ($debug === 'true' || $debug == 1) {
     $debug = true;
 }
@@ -55,12 +55,12 @@ if ($debug === true) {
 }
 
 // get if app is in maintenance mode
-$maintenance = getenv('YII_MAINTENANCE');
+$maintenance = $_ENV['YII_MAINTENANCE'] ?? null;
 if ($maintenance === 'true' || $maintenance == 1) {
     defined('YII_MAINTENANCE') or define('YII_MAINTENANCE', true);
 } else {
     defined('YII_MAINTENANCE') or define('YII_MAINTENANCE', false);
 }
 
-$currentEnvironment = getenv('YII_ENV');
+$currentEnvironment = $_ENV['YII_ENV'] ?? null;
 defined('YII_ENV') or define('YII_ENV', $currentEnvironment);

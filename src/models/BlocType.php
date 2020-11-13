@@ -92,7 +92,7 @@ class BlocType extends \yii\db\ActiveRecord
             [['name'], 'required'],
             [['template'], 'string'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['name', 'view'], 'string', 'max' => 255],
+            [['name', 'view'], 'string', 'max' => 190],
             [['name'], 'unique'],
         ];
     }

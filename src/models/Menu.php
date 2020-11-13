@@ -103,7 +103,7 @@ class Menu extends \yii\db\ActiveRecord
             [['name', 'languageId'], 'required'],
             [['active'], 'boolean'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['name'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 190],
             [['languageId'], 'string', 'max' => 6],
             [['name'], 'unique'],
             [['languageId'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['languageId' => 'id']],

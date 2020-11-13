@@ -35,9 +35,9 @@ class m000000_000001_slugs extends Migration
     {
         $this->createTable('{{%slugs}}', [
             'id' => $this->bigPrimaryKey(),
-            'host' => $this->string(255)->defaultValue(null),
-            'path' => $this->string()->defaultValue(null),
-            'targetUrl' => $this->string()->defaultValue(null),
+            'host' => $this->string(190)->defaultValue(null),
+            'path' => $this->string(190)->defaultValue(null),
+            'targetUrl' => $this->string(190)->defaultValue(null),
             'httpCode' => $this->integer()->defaultValue(null),
             'active' => $this->boolean()->defaultValue(true)->notNull(),
             'dateCreate' => $this->dateTime()->notNull(),

@@ -35,11 +35,11 @@ class m000000_000003_nodes extends Migration
     {
         $this->createTable('{{%nodes}}', [
             'id' => $this->bigPrimaryKey(),
-            'path' => $this->string(255)->unique()->notNull(),
+            'path' => $this->string(190)->unique()->notNull(),
             'left' => $this->decimal(25, 22)->notNull(),
             'right' => $this->decimal(25, 22)->notNull(),
             'level' => $this->integer()->notNull(),
-            'name' => $this->string(255),
+            'name' => $this->string(190),
             'slugId' => $this->bigInteger(),
             'languageId' => $this->string(6)->notNull(),
             'typeId' => $this->bigInteger(),

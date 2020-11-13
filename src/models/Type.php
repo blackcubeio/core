@@ -100,7 +100,7 @@ class Type extends \yii\db\ActiveRecord
             [['name'], 'required'],
             [['minBlocs', 'maxBlocs'], 'integer'],
             [['dateCreate', 'dateUpdate'], 'safe'],
-            [['name', 'route'], 'string', 'max' => 255],
+            [['name', 'route'], 'string', 'max' => 190],
             [['name'], 'unique'],
         ];
     }

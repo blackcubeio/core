@@ -115,7 +115,7 @@ class Plugin extends \yii\db\ActiveRecord
         return [
             [['name', 'version', 'className'], 'required'],
             [['name', 'version'], 'string', 'max' => 128],
-            [['className'], 'string', 'max' => 255],
+            [['className'], 'string', 'max' => 190],
             [['active', 'bootstrap'], 'boolean'],
             [['dateCreate', 'dateUpdate'], 'safe'],
         ];
