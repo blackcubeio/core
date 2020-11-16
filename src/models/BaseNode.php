@@ -211,7 +211,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
             [['path', 'name'], 'string', 'max' => 190],
             [['languageId'], 'string', 'max' => 6],
             [['path'], 'unique'],
-            [['typeId'], 'unique'],
+            // [['typeId'], 'unique'],
             [['slugId'], 'unique'],
             [['languageId'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['languageId' => 'id']],
             [['slugId'], 'exist', 'skipOnError' => true, 'targetClass' => Slug::class, 'targetAttribute' => ['slugId' => 'id']],

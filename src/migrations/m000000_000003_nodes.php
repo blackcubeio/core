@@ -53,7 +53,7 @@ class m000000_000003_nodes extends Migration
         $this->createIndex('nodes__right_idx', '{{%nodes}}', 'right', false);
         $this->createIndex('nodes__level_idx', '{{%nodes}}', 'level', false);
         $this->createIndex('nodes__languageId_idx', '{{%nodes}}', 'languageId', false);
-        $this->createIndex('nodes__typeId_idx', '{{%nodes}}', 'typeId', true);
+        $this->createIndex('nodes__typeId_idx', '{{%nodes}}', 'typeId', false);
         $this->createIndex('nodes__slugId_idx', '{{%nodes}}', 'slugId', true);
         $this->addForeignKey('nodes_languageId__languages_id_fk', '{{%nodes}}', 'languageId', '{{%languages}}', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey('nodes_typeId__types_id_fk', '{{%nodes}}', 'typeId', '{{%types}}', 'id', 'CASCADE', 'CASCADE');
