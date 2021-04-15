@@ -13,6 +13,7 @@
  */
 namespace blackcube\core\web\behaviors;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Bloc;
 use blackcube\core\models\Seo;
 use blackcube\core\models\Slug;
@@ -63,6 +64,7 @@ class SeoBehavior extends Behavior
         $slugId = $event->element->slugId;
         $seo = Seo::find()->active()
             ->andWhere(['id' => $slugId])
+            ->cache(3600, QueryCache::getCmsDependencies())
             ->one();
         if ($seo !== null) {
             /* @var \blackcube\core\models\Seo $seo */
