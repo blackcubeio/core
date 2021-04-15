@@ -14,7 +14,7 @@
 
 namespace blackcube\core\web\controllers;
 
-use blackcube\core\behaviors\SeoBehavior;
+use blackcube\core\web\behaviors\SeoBehavior;
 use blackcube\core\components\Element;
 use blackcube\core\components\RouteEncoder;
 use blackcube\core\interfaces\BlackcubeControllerInterface;

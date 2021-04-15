@@ -9,9 +9,9 @@
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\behaviors
+ * @package blackcube\core\web\behaviors
  */
-namespace blackcube\core\behaviors;
+namespace blackcube\core\web\behaviors;
 
 use blackcube\core\models\Bloc;
 use blackcube\core\models\Seo;
@@ -41,7 +41,7 @@ use yii\web\View;
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\behaviors
+ * @package blackcube\core\web\behaviors
  * @since XXX
  */
 class SeoBehavior extends Behavior
