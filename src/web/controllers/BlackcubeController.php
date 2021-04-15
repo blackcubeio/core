@@ -14,6 +14,7 @@
 
 namespace blackcube\core\web\controllers;
 
+use blackcube\core\behaviors\SeoBehavior;
 use blackcube\core\components\Element;
 use blackcube\core\components\RouteEncoder;
 use blackcube\core\interfaces\BlackcubeControllerInterface;
@@ -43,6 +44,15 @@ use Yii;
  */
 class BlackcubeController extends Controller implements BlackcubeControllerInterface
 {
+    /**
+     * @event Event an event raised before the CMS element is set.
+     */
+    public const EVENT_BEFORE_ELEMENT = 'beforeElement';
+
+    /**
+     * @event Event an event raised after the CMS element is set.
+     */
+    public const EVENT_AFTER_ELEMENT = 'afterElement';
 
     /**
      * @var array
@@ -55,6 +65,18 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     private $_element;
 
     /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['seo'] = [
+            'class' => SeoBehavior::class
+        ];
+        return $behaviors;
+    }
+
+    /**
      * Return element if it exists
      *
      * @return Node|Composite|Category|Tag
@@ -64,6 +86,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     {
         if (($this->_element === null) && ($this->_elementRoute !== null)) {
             $this->_element = Element::instanciate($this->_elementRoute);
+            $this->afterElement($this->_elementRoute, $this->_element);
         }
         return $this->_element;
     }
@@ -76,5 +99,32 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     {
         $this->_elementRoute = $info;
         $this->_element = null;
+        $this->beforeElement($info);
     }
+
+    /**
+     * @param string $route route of element to instanciate
+     */
+    public function beforeElement($route)
+    {
+        $event = new BlackcubeControllerEvent([
+            'route' => $route
+        ]);
+        $this->trigger(self::EVENT_BEFORE_ELEMENT, $event);
+    }
+
+    /**
+     * @param string $route route of element to instanciate
+     * @param Node|Composite|Category|Tag|ElementInterface $element element instanciated
+     */
+    public function afterElement($route, $element)
+    {
+        $event = new BlackcubeControllerEvent([
+            'route' => $route,
+            'element' => $element,
+            'controller' => $this,
+        ]);
+        $this->trigger(self::EVENT_AFTER_ELEMENT, $event);
+    }
+
 }
