@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.0.1 April, 15th 2020 <pgaultier@redcat.io>
+----------------------------------------------------
+
  * Enh: Adding `SlugGenerator`
  * Upd: Update dependencies
 
