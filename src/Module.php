@@ -17,12 +17,14 @@ namespace blackcube\core;
 use blackcube\core\commands\InitController;
 use blackcube\core\components\Plugins;
 use blackcube\core\components\PluginsHandler;
+use blackcube\core\components\SlugGenerator;
 use blackcube\core\helpers\PluginHelper;
 use blackcube\core\interfaces\PluginBootstrapInterface;
 use blackcube\core\interfaces\PluginInterface;
 use blackcube\core\interfaces\PluginManagerRoutableInterface;
 use blackcube\core\interfaces\PluginServiceInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
+use blackcube\core\interfaces\SlugGeneratorInterface;
 use blackcube\core\models\Parameter;
 use blackcube\core\models\Plugin;
 use blackcube\core\web\UrlRule;
@@ -153,6 +155,7 @@ class Module extends BaseModule implements BootstrapInterface
     public function bootstrap($app)
     {
         Yii::setAlias('@blackcube/core', __DIR__);
+        $this->registerDi($app);
         $this->registerTranslations();
         if ($app instanceof ConsoleApplication) {
             $this->bootstrapConsole($app);
@@ -163,6 +166,21 @@ class Module extends BaseModule implements BootstrapInterface
         $this->registerPlugins($app);
     }
 
+    /**
+     * @param WebApplication|ConsoleApplication $app
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function registerDi($app)
+    {
+        if (Yii::$container->hasSingleton(SlugGeneratorInterface::class) === false) {
+            Yii::$container->setSingleton(SlugGeneratorInterface::class, SlugGenerator::class);
+        }
+    }
+
+    /**
+     * @param WebApplication|ConsoleApplication $app
+     * @throws \yii\base\InvalidConfigException
+     */
     public function registerPlugins($app)
     {
         if (Yii::$container->hasSingleton(PluginsHandlerInterface::class) === false) {
