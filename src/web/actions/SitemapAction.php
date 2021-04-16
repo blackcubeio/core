@@ -16,12 +16,12 @@ namespace blackcube\core\web\actions;
 
 use blackcube\core\models\Sitemap;
 use blackcube\core\models\Slug;
-use blackcube\core\Module;
 use yii\web\Response;
 use yii\web\ViewAction;
 use DateTime;
 use DateTimeZone;
 use DOMDocument;
+use XMLReader;
 use Yii;
 
 /**
@@ -43,10 +43,16 @@ class SitemapAction extends ViewAction
     private $dom;
 
     /**
-     * @inheritdoc
+     * @var string alias to additional sitemap file
+     */
+    public $additionalSitemap;
+
+    /**
+     * {@inheritdoc}
      */
     public function run()
     {
+        $additionalData = $this->extractAdditionalSitemap();
         $hostname = Yii::$app->request->getHostName();
         $protocol = Yii::$app->request->isSecureConnection ? 'https':'http';
         $this->dom = Yii::createObject(DOMDocument::class, ['1.0', 'UTF-8']);
@@ -67,7 +73,11 @@ class SitemapAction extends ViewAction
                     } else {
                         $currentHost = $protocol.'://'.$currentHost;
                     }
-                    $loc = $this->dom->createElement('loc', $currentHost.'/'.$sitemap->slug->path);
+                    $locString = $currentHost.'/'.$sitemap->slug->path;
+                    if (isset($additionalData[$locString])) {
+                        unset($additionalData[$locString]);
+                    }
+                    $loc = $this->dom->createElement('loc', $locString);
                     $url->appendChild($loc);
                     $datetime = Yii::createObject(DateTime::class, [$element->dateUpdate, $timeZone]);
                     $lastMod = $this->dom->createElement('lastmod', $datetime->format('c'));
@@ -80,6 +90,26 @@ class SitemapAction extends ViewAction
                 }
             }
         }
+        foreach($additionalData as $urlData) {
+            if (isset($urlData['loc']) && empty($urlData['loc']) === false) {
+                $url = $this->dom->createElement('url');
+                $loc = $this->dom->createElement('loc', $urlData['loc']);
+                $url->appendChild($loc);
+                if (isset($urlData['lastmod']) && empty($urlData['lastmod']) === false) {
+                    $lastMod = $this->dom->createElement('lastmod', $urlData['lastmod']);
+                    $url->appendChild($lastMod);
+                }
+                if (isset($urlData['changefreq']) && empty($urlData['changefreq']) === false) {
+                    $changeFreq = $this->dom->createElement('changefreq', $urlData['changefreq']);
+                    $url->appendChild($changeFreq);
+                }
+                if (isset($urlData['priority']) && empty($urlData['priority']) === false) {
+                    $priority = $this->dom->createElement('priority', $urlData['priority']);
+                    $url->appendChild($priority);
+                }
+                $urlSet->appendChild($url);
+            }
+        }
         $this->dom->appendChild($urlSet);
 
         Yii::$app->response->format = Response::FORMAT_XML;
@@ -87,4 +117,50 @@ class SitemapAction extends ViewAction
         return Yii::$app->response;
     }
 
+    /**
+     * Extract data from static sitemap.xml to merge
+     * @return array
+     */
+    private function extractAdditionalSitemap()
+    {
+        $sitemapData = [];
+        if ($this->additionalSitemap !== null) {
+            $sitemapPath = Yii::getAlias($this->additionalSitemap);
+            if (file_exists($sitemapPath) && is_file($sitemapPath)) {
+                try {
+                    $sitemapReader = XMLReader::open($sitemapPath);
+                    /* @var $sitemapReader XMLReader */
+                    $url = [];
+                    while($sitemapReader->read()) {
+                        if ($sitemapReader->name === 'urlset' && $sitemapReader->nodeType === XMLReader::END_ELEMENT) {
+                            break;
+                        }
+                        if ($sitemapReader->name === 'url' && $sitemapReader->nodeType === XMLReader::ELEMENT) {
+                            $url = [];
+                        }
+                        if ($sitemapReader->name === 'url' && $sitemapReader->nodeType === XMLReader::END_ELEMENT) {
+                            if (isset($url['loc'])) {
+                                $sitemapData[$url['loc']] = $url;
+                            }
+                        }
+                        if ($sitemapReader->name === 'loc' && $sitemapReader->nodeType === XMLReader::ELEMENT) {
+                            $url['loc'] = $sitemapReader->readString();
+                        }
+                        if ($sitemapReader->name === 'lastmod' && $sitemapReader->nodeType === XMLReader::ELEMENT) {
+                            $url['lastmod'] = $sitemapReader->readString();
+                        }
+                        if ($sitemapReader->name === 'changefreq' && $sitemapReader->nodeType === XMLReader::ELEMENT) {
+                            $url['changefreq'] = $sitemapReader->readString();
+                        }
+                        if ($sitemapReader->name === 'priority' && $sitemapReader->nodeType === XMLReader::ELEMENT) {
+                            $url['priority'] = $sitemapReader->readString();
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Yii::warning($e->getMessage());
+                }
+            }
+        }
+        return $sitemapData;
+    }
 }
