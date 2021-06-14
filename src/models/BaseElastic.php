@@ -107,6 +107,14 @@ abstract class BaseElastic extends Model {
                     'networks' => 'networks'
                 ],
             ],
+            'url' => [
+                'validator' => 'url',
+                'config' => [
+                ],
+                'parameters' => [
+                    'validSchemes' => 'validSchemes',
+                ]
+            ],
             'validator' => 'string',
             'config' => [],
             'parameters' => [

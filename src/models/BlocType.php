@@ -147,8 +147,16 @@ class BlocType extends \yii\db\ActiveRecord
         if ($pathAlias !== null) {
             $targetView = (empty($this->view) ? Inflector::underscore($this->name) : $this->view);
             $targetView = preg_replace('/[-_\s]+/', '_', $targetView);
+            $transliterator = \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC');
+            if ($transliterator !== null) {
+                $transliterated = $transliterator->transliterate($targetView);
+                if ($transliterated !== false) {
+                    $targetView = $transliterated;
+                }
+            }
+
             if ($asAlias === true) {
-                return$pathAlias.'/'.$targetView.'.php';
+                return $pathAlias.'/'.$targetView.'.php';
             } else {
                 $templatePath = Yii::getAlias($pathAlias);
                 $filePath = $templatePath . '/' . $targetView . '.php';

@@ -14,6 +14,7 @@
 
 namespace blackcube\core\components;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
@@ -66,6 +67,7 @@ class Element
         if ($active === true) {
             $query->active();
         }
+        $query->cache(3600, QueryCache::getCmsDependencies());
         return $query->one();
     }
 }

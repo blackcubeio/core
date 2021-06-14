@@ -18,6 +18,7 @@ use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
 use blackcube\core\models\Language;
 use blackcube\core\models\Node;
+use blackcube\core\models\Seo;
 use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
 use blackcube\core\models\Type;
@@ -52,6 +53,7 @@ class QueryCache {
             ->union(Category::find()->select('[[dateUpdate]] as date'))
             ->union(Tag::find()->select('[[dateUpdate]] as date'))
             ->union(Slug::find()->select('[[dateUpdate]] as date'))
+            ->union(Seo::find()->select('[[dateUpdate]] as date'))
             ->union(Type::find()->select('[[dateUpdate]] as date'));
         $expression = Yii::createObject(Expression::class, ['MAX(date)']);
         $cacheQuery->select($expression)->from($maxQueryResult);
