@@ -1,6 +1,12 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.0.2 June, 14th 2021 <pgaultier@redcat.io>
+---------------------------------------------------
+
+ * Fix: SVG management in upload
+ * Fix: Elastic model rules for URLs
+ * Fix: Elastic model template name  
  * Enh: Adding automatic SEO management
  * Enh: Update query caching
  * Upd: Update dependencies
