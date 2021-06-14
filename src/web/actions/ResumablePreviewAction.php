@@ -64,7 +64,10 @@ class ResumablePreviewAction extends ViewAction
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             if (strncmp('image/', $mimeType, 6) !== 0) {
                 $realName = $this->prepareImage($fileName);
-                $mimeType = mime_content_type($realName);
+            } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
+                $realName = Yii::getAlias($uploadAlias.$fileName);
+                $mimeType = 'image/svg+xml'; // mime_content_type($realName);
+                $handle = fopen($realName, 'r');
             } else {
                 Image::$thumbnailBackgroundAlpha = 0;
                 $image = Image::thumbnail($realName, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
@@ -88,7 +91,11 @@ class ResumablePreviewAction extends ViewAction
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             if (strncmp('image/', $mimeType, 6) !== 0) {
                 $realName = $this->prepareImage($fileName);
-                $mimeType = mime_content_type($realName);
+                // $mimeType = mime_content_type($realName);
+                $handle = fopen($realName, 'r');
+            } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
+                $realName = Yii::getAlias($uploadAlias.$fileName);
+                $mimeType = 'image/svg+xml'; // mime_content_type($realName);
                 $handle = fopen($realName, 'r');
             } else {
                 Image::$thumbnailBackgroundAlpha = 0;
