@@ -94,9 +94,9 @@ class ResumablePreviewAction extends ViewAction
                 // $mimeType = mime_content_type($realName);
                 $handle = fopen($realName, 'r');
             } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
-                $realName = Yii::getAlias($uploadAlias.$fileName);
+                $handle = Module::getInstance()->fs->readStream($realName);
                 $mimeType = 'image/svg+xml'; // mime_content_type($realName);
-                $handle = fopen($realName, 'r');
+                // $handle = fopen($realName, 'r');
             } else {
                 Image::$thumbnailBackgroundAlpha = 0;
                 $handle = Module::getInstance()->fs->readStream($realName);
