@@ -9,7 +9,7 @@ Release 2.0.3 June, 18th 2021 <pgaultier@redcat.io>
 Release 2.0.3 July, 6th 2021 <pgaultier@redcat.io>
 --------------------------------------------------
 
- * Fix: Erroneous `find()` statements
+ * Fix: Erroneous `find()` statements in `ActiveQuery`
 
 Release 2.0.2 June, 14th 2021 <pgaultier@redcat.io>
 ---------------------------------------------------
