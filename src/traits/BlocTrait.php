@@ -73,7 +73,8 @@ trait BlocTrait
         try {
             // open space to add bloc
             if ($position <= $blocCount) {
-                $elementBlocs = $elementBlocClass::find([$this->getElementIdColumn() => $this->id])
+                $elementBlocs = $elementBlocClass::find()
+                    ->andWhere([$this->getElementIdColumn() => $this->id])
                     ->andWhere(['>=', 'order', $position])
                     ->orderBy(['order' => SORT_DESC])->all();
                 foreach($elementBlocs as $elementBloc) {
@@ -138,7 +139,8 @@ trait BlocTrait
                 $currentPosition = $currentElementBloc->order;
                 $currentAttributes = $currentElementBloc->attributes;
                 $currentElementBloc->delete();
-                $elementBlocs = $elementBlocClass::find([$this->getElementIdColumn() => $this->id])
+                $elementBlocs = $elementBlocClass::find()
+                    ->andWhere([$this->getElementIdColumn() => $this->id])
                     ->andWhere(['>=', 'order', $currentPosition])
                     ->orderBy(['order' => SORT_ASC])->all();
                 foreach($elementBlocs as $elementBloc) {
@@ -149,7 +151,8 @@ trait BlocTrait
                 $blocCount = $this->getBlocs()->count();
                 // open space to add bloc
                 if ($position <= $blocCount) {
-                    $elementBlocs = $elementBlocClass::find([$this->getElementIdColumn() => $this->id])
+                    $elementBlocs = $elementBlocClass::find()
+                        ->andWhere([$this->getElementIdColumn() => $this->id])
                         ->andWhere(['>=', 'order', $position])
                         ->orderBy(['order' => SORT_DESC])->all();
                     foreach($elementBlocs as $elementBloc) {

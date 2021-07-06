@@ -73,7 +73,8 @@ trait CompositeTrait
         try {
             // open space to add composite
             if ($position <= $compositeCount) {
-                $elementComposites = $elementCompositeClass::find([$this->getElementIdColumn() => $this->id])
+                $elementComposites = $elementCompositeClass::find()
+                    ->andWhere([$this->getElementIdColumn() => $this->id])
                     ->andWhere(['>=', 'order', $position])
                     ->orderBy(['order' => SORT_DESC])->all();
                 foreach($elementComposites as $elementComposite) {
@@ -88,6 +89,7 @@ trait CompositeTrait
             $elementComposite->{$this->getCompositeIdColumn()} = $composite->id;
             $elementComposite->order = $position;
             $elementComposite->save();
+            $this->reorderComposites();
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
@@ -145,7 +147,8 @@ trait CompositeTrait
                 $currentPosition = $currentElementComposite->order;
                 $currentAttributes = $currentElementComposite->attributes;
                 $currentElementComposite->delete();
-                $elementComposites = $elementCompositeClass::find([$this->getElementIdColumn() => $this->id])
+                $elementComposites = $elementCompositeClass::find()
+                    ->andWhere([$this->getElementIdColumn() => $this->id])
                     ->andWhere(['>=', 'order', $currentPosition])
                     ->orderBy(['order' => SORT_ASC])->all();
                 foreach($elementComposites as $elementComposite) {
@@ -156,7 +159,8 @@ trait CompositeTrait
                 $compositeCount = $this->getComposites()->count();
                 // open space to add composite
                 if ($position <= $compositeCount) {
-                    $elementComposites = $elementCompositeClass::find([$this->getElementIdColumn() => $this->id])
+                    $elementComposites = $elementCompositeClass::find()
+                        ->andWhere([$this->getElementIdColumn() => $this->id])
                         ->andWhere(['>=', 'order', $position])
                         ->orderBy(['order' => SORT_DESC])->all();
                     foreach($elementComposites as $elementComposite) {
