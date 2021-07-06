@@ -74,7 +74,7 @@ trait CompositeTrait
             // open space to add composite
             if ($position <= $compositeCount) {
                 $elementComposites = $elementCompositeClass::find()
-                    ->andWhere([$this->getElementIdColumn() => $this->id])
+                    ->andWhere(([$this->getElementIdColumn() => $this->id]))
                     ->andWhere(['>=', 'order', $position])
                     ->orderBy(['order' => SORT_DESC])->all();
                 foreach($elementComposites as $elementComposite) {
@@ -89,7 +89,6 @@ trait CompositeTrait
             $elementComposite->{$this->getCompositeIdColumn()} = $composite->id;
             $elementComposite->order = $position;
             $elementComposite->save();
-            $this->reorderComposites();
             $transaction->commit();
         } catch(\Exception $e) {
             $transaction->rollBack();
