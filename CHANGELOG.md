@@ -1,15 +1,25 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.1.0 July, 10th 2021 <pgaultier@redcat.io>
+---------------------------------------------------
+
+ * Initial public release on github
+
 Release 2.0.3 June, 18th 2021 <pgaultier@redcat.io>
 ---------------------------------------------------
 
-* Fix: SVG management in upload
+ * Fix: SVG management in upload
 
-Release 2.0.3 July, 6th 2021 <pgaultier@redcat.io>
+Release 2.0.4 July, 6th 2021 <pgaultier@redcat.io>
 --------------------------------------------------
 
  * Fix: Erroneous `find()` statements in `ActiveQuery`
+
+Release 2.0.3 June, 18th 2021 <pgaultier@redcat.io>
+---------------------------------------------------
+
+ * Fix: SVG updates
 
 Release 2.0.2 June, 14th 2021 <pgaultier@redcat.io>
 ---------------------------------------------------
