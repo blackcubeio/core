@@ -219,6 +219,7 @@ class Module extends BaseModule implements BootstrapInterface
             'migrationNamespaces' => [
                 'blackcube\core\migrations',
             ],
+            'migrationPath' => null,
             'db' => $this->db,
         ];
         $app->controllerMap[$this->commandNameSpace.'init'] = [
