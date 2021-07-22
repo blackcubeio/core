@@ -1,6 +1,12 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.1.1 July, 22th 2021 <pgaultier@redcat.io>
+---------------------------------------------------
+
+ * Upd: Update dependencies
+ * Fix: Migration error
+
 Release 2.1.0 July, 10th 2021 <pgaultier@redcat.io>
 ---------------------------------------------------
 
