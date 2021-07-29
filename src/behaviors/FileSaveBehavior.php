@@ -15,6 +15,7 @@ namespace blackcube\core\behaviors;
 
 use blackcube\core\models\Bloc;
 use blackcube\core\Module;
+use creocoder\flysystem\Filesystem;
 use yii\base\Behavior;
 use yii\base\ErrorException;
 use yii\base\Event;
@@ -61,6 +62,7 @@ class FileSaveBehavior extends Behavior
         return [
             ActiveRecord::EVENT_BEFORE_INSERT => 'saveFiles',
             ActiveRecord::EVENT_BEFORE_UPDATE => 'saveFiles',
+            ActiveRecord::EVENT_AFTER_DELETE => 'deleteFiles',
         ];
     }
 
@@ -119,6 +121,42 @@ class FileSaveBehavior extends Behavior
                 }
             }
             $model->{$attribute} = implode(', ', $finaFiles);
+        }
+    }
+    /**
+     * Delete files in system
+     * @param Event $event
+     * @throws ErrorException
+     * @since XXX
+     */
+    public function deleteFiles($event)
+    {
+        if ($this->owner instanceof Bloc) {
+            $modelStructure = $this->owner->getStructure();
+            $this->filesAttributes = [];
+            foreach($modelStructure as $attribute => $definition) {
+                if (isset($definition['field']) === true && in_array($definition['field'], $this->elasticFilesAttributes)) {
+                    $this->filesAttributes[] = $attribute;
+                }
+            }
+        }
+        $model = $this->owner;
+        /* @var ActiveRecord $model */
+        $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
+        $fs = Module::getInstance()->fs;
+        /* @var $fs Filesystem */
+        foreach ($this->filesAttributes as $attribute) {
+            $currentFiles = $model->{$attribute};
+            $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            foreach ($files as $file) {
+                if (strncmp($prefix, $file, strlen($prefix)) === 0) {
+                    // file already saved in system we should remove it
+                    $originalFilename = str_replace($prefix, '', $file);
+                    if ($fs->has($originalFilename) === true) {
+                        $fs->delete($originalFilename);
+                    }
+                }
+            }
         }
     }
 }

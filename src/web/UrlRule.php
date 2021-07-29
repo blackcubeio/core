@@ -63,6 +63,9 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         $id = $matches['id'];
         if ($cache !== null) {
             $cacheId = Module::getInstance()->uniqueId.':web:urlrule:'. $route;
+            if (empty($params) === false) {
+                $cacheId .= '?'.http_build_query($params);
+            }
             $prettyUrl = $cache->get($cacheId);
         }
         if ($prettyUrl === false) {
@@ -82,6 +85,9 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             }
             if ($cache !== null) {
                 $cacheId = Module::getInstance()->uniqueId.':web:urlrule:'. $route;
+                if (empty($params) === false) {
+                    $cacheId .= '?'.http_build_query($params);
+                }
                 $cache->set($cacheId, $prettyUrl, 3600, QueryCache::getCmsDependencies());
             }
         }
