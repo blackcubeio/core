@@ -2,6 +2,7 @@ Blackcube Core - CHANGELOG
 ==========================
 
 
+ * Fix: Fix caching URLs
  * Upd: Remove files from bucket when deleting bloc
 
 Release 2.1.2 July, 29th 2021 <pgaultier@redcat.io>
