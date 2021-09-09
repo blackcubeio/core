@@ -154,7 +154,7 @@ class Html extends YiiHtml
                     if (is_dir($targetCachePath) === false) {
                         mkdir($targetCachePath, 0777, true);
                     }
-                    if ($width !== null && $height !== null) {
+                    if ($width !== null || $height !== null) {
                         $sourceStream = $fs->readStream($originalFilename);
                         $image = Image::thumbnail($sourceStream, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
                         $image->save($cachedFilePath);
