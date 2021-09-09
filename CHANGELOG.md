@@ -1,6 +1,12 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.1.4 September, 9th 2021 <pgaultier@redcat.io>
+-------------------------------------------------------
+
+ * Fix: Fix caching images
+ * Upd: Update dependencies
+
 Release 2.1.3 July, 29th 2021 <pgaultier@redcat.io>
 ---------------------------------------------------
 
