@@ -1,6 +1,13 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.2.0 January, 29th 2022 <pgaultier@redcat.io>
+------------------------------------------------------
+
+ * Upd: Update command names
+ * Upd: Merge migrations with app ones
+ * Upd: Update dependencies
+
 Release 2.1.4 September, 9th 2021 <pgaultier@redcat.io>
 -------------------------------------------------------
 
