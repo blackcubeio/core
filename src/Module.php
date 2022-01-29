@@ -94,7 +94,7 @@ class Module extends BaseModule implements BootstrapInterface
     /**
      * @var string command prefix
      */
-    public $commandNameSpace = 'bcore:';
+    public $commandNameSpace = 'bc:';
 
     /**
      * @var Connection|array|string database access
@@ -214,6 +214,7 @@ class Module extends BaseModule implements BootstrapInterface
      */
     protected function bootstrapConsole(ConsoleApplication $app)
     {
+        /*/
         $app->controllerMap[$this->commandNameSpace.'migrate'] = [
             'class' => MigrateController::class,
             'migrationNamespaces' => [
@@ -222,6 +223,25 @@ class Module extends BaseModule implements BootstrapInterface
             'migrationPath' => null,
             'db' => $this->db,
         ];
+        /*/
+        // TODO check what to do if db is not the same as the base app one
+        if (isset($app->controllerMap['migrate']) === true) {
+            if (isset($app->controllerMap['migrate']['migrationNamespaces']) === true) {
+                $app->controllerMap['migrate']['migrationNamespaces'][] = 'blackcube\core\migrations';
+            } else {
+                $app->controllerMap['migrate']['migrationNamespaces'] = ['blackcube\core\migrations'];
+            }
+        } else {
+            $app->controllerMap['migrate'] = [
+                'class' => MigrateController::class,
+                'migrationNamespaces' => [
+                    'blackcube\core\migrations',
+                ],
+                'migrationPath' => null,
+                'db' => $this->db,
+            ];
+        }
+        /**/
         $app->controllerMap[$this->commandNameSpace.'init'] = [
             'class' => InitController::class
         ];
