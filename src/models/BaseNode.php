@@ -293,19 +293,11 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getComposites()
     {
-        $compositeQuery = Composite::find()
-            ->rightJoin(NodeComposite::tableName(), NodeComposite::tableName().'.[[compositeId]] = '.Composite::tableName().'.[[id]]')
-            ->andWhere([NodeComposite::tableName().'.[[nodeId]]' => $this->id])
-            ->orderBy([NodeComposite::tableName().'.[[order]]' => SORT_ASC]);
-        $compositeQuery->multiple = true;
-        return $compositeQuery;
-        /*/
         return $this->hasMany(Composite::class, ['id' => 'compositeId'])
             ->viaTable(NodeComposite::tableName(), ['nodeId' => 'id'], function ($query) {
-                / * @var $query \yii\db\ActiveQuery * /
+                /* @var $query \yii\db\ActiveQuery */
                 $query->orderBy(['order' => SORT_ASC]);
             });
-        /**/
     }
 
     /**
@@ -1004,6 +996,19 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
         } else {
             return null;
         }
+    }
+
+    /**
+     * Gets query for [[Bloc]].
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getBlocs() {
+        return $this->hasMany(Bloc::class, ['id' => 'blocId'])
+            ->viaTable(NodeBloc::tableName(), ['nodeId' => 'id'], function ($query) {
+                /* @var $query \yii\db\ActiveQuery */
+                $query->orderBy(['order' => SORT_ASC]);
+            });
     }
 
 }
