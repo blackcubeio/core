@@ -267,20 +267,4 @@ trait BlocTrait
         return $elementBlocs;
     }
 
-    /**
-     * Gets query for [[Bloc]].
-     *
-     * @return FilterActiveQuery|\yii\db\ActiveQuery
-     */
-    public function getBlocs() {
-        $elementBlocClass = $this->getElementBlocClass();
-        $blocQuery = Bloc::find()
-            ->rightJoin($elementBlocClass::tableName().' linktable', 'linktable.[[blocId]] = id')
-            ->andWhere(['linktable.'.$this->getElementIdColumn() => $this->id])
-            ->orderBy(['linktable.[[order]]' => SORT_ASC]);
-        $blocQuery->multiple = true;
-        return $blocQuery;
-
-    }
-
 }

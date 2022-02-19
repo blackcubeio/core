@@ -241,4 +241,17 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     {
         return $this->hasMany(Tag::class, ['categoryId' => 'id']);
     }
+
+    /**
+     * Gets query for [[Bloc]].
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getBlocs() {
+        return $this->hasMany(Bloc::class, ['id' => 'blocId'])
+            ->viaTable(CategoryBloc::tableName(), ['categoryId' => 'id'], function ($query) {
+                /* @var $query \yii\db\ActiveQuery */
+                $query->orderBy(['order' => SORT_ASC]);
+            });
+    }
 }

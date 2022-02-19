@@ -346,4 +346,17 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
         }
     }
 
+    /**
+     * Gets query for [[Bloc]].
+     *
+     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     */
+    public function getBlocs() {
+        return $this->hasMany(Bloc::class, ['id' => 'blocId'])
+            ->viaTable(CompositeBloc::tableName(), ['compositeId' => 'id'], function ($query) {
+                /* @var $query \yii\db\ActiveQuery */
+                $query->orderBy(['order' => SORT_ASC]);
+            });
+    }
+
 }
