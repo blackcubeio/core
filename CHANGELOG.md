@@ -1,6 +1,12 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.2.2 March, 9th 2022 <pgaultier@redcat.io>
+---------------------------------------------------
+
+ * Fix: Fix blocs active query order by
+ * Upd: Update dependencies
+
 Release 2.2.1 February, 19th 2022 <pgaultier@redcat.io>
 -------------------------------------------------------
 

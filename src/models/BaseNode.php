@@ -297,7 +297,9 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
             ->viaTable(NodeComposite::tableName(), ['nodeId' => 'id'], function ($query) {
                 /* @var $query \yii\db\ActiveQuery */
                 $query->orderBy(['order' => SORT_ASC]);
-            });
+            })
+            ->innerJoin(NodeComposite::tableName().' s', 's.[[compositeId]] = '.Composite::tableName().'.[[id]]')
+            ->orderBy(['s.order' => SORT_ASC]);;
     }
 
     /**
@@ -1005,10 +1007,9 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getBlocs() {
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])
-            ->viaTable(NodeBloc::tableName(), ['nodeId' => 'id'], function ($query) {
-                /* @var $query \yii\db\ActiveQuery */
-                $query->orderBy(['order' => SORT_ASC]);
-            });
+            ->viaTable(NodeBloc::tableName(), ['nodeId' => 'id'])
+            ->innerJoin(NodeBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')
+            ->orderBy(['s.order' => SORT_ASC]);
     }
 
 }
