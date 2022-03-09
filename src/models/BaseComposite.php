@@ -353,10 +353,9 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public function getBlocs() {
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])
-            ->viaTable(CompositeBloc::tableName(), ['compositeId' => 'id'], function ($query) {
-                /* @var $query \yii\db\ActiveQuery */
-                $query->orderBy(['order' => SORT_ASC]);
-            });
+            ->viaTable(CompositeBloc::tableName(), ['compositeId' => 'id'])
+            ->innerJoin(CompositeBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')
+            ->orderBy(['s.order' => SORT_ASC]);
     }
 
 }

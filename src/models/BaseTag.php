@@ -251,9 +251,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getBlocs() {
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])
-            ->viaTable(TagBloc::tableName(), ['tagId' => 'id'], function ($query) {
-                /* @var $query \yii\db\ActiveQuery */
-                $query->orderBy(['order' => SORT_ASC]);
-            });
+            ->viaTable(TagBloc::tableName(), ['tagId' => 'id'])
+            ->innerJoin(TagBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')
+            ->orderBy(['s.order' => SORT_ASC]);
     }
 }
