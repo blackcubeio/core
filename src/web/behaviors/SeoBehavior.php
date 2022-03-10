@@ -70,7 +70,7 @@ class SeoBehavior extends Behavior
             /* @var \blackcube\core\models\Seo $seo */
             $metaRobots = [];
             if ($seo->noindex) {
-                    $metaRobots[] = 'noindex';
+                $metaRobots[] = 'noindex';
             }
             if ($seo->nofollow) {
                 $metaRobots[] = 'nofollow';
