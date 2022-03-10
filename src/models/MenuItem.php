@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -132,7 +133,8 @@ class MenuItem extends \yii\db\ActiveRecord
      */
     public function getMenu()
     {
-        return $this->hasOne(Menu::class, ['id' => 'menuId']);
+        return $this
+            ->hasOne(Menu::class, ['id' => 'menuId']);
     }
 
     /**
@@ -142,7 +144,8 @@ class MenuItem extends \yii\db\ActiveRecord
      */
     public function getChildren()
     {
-        return $this->hasMany(MenuItem::class, ['parentId' => 'id'])
+        return $this
+            ->hasMany(MenuItem::class, ['parentId' => 'id'])
             ->orderBy(['order' => SORT_ASC]);
     }
 
@@ -153,7 +156,8 @@ class MenuItem extends \yii\db\ActiveRecord
      */
     public function getParent()
     {
-        return $this->hasOne(MenuItem::class, ['id' => 'parentId']);
+        return $this
+            ->hasOne(MenuItem::class, ['id' => 'parentId']);
     }
 
     public static function reorder($menuId) {

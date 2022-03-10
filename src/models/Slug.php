@@ -197,7 +197,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getCategory()
     {
-        return $this->hasOne(Category::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Category::class, ['slugId' => 'id']);
     }
 
     /**
@@ -207,7 +208,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getComposite()
     {
-        return $this->hasOne(Composite::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Composite::class, ['slugId' => 'id']);
     }
 
     /**
@@ -217,7 +219,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getNode()
     {
-        return $this->hasOne(Node::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Node::class, ['slugId' => 'id']);
     }
 
     /**
@@ -227,7 +230,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getSitemap()
     {
-        return $this->hasOne(Sitemap::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Sitemap::class, ['slugId' => 'id']);
     }
 
     /**
@@ -237,7 +241,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getSeo()
     {
-        return $this->hasOne(Seo::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Seo::class, ['slugId' => 'id']);
     }
 
     /**
@@ -247,7 +252,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getTag()
     {
-        return $this->hasOne(Tag::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Tag::class, ['slugId' => 'id']);
     }
 
     /**

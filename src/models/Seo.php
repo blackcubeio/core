@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use blackcube\core\behaviors\FileSaveBehavior;
 use blackcube\core\interfaces\SluggedInterface;
@@ -185,7 +186,9 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
      */
     public function getCanonicalSlug()
     {
-        return $this->hasOne(Slug::class, ['id' => 'canonicalSlugId']);
+        return $this
+            ->hasOne(Slug::class, ['id' => 'canonicalSlugId'])
+            ->cache(3600, QueryCache::getSlugDependencies());
     }
 
     /**
@@ -195,6 +198,8 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
      */
     public function getSlug()
     {
-        return $this->hasOne(Slug::class, ['id' => 'slugId']);
+        return $this
+            ->hasOne(Slug::class, ['id' => 'slugId'])
+            ->cache(3600, QueryCache::getSlugDependencies());
     }
 }

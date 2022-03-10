@@ -216,7 +216,9 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      */
     public function getSlug()
     {
-        return $this->hasOne(Slug::class, ['id' => 'slugId']);
+        return $this
+            ->hasOne(Slug::class, ['id' => 'slugId'])
+            ->cache(3600, QueryCache::getSlugDependencies());
     }
 
     /**
@@ -239,7 +241,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['categoryId' => 'id']);
+        return $this
+            ->hasMany(Tag::class, ['categoryId' => 'id']);
     }
 
     /**
@@ -248,7 +251,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getBlocs() {
-        return $this->hasMany(Bloc::class, ['id' => 'blocId'])
+        return $this
+            ->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(CategoryBloc::tableName(), ['categoryId' => 'id'])
             ->innerJoin(CategoryBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')
             ->orderBy(['s.order' => SORT_ASC]);

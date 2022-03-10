@@ -293,11 +293,9 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getComposites()
     {
-        return $this->hasMany(Composite::class, ['id' => 'compositeId'])
-            ->viaTable(NodeComposite::tableName(), ['nodeId' => 'id'], function ($query) {
-                /* @var $query \yii\db\ActiveQuery */
-                $query->orderBy(['order' => SORT_ASC]);
-            })
+        return $this
+            ->hasMany(Composite::class, ['id' => 'compositeId'])
+            ->viaTable(NodeComposite::tableName(), ['nodeId' => 'id'])
             ->innerJoin(NodeComposite::tableName().' s', 's.[[compositeId]] = '.Composite::tableName().'.[[id]]')
             ->orderBy(['s.order' => SORT_ASC]);;
     }
@@ -310,7 +308,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['id' => 'tagId'])
+        return $this
+            ->hasMany(Tag::class, ['id' => 'tagId'])
             ->viaTable(NodeTag::tableName(), ['nodeId' => 'id'])
             ->orderBy(['name' => SORT_ASC]);
 
@@ -322,7 +321,9 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getCategories()
     {
-        $tagActiveQuery = $this->getTags()->select(['categoryId']);
+        $tagActiveQuery = $this
+            ->getTags()
+            ->select(['categoryId']);
         $activeQuery = Category::find()
             ->andWhere(['in', 'id', $tagActiveQuery])
             ->orderBy(['name' => SORT_ASC]);
@@ -374,7 +375,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getParent()
     {
-        $activeQuery = $this->getParents()
+        $activeQuery = $this
+            ->getParents()
             ->andWhere(['level' => ($this->level - 1)]);
         $activeQuery->multiple = false;
         return $activeQuery;
@@ -400,7 +402,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getSiblings()
     {
-        $activeQuery = $this->getSiblingsTrees()
+        $activeQuery = $this
+            ->getSiblingsTrees()
             ->andWhere(['level' => $this->level]);
         return $activeQuery;
     }
@@ -460,7 +463,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     public function getPreviousSiblings()
     {
         $activeQuery = $this->getPreviousSiblingsTrees();
-        $activeQuery->andWhere(['level' => $this->level]);
+        $activeQuery
+            ->andWhere(['level' => $this->level]);
         return $activeQuery;
     }
 
@@ -470,7 +474,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getPreviousSibling()
     {
-        $activeQuery = $this->getPreviousSiblings()
+        $activeQuery = $this
+            ->getPreviousSiblings()
             ->orderBy(['left' => SORT_DESC]);
         $activeQuery->multiple = false;
         return $activeQuery;
@@ -505,8 +510,10 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getNextSiblings()
     {
-        $activeQuery = $this->getNextSiblingsTrees();
-        $activeQuery->andWhere(['level' => $this->level]);
+        $activeQuery = $this
+            ->getNextSiblingsTrees();
+        $activeQuery
+            ->andWhere(['level' => $this->level]);
         return $activeQuery;
     }
 
@@ -516,7 +523,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getNextSibling()
     {
-        $activeQuery = $this->getNextSiblings();
+        $activeQuery = $this
+            ->getNextSiblings();
         $activeQuery->limit(1);
         $activeQuery->multiple = false;
         return $activeQuery;

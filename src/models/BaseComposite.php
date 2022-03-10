@@ -230,7 +230,9 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public function getSlug()
     {
-        return $this->hasOne(Slug::class, ['id' => 'slugId']);
+        return $this
+            ->hasOne(Slug::class, ['id' => 'slugId'])
+            ->cache(3600, QueryCache::getSlugDependencies());
     }
 
     /**
@@ -252,7 +254,9 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['id' => 'tagId'])->viaTable(CompositeTag::tableName(), ['compositeId' => 'id']);
+        return $this
+            ->hasMany(Tag::class, ['id' => 'tagId'])
+            ->viaTable(CompositeTag::tableName(), ['compositeId' => 'id']);
     }
 
     /**
@@ -263,7 +267,9 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public function getNodes()
     {
-        return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable(NodeComposite::tableName(), ['compositeId' => 'id']);
+        return $this
+            ->hasMany(Node::class, ['id' => 'nodeId'])
+            ->viaTable(NodeComposite::tableName(), ['compositeId' => 'id']);
     }
 
     /**
@@ -352,7 +358,8 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getBlocs() {
-        return $this->hasMany(Bloc::class, ['id' => 'blocId'])
+        return $this
+            ->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(CompositeBloc::tableName(), ['compositeId' => 'id'])
             ->innerJoin(CompositeBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')
             ->orderBy(['s.order' => SORT_ASC]);
