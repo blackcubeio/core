@@ -16,6 +16,7 @@ namespace blackcube\core\traits;
 
 use blackcube\core\models\BlocType;
 use blackcube\core\models\Elastic;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use Yii;
 
@@ -34,6 +35,11 @@ trait ElasticTrait
 {
 
     /**
+     * @var array blocTypes already loaded to avoid multiples calls during one request
+     */
+    private static $elasticBlocTypes;
+
+    /**
      * @var Elastic
      */
     private $elastic;
@@ -43,10 +49,33 @@ trait ElasticTrait
      */
     public $defaultJsonSchema = '{"type":"object"}';
 
+    /**
+     * Lazy load json schemas
+     * @param int $blocTypeId
+     * @return string json schema
+     */
+    private function getStoredBlocTypeSchemas($blocTypeId)
+    {
+        if (self::$elasticBlocTypes === null) {
+            $blocTypes = BlocType::find()->select(['id', 'template'])->asArray()->all();
+            self::$elasticBlocTypes = [];
+            foreach ($blocTypes as $blocType) {
+                self::$elasticBlocTypes[$blocType['id']] = $blocType['template'];
+            }
+        }
+        return self::$elasticBlocTypes[$blocTypeId]??$this->defaultJsonSchema;
+    }
+
+    /**
+     * @param string|null $names
+     * @param array $except
+     * @return array elastic attributes
+     */
     public function getElasticAttributes($names = null, $except = [])
     {
         return $this->elastic->getAttributes($names, $except);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -287,12 +316,13 @@ trait ElasticTrait
      */
     protected function resetElastic()
     {
-        $blocType = BlocType::findOne(['id' => $this->blocTypeId]);
+        $jsonSchema = $this->getStoredBlocTypeSchemas($this->blocTypeId);
+        /*
         if ($blocType instanceof BlocType) {
             $jsonSchema = $blocType->template;
         } else {
             $jsonSchema = $this->defaultJsonSchema;
-        }
+        }*/
         $this->elastic =  Yii::createObject(['class' => Elastic::class, 'schema' => $jsonSchema]);
     }
 
