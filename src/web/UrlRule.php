@@ -45,6 +45,8 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public $suffix;
 
+    private static $slugs = [];
+
     /**
      * {@inheritDoc}
      */
@@ -114,11 +116,15 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 $pathInfo = substr($pathInfo, 0, - $suffixLength);
             }
         }
+        $key = sha1($hostname.':'.$pathInfo);
+        if (isset(static::$slugs[$key]) === false) {
+            static::$slugs[$key] = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
+                ->active()
+                ->with(['element' => function($query) { $query->active(); }])
+                ->one();
+        }
+        $slug = static::$slugs[$key];
 
-        $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
-            ->active()
-            ->with(['element' => function($query) { $query->active(); }])
-            ->one();
         if ($slug === null) {
             return false;
         }
