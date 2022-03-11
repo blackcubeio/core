@@ -115,11 +115,15 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             }
         }
 
-        $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)->active()->one();
+        $slug = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
+            ->active()
+            ->with(['element' => function($query) { $query->active(); }])
+            ->one();
         if ($slug === null) {
             return false;
         }
-        $element = $slug->getElement()->active()->one();
+        // $element = $slug->getElement()->active()->one();
+        $element = $slug->element;
         if ($element !== null) {
             $elementClass = get_class($element);
             $elementId = $element->id;
