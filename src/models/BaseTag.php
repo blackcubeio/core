@@ -63,6 +63,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     use SlugTrait;
     use ActiveTrait;
 
+    const ELEMENT_TYPE  = 'tag';
+
     /**
      * {@inheritDoc}
      */
@@ -83,7 +85,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**
@@ -199,7 +202,9 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getComposites()
     {
-        return $this->hasMany(Composite::class, ['id' => 'compositeId'])->viaTable(CompositeTag::tableName(), ['tagId' => 'id']);
+        return $this
+            ->hasMany(Composite::class, ['id' => 'compositeId'])
+            ->viaTable(CompositeTag::tableName(), ['tagId' => 'id']);
     }
 
     /**
@@ -209,7 +214,9 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getNodes()
     {
-        return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable(NodeTag::tableName(), ['tagId' => 'id']);
+        return $this
+            ->hasMany(Node::class, ['id' => 'nodeId'])
+            ->viaTable(NodeTag::tableName(), ['tagId' => 'id']);
     }
 
     /**
@@ -219,7 +226,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getCategory()
     {
-        return $this->hasOne(Category::class, ['id' => 'categoryId']);
+        return $this
+            ->hasOne(Category::class, ['id' => 'categoryId']);
     }
 
     /**
@@ -229,7 +237,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public function getSlug()
     {
-        return $this->hasOne(Slug::class, ['id' => 'slugId']);
+        return $this
+            ->hasOne(Slug::class, ['id' => 'slugId']);
     }
 
     /**
@@ -240,8 +249,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     public function getType()
     {
         return $this
-            ->hasOne(Type::class, ['id' => 'typeId'])
-            ->cache(3600, QueryCache::getTypeDependencies());
+            ->hasOne(Type::class, ['id' => 'typeId']);
     }
 
     /**
@@ -250,7 +258,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getBlocs() {
-        return $this->hasMany(Bloc::class, ['id' => 'blocId'])
+        return $this
+            ->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(TagBloc::tableName(), ['tagId' => 'id'])
             ->innerJoin(TagBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')
             ->orderBy(['s.order' => SORT_ASC]);

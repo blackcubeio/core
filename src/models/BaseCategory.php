@@ -65,6 +65,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
 
     public const SCENARIO_TOGGLE_ACTIVE = 'toggle_active';
 
+    const ELEMENT_TYPE  = 'category';
+
     /**
      * {@inheritDoc}
      */
@@ -86,7 +88,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**
@@ -205,8 +208,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     public function getLanguage()
     {
         return $this
-            ->hasOne(Language::class, ['id' => 'languageId'])
-            ->cache(3600, QueryCache::getLanguageDependencies());
+            ->hasOne(Language::class, ['id' => 'languageId']);
     }
 
     /**
@@ -216,7 +218,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      */
     public function getSlug()
     {
-        return $this->hasOne(Slug::class, ['id' => 'slugId']);
+        return $this
+            ->hasOne(Slug::class, ['id' => 'slugId']);
     }
 
     /**
@@ -227,8 +230,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     public function getType()
     {
         return $this
-            ->hasOne(Type::class, ['id' => 'typeId'])
-            ->cache(3600, QueryCache::getTypeDependencies());
+            ->hasOne(Type::class, ['id' => 'typeId']);
     }
 
     /**
@@ -239,7 +241,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['categoryId' => 'id']);
+        return $this
+            ->hasMany(Tag::class, ['categoryId' => 'id']);
     }
 
     /**
@@ -248,7 +251,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
     public function getBlocs() {
-        return $this->hasMany(Bloc::class, ['id' => 'blocId'])
+        return $this
+            ->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(CategoryBloc::tableName(), ['categoryId' => 'id'])
             ->innerJoin(CategoryBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')
             ->orderBy(['s.order' => SORT_ASC]);

@@ -64,13 +64,12 @@ class SeoBehavior extends Behavior
         $slugId = $event->element->slugId;
         $seo = Seo::find()->active()
             ->andWhere(['id' => $slugId])
-            ->cache(3600, QueryCache::getCmsDependencies())
             ->one();
         if ($seo !== null) {
             /* @var \blackcube\core\models\Seo $seo */
             $metaRobots = [];
             if ($seo->noindex) {
-                    $metaRobots[] = 'noindex';
+                $metaRobots[] = 'noindex';
             }
             if ($seo->nofollow) {
                 $metaRobots[] = 'nofollow';

@@ -60,6 +60,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
 {
     public const SCENARIO_REDIRECT = 'redirect';
 
+    const ELEMENT_TYPE  = 'slug';
+
     /**
      * @var int
      */
@@ -86,7 +88,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**
@@ -197,7 +200,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getCategory()
     {
-        return $this->hasOne(Category::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Category::class, ['slugId' => 'id']);
     }
 
     /**
@@ -207,7 +211,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getComposite()
     {
-        return $this->hasOne(Composite::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Composite::class, ['slugId' => 'id']);
     }
 
     /**
@@ -217,7 +222,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getNode()
     {
-        return $this->hasOne(Node::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Node::class, ['slugId' => 'id']);
     }
 
     /**
@@ -227,7 +233,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getSitemap()
     {
-        return $this->hasOne(Sitemap::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Sitemap::class, ['slugId' => 'id']);
     }
 
     /**
@@ -237,7 +244,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getSeo()
     {
-        return $this->hasOne(Seo::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Seo::class, ['slugId' => 'id']);
     }
 
     /**
@@ -247,7 +255,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public function getTag()
     {
-        return $this->hasOne(Tag::class, ['slugId' => 'id']);
+        return $this
+            ->hasOne(Tag::class, ['slugId' => 'id']);
     }
 
     /**
@@ -380,11 +389,12 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             $query->where(['id' => $id]);
             // $query->active();
         // }
+        /*/
         if (Module::getInstance()->cache !== null) {
             $cacheDependency = QueryCache::getCmsDependencies();
-            /**/
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
+        /**/
 
         $element = $query->one();
         if ($element !== null && !$element instanceof Slug) {
@@ -414,10 +424,12 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             ->orderBy(['host' => SORT_DESC])
             ->limit(1);
         $slugQuery->multiple = false;
+        /*/
         if (Module::getInstance()->cache !== null) {
             $cacheDependency = QueryCache::getSlugDependencies();
             $slugQuery->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
+        /**/
         return $slugQuery;
     }
 }

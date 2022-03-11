@@ -67,7 +67,6 @@ class Element
         if ($active === true) {
             $query->active();
         }
-        $query->cache(3600, QueryCache::getCmsDependencies());
         return $query->one();
     }
 }

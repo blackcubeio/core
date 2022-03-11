@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use blackcube\core\interfaces\SluggedInterface;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -165,6 +166,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
      */
     public function getSlug()
     {
-        return $this->hasOne(Slug::class, ['id' => 'slugId']);
+        return $this
+            ->hasOne(Slug::class, ['id' => 'slugId']);
     }
 }

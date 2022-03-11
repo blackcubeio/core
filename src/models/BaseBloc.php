@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use blackcube\core\behaviors\FileSaveBehavior;
 use blackcube\core\interfaces\ElasticInterface;
@@ -55,6 +56,8 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
 
     use ElasticTrait;
 
+    const ELEMENT_TYPE  = 'bloc';
+
     /**
      * {@inheritDoc}
      */
@@ -68,7 +71,8 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**
@@ -161,7 +165,9 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public function getCategories():ActiveQuery
     {
-        return $this->hasMany(Category::class, ['id' => 'categoryId'])->viaTable(CategoryBloc::tableName(), ['blocId' => 'id']);
+        return $this
+            ->hasMany(Category::class, ['id' => 'categoryId'])
+            ->viaTable(CategoryBloc::tableName(), ['blocId' => 'id']);
     }
 
     /**
@@ -171,7 +177,9 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public function getComposites():ActiveQuery
     {
-        return $this->hasMany(Composite::class, ['id' => 'compositeId'])->viaTable(CompositeBloc::tableName(), ['blocId' => 'id']);
+        return $this
+            ->hasMany(Composite::class, ['id' => 'compositeId'])
+            ->viaTable(CompositeBloc::tableName(), ['blocId' => 'id']);
     }
 
     /**
@@ -181,7 +189,9 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public function getNodes():ActiveQuery
     {
-        return $this->hasMany(Node::class, ['id' => 'nodeId'])->viaTable(NodeBloc::tableName(), ['blocId' => 'id']);
+        return $this
+            ->hasMany(Node::class, ['id' => 'nodeId'])
+            ->viaTable(NodeBloc::tableName(), ['blocId' => 'id']);
     }
 
     /**
@@ -191,7 +201,9 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public function getTags():ActiveQuery
     {
-        return $this->hasMany(Tag::class, ['id' => 'tagId'])->viaTable(TagBloc::tableName(), ['blocId' => 'id']);
+        return $this
+            ->hasMany(Tag::class, ['id' => 'tagId'])
+            ->viaTable(TagBloc::tableName(), ['blocId' => 'id']);
     }
 
     /**
