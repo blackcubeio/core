@@ -1,6 +1,17 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 2.2.3 March, 11th 2022 <pgaultier@redcat.io>
+----------------------------------------------------
+
+ * Upd: Update dependencies
+ * Upd: avoid useless slugs requests
+ * Upd: extend DB dependencies helper
+ * Upd: hardcode element type to allow inheritance
+ * Upd: update QueryCache to handle all CMS tables
+ * Upd: remove query cache to let developper handle it
+ * Upd: avoid multiple database calls to generate elastic records
+
 Release 2.2.2 March, 9th 2022 <pgaultier@redcat.io>
 ---------------------------------------------------
 
