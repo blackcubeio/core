@@ -134,7 +134,6 @@ class Menu extends \yii\db\ActiveRecord
     public function getLanguage()
     {
         return $this
-            ->cache(3600, QueryCache::getLanguageDependencies())
             ->hasOne(Language::class, ['id' => 'languageId']);
     }
 

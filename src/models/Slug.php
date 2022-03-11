@@ -389,11 +389,12 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             $query->where(['id' => $id]);
             // $query->active();
         // }
+        /*/
         if (Module::getInstance()->cache !== null) {
             $cacheDependency = QueryCache::getCmsDependencies();
-            /**/
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
+        /**/
 
         $element = $query->one();
         if ($element !== null && !$element instanceof Slug) {
@@ -423,10 +424,12 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             ->orderBy(['host' => SORT_DESC])
             ->limit(1);
         $slugQuery->multiple = false;
+        /*/
         if (Module::getInstance()->cache !== null) {
             $cacheDependency = QueryCache::getSlugDependencies();
             $slugQuery->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
+        /**/
         return $slugQuery;
     }
 }

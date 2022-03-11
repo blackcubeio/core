@@ -249,8 +249,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     public function getType()
     {
         return $this
-            ->hasOne(Type::class, ['id' => 'typeId'])
-            ->cache(3600, QueryCache::getTypeDependencies());
+            ->hasOne(Type::class, ['id' => 'typeId']);
     }
 
     /**

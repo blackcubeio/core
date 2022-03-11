@@ -133,10 +133,12 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 throw new NotFoundHttpException();
                 break;
         }
+        /*/
         if (Module::getInstance()->cache !== null) {
             $cacheDependency = QueryCache::getCmsDependencies();
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
+        /**/
         $element = $query->andWhere(['id' => $id])->active()->one();
         /* @var $element \blackcube\core\models\Node|\blackcube\core\models\Composite|\blackcube\core\models\Category|\blackcube\core\models\Tag */
         if ($element === null) {

@@ -222,8 +222,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     public function getLanguage()
     {
         return $this
-            ->hasOne(Language::class, ['id' => 'languageId'])
-            ->cache(3600, QueryCache::getLanguageDependencies());
+            ->hasOne(Language::class, ['id' => 'languageId']);
     }
 
     /**
@@ -234,8 +233,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     public function getSlug()
     {
         return $this
-            ->hasOne(Slug::class, ['id' => 'slugId'])
-            ->cache(3600, QueryCache::getSlugDependencies());
+            ->hasOne(Slug::class, ['id' => 'slugId']);
     }
 
     /**
@@ -246,8 +244,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     public function getType()
     {
         return $this
-            ->hasOne(Type::class, ['id' => 'typeId'])
-            ->cache(3600, QueryCache::getTypeDependencies());
+            ->hasOne(Type::class, ['id' => 'typeId']);
     }
 
     /**

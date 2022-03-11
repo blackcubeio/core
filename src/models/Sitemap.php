@@ -167,7 +167,6 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     public function getSlug()
     {
         return $this
-            ->hasOne(Slug::class, ['id' => 'slugId'])
-            ->cache(3600, QueryCache::getSlugDependencies());
+            ->hasOne(Slug::class, ['id' => 'slugId']);
     }
 }

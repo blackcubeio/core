@@ -254,8 +254,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     public function getLanguage()
     {
         return $this
-            ->hasOne(Language::class, ['id' => 'languageId'])
-            ->cache(3600, QueryCache::getLanguageDependencies());
+            ->hasOne(Language::class, ['id' => 'languageId']);
     }
 
     /**
@@ -285,8 +284,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     public function getType()
     {
         return $this
-            ->hasOne(Type::class, ['id' => 'typeId'])
-            ->cache(3600, QueryCache::getTypeDependencies());
+            ->hasOne(Type::class, ['id' => 'typeId']);
     }
 
     /**
