@@ -51,6 +51,7 @@ use Yii;
  * @since XXX
  */
 class QueryCache {
+
     /**
      * @return DbQueryDependency
      * @throws \yii\base\InvalidConfigException
@@ -78,6 +79,132 @@ class QueryCache {
             ->union(Seo::find()->select($maxUpdate))
             ->union(Type::find()->select($maxUpdate))
             ->union(TypeBlocType::find()->select($maxUpdate))
+        ;
+        $expression = Yii::createObject(Expression::class, ['MAX([[date]])']);
+        $cacheQuery->select($expression)->from($maxQueryResult);
+        $cacheDependency = Yii::createObject([
+            'class' => DbQueryDependency::class,
+            'db' => Module::getInstance()->db,
+            'query' => $cacheQuery,
+            'reusable' => true,
+        ]);
+        return $cacheDependency;
+    }
+
+    /**
+     * @return DbQueryDependency
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getNodeDependencies()
+    {
+        $cacheQuery = Yii::createObject(Query::class);
+
+        $maxUpdate = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']).' as date';
+        $maxQueryResult = Node::find()->select($maxUpdate)
+            ->union(NodeBloc::find()->select($maxUpdate))
+            ->union(NodeComposite::find()->select($maxUpdate))
+            ->union(Bloc::find()->select($maxUpdate))
+            ->union(BlocType::find()->select($maxUpdate))
+        ;
+        $expression = Yii::createObject(Expression::class, ['MAX([[date]])']);
+        $cacheQuery->select($expression)->from($maxQueryResult);
+        $cacheDependency = Yii::createObject([
+            'class' => DbQueryDependency::class,
+            'db' => Module::getInstance()->db,
+            'query' => $cacheQuery,
+            'reusable' => true,
+        ]);
+        return $cacheDependency;
+    }
+
+    /**
+     * @return DbQueryDependency
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getCompositeDependencies()
+    {
+        $cacheQuery = Yii::createObject(Query::class);
+
+        $maxUpdate = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']).' as date';
+        $maxQueryResult = NodeComposite::find()->select($maxUpdate)
+            ->union(Composite::find()->select($maxUpdate))
+            ->union(CompositeBloc::find()->select($maxUpdate))
+            ->union(CompositeTag::find()->select($maxUpdate))
+            ->union(Bloc::find()->select($maxUpdate))
+            ->union(BlocType::find()->select($maxUpdate))
+        ;
+        $expression = Yii::createObject(Expression::class, ['MAX([[date]])']);
+        $cacheQuery->select($expression)->from($maxQueryResult);
+        $cacheDependency = Yii::createObject([
+            'class' => DbQueryDependency::class,
+            'db' => Module::getInstance()->db,
+            'query' => $cacheQuery,
+            'reusable' => true,
+        ]);
+        return $cacheDependency;
+    }
+
+    /**
+     * @return DbQueryDependency
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getCategoryDependencies()
+    {
+        $cacheQuery = Yii::createObject(Query::class);
+
+        $maxUpdate = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']).' as date';
+        $maxQueryResult = Category::find()->select($maxUpdate)
+            ->union(CategoryBloc::find()->select($maxUpdate))
+            ->union(Bloc::find()->select($maxUpdate))
+            ->union(BlocType::find()->select($maxUpdate))
+        ;
+        $expression = Yii::createObject(Expression::class, ['MAX([[date]])']);
+        $cacheQuery->select($expression)->from($maxQueryResult);
+        $cacheDependency = Yii::createObject([
+            'class' => DbQueryDependency::class,
+            'db' => Module::getInstance()->db,
+            'query' => $cacheQuery,
+            'reusable' => true,
+        ]);
+        return $cacheDependency;
+    }
+
+    /**
+     * @return DbQueryDependency
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getTagDependencies()
+    {
+        $cacheQuery = Yii::createObject(Query::class);
+
+        $maxUpdate = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']).' as date';
+        $maxQueryResult = Tag::find()->select($maxUpdate)
+            ->union(TagBloc::find()->select($maxUpdate))
+            ->union(Bloc::find()->select($maxUpdate))
+            ->union(BlocType::find()->select($maxUpdate))
+        ;
+        $expression = Yii::createObject(Expression::class, ['MAX([[date]])']);
+        $cacheQuery->select($expression)->from($maxQueryResult);
+        $cacheDependency = Yii::createObject([
+            'class' => DbQueryDependency::class,
+            'db' => Module::getInstance()->db,
+            'query' => $cacheQuery,
+            'reusable' => true,
+        ]);
+        return $cacheDependency;
+    }
+
+    /**
+     * @return DbQueryDependency
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getMenuDependencies()
+    {
+        $cacheQuery = Yii::createObject(Query::class);
+
+        $maxUpdate = Yii::createObject(Expression::class, ['MAX([[dateUpdate]])']).' as date';
+        $maxQueryResult = Menu::find()->select($maxUpdate)
+            ->union(MenuItem::find()->select($maxUpdate))
         ;
         $expression = Yii::createObject(Expression::class, ['MAX([[date]])']);
         $cacheQuery->select($expression)->from($maxQueryResult);
