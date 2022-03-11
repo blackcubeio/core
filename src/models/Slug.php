@@ -60,6 +60,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
 {
     public const SCENARIO_REDIRECT = 'redirect';
 
+    const ELEMENT_TYPE  = 'slug';
+
     /**
      * @var int
      */
@@ -86,7 +88,8 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**

@@ -71,6 +71,8 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     use SlugTrait;
     use ActiveTrait;
 
+    const ELEMENT_TYPE  = 'composite';
+
     /**
      * {@inheritDoc}
      */
@@ -91,7 +93,8 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**

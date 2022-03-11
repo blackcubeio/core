@@ -65,6 +65,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
 
     public const SCENARIO_TOGGLE_ACTIVE = 'toggle_active';
 
+    const ELEMENT_TYPE  = 'category';
+
     /**
      * {@inheritDoc}
      */
@@ -86,7 +88,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**

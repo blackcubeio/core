@@ -56,6 +56,8 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
 
     use ElasticTrait;
 
+    const ELEMENT_TYPE  = 'bloc';
+
     /**
      * {@inheritDoc}
      */
@@ -69,7 +71,8 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**

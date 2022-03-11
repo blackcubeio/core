@@ -81,6 +81,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     use SlugTrait;
     use ActiveTrait;
 
+    const ELEMENT_TYPE  = 'node';
+
     /**
      * {@inheritDoc}
      */
@@ -102,7 +104,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      */
     public static function getElementType()
     {
-        return Inflector::camel2id(StringHelper::basename(static::class));
+        return static::ELEMENT_TYPE;
+        // return Inflector::camel2id(StringHelper::basename(static::class));
     }
 
     /**
