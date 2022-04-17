@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Prepare type hints
+ * Upd: Update dependencies
+
 Release 2.2.3 March, 11th 2022 <pgaultier@redcat.io>
 ----------------------------------------------------
 
