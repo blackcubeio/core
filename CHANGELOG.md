@@ -1,6 +1,7 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Add DI register
  * Upd: Prepare type hints
  * Upd: Update dependencies
 
