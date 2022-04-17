@@ -90,7 +90,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 if (empty($params) === false) {
                     $cacheId .= '?'.http_build_query($params);
                 }
-                $cache->set($cacheId, $prettyUrl, 3600, QueryCache::getCmsDependencies());
+                $cache->set($cacheId, $prettyUrl, 3600, QueryCache::getSlugDependencies());
             }
         }
         return $prettyUrl;
@@ -121,6 +121,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             static::$slugs[$key] = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
                 ->active()
                 ->with(['element' => function($query) { $query->active(); }])
+                ->cache(3600, QueryCache::getSlugDependencies())
                 ->one();
         }
         $slug = static::$slugs[$key];

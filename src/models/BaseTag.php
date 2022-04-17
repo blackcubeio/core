@@ -24,6 +24,8 @@ use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TypeTrait;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -63,12 +65,12 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     use SlugTrait;
     use ActiveTrait;
 
-    const ELEMENT_TYPE  = 'tag';
+    public const ELEMENT_TYPE  = 'tag';
 
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb() :Connection
     {
         return Module::getInstance()->db;
     }
@@ -76,14 +78,14 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * @return string
      */
-    public function getRoute()
+    public function getRoute() :string
     {
         return RouteEncoder::encode(static::getElementType(), $this->id);
     }
     /**
      * {@inheritDoc}
      */
-    public static function getElementType()
+    public static function getElementType() :string
     {
         return static::ELEMENT_TYPE;
         // return Inflector::camel2id(StringHelper::basename(static::class));
@@ -92,7 +94,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
-    protected function getElementBlocClass()
+    protected function getElementBlocClass() :string
     {
         return TagBloc::class;
     }
@@ -100,7 +102,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
-    protected function getElementIdColumn()
+    protected function getElementIdColumn() :string
     {
         return 'tagId';
     }
@@ -116,7 +118,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors() :array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -141,7 +143,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName() :string
     {
         return '{{%tags}}';
     }
@@ -151,7 +153,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find() :FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -159,7 +161,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules() :array
     {
         return [
             [['name', 'slugId', 'typeId'], 'filter', 'filter' => function($value) {
@@ -181,7 +183,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels() :array
     {
         return [
             'id' => Module::t('models/tag', 'ID'),
@@ -200,7 +202,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getComposites()
+    public function getComposites() :ActiveQuery
     {
         return $this
             ->hasMany(Composite::class, ['id' => 'compositeId'])
@@ -212,7 +214,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNodes()
+    public function getNodes() :ActiveQuery
     {
         return $this
             ->hasMany(Node::class, ['id' => 'nodeId'])
@@ -224,7 +226,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getCategory() :ActiveQuery
     {
         return $this
             ->hasOne(Category::class, ['id' => 'categoryId']);
@@ -235,7 +237,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSlug()
+    public function getSlug() :ActiveQuery
     {
         return $this
             ->hasOne(Slug::class, ['id' => 'slugId']);
@@ -246,7 +248,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getType()
+    public function getType() :ActiveQuery
     {
         return $this
             ->hasOne(Type::class, ['id' => 'typeId']);
@@ -257,7 +259,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getBlocs() {
+    public function getBlocs() :ActiveQuery
+    {
         return $this
             ->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(TagBloc::tableName(), ['tagId' => 'id'])

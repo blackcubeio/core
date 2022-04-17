@@ -47,7 +47,7 @@ class PluginsHandler implements PluginsHandlerInterface {
     /**
      * @return bool
      */
-    public function checkPluginsAvailable()
+    public function checkPluginsAvailable() :bool
     {
         if ($this->pluginsAvailable === null) {
             $db = CoreModule::getInstance()->db;
@@ -60,7 +60,7 @@ class PluginsHandler implements PluginsHandlerInterface {
     /**
      * @return array|null
      */
-    public function getPluginManagersConfig()
+    public function getPluginManagersConfig() :?array
     {
         if ($this->checkPluginsAvailable() && $this->pluginManagers === null) {
             $definedPlugins = CoreModule::getInstance()->plugins;
@@ -77,7 +77,7 @@ class PluginsHandler implements PluginsHandlerInterface {
         return $this->pluginManagersConfig;
     }
 
-    public function getPluginManagers()
+    public function getPluginManagers() :?array
     {
         if ($this->checkPluginsAvailable()) {
             $pluginManagersConfig = $this->getPluginManagersConfig();
@@ -103,7 +103,7 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getPluginManager($id)
+    public function getPluginManager($id) :?PluginManagerInterface
     {
         if ($this->checkPluginsAvailable()) {
             $pluginManagersConfig = $this->getPluginManagersConfig();
@@ -127,7 +127,7 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @return PluginManagerInterface[]|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getRegisteredPluginManagers()
+    public function getRegisteredPluginManagers() :?array
     {
         if ($this->registeredPlugins === null) {
             $this->registeredPlugins = [];
@@ -148,13 +148,10 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getRegisteredPluginManager($id)
+    public function getRegisteredPluginManager($id): ?PluginManagerInterface
     {
         $registeredPlugins = $this->getRegisteredPluginManagers();
-        if (isset($registeredPlugins[$id])) {
-            return $registeredPlugins[$id];
-        }
-        return null;
+        return $registeredPlugins[$id] ?? null;
     }
 
     /**
@@ -162,7 +159,7 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @throws \yii\base\InvalidConfigException
      * @todo instanciate plugins from DB
      */
-    public function getActivePluginManagers()
+    public function getActivePluginManagers(): ?array
     {
         if ($this->activePlugins === null) {
             $this->activePlugins = [];
@@ -184,13 +181,10 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @throws \yii\base\InvalidConfigException
      * @todo instanciate plugin from DB
      */
-    public function getActivePluginManager($id)
+    public function getActivePluginManager($id): ?PluginManagerInterface
     {
         $activePlugins = $this->getActivePluginManagers();
-        if (isset($activePlugins[$id])) {
-            return $activePlugins[$id];
-        }
-        return null;
+        return $activePlugins[$id]??null;
     }
 
     /**

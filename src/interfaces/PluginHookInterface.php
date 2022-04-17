@@ -31,21 +31,21 @@ interface PluginHookInterface {
     /**
      * hook should return a boolean
      */
-    const PLUGIN_HOOK_LOAD = 'pluginHookLoad';
+    public const PLUGIN_HOOK_LOAD = 'pluginHookLoad';
 
     /**
      * hook should return a boolean
      */
-    const PLUGIN_HOOK_VALIDATE = 'pluginHookValidate';
+    public const PLUGIN_HOOK_VALIDATE = 'pluginHookValidate';
 
     /**
      * hook should return a boolean
      */
-    const PLUGIN_HOOK_SAVE = 'pluginHookSave';
+    public const PLUGIN_HOOK_SAVE = 'pluginHookSave';
 
     /**
      * hook should return a boolean
      */
-    const PLUGIN_HOOK_DELETE = 'pluginHookDelete';
+    public const PLUGIN_HOOK_DELETE = 'pluginHookDelete';
 
 }

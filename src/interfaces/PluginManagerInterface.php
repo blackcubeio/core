@@ -33,7 +33,7 @@ interface PluginManagerInterface {
      * PluginInterface constructor.
      * @param string $id
      */
-    public function __construct($id);
+    public function __construct(string $id);
 
     /**
      * @return string plugin id
@@ -43,58 +43,58 @@ interface PluginManagerInterface {
     /**
      * @return string plugin name
      */
-    public function getName();
+    public function getName() :string;
 
     /**
      * Define alias for plugin
      * @return void
      */
-    public function setAlias();
+    public function setAlias() :void;
 
     /**
      * @return string Semver version
      */
-    public function getVersion();
+    public function getVersion() :string;
 
     /**
      * @return bool check if plugin is compatible with current core version
      */
-    public function getIsCompatible();
+    public function getIsCompatible() :bool;
 
     /**
      * @return bool check if plugin is installed
      */
-    public function getIsRegistered();
+    public function getIsRegistered() :bool;
 
     /**
      * @return bool register and install plugin
      */
-    public function register();
+    public function register() :bool;
 
     /**
      * @return bool upgrade plugin to new version
      */
-    public function upgrade();
+    public function upgrade() :bool;
 
     /**
      * @return bool unregister and uninstall plugin
      */
-    public function unregister();
+    public function unregister() :bool;
 
     /**
      * @return bool activate plugin
      */
-    public function activate();
+    public function activate() :bool;
 
     /**
      * @return bool deactivate plugin
      */
-    public function deactivate();
+    public function deactivate() :bool;
 
     /**
      * @return bool check if plugin is active
      */
-    public function getIsActive();
+    public function getIsActive() :bool;
 
     /**
      * @param string $hook
@@ -102,7 +102,7 @@ interface PluginManagerInterface {
      * @param array $additionalParameters
      * @return array widget configuration
      */
-    public function hookWidget($hook, ElementInterface $element = null, $additionalParameters = []);
+    public function hookWidget(string $hook, ?ElementInterface $element = null, array $additionalParameters = []);
 
     /**
      * @param string $hook hook name
@@ -110,5 +110,5 @@ interface PluginManagerInterface {
      * @param array $additionalParams additional parameters passed at runtime
      * @return mixed
      */
-    public function hook($hook, ElementInterface $element = null, $additionalParams = []);
+    public function hook(string $hook, ?ElementInterface $element = null, array $additionalParams = []);
 }

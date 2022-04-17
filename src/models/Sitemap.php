@@ -19,6 +19,8 @@ use blackcube\core\Module;
 use blackcube\core\interfaces\SluggedInterface;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -59,7 +61,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
         return Module::getInstance()->db;
     }
@@ -67,7 +69,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -101,7 +103,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%sitemaps}}';
     }
@@ -111,7 +113,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find(): FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -119,7 +121,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritDoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[static::SCENARIO_PRE_VALIDATE] = ['active', 'priority', 'frequency'];
@@ -129,7 +131,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['slugId'], 'required'],
@@ -146,7 +148,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/sitemap', 'ID'),
@@ -164,7 +166,7 @@ class Sitemap extends \yii\db\ActiveRecord implements SluggedInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getSlug()
+    public function getSlug(): ActiveQuery
     {
         return $this
             ->hasOne(Slug::class, ['id' => 'slugId']);

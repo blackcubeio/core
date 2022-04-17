@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -141,7 +142,8 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getCategories()
     {
-        return $this->hasMany(Category::class, ['languageId' => 'id']);
+        return $this
+            ->hasMany(Category::class, ['languageId' => 'id']);
     }
 
     /**
@@ -151,7 +153,8 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getComposites()
     {
-        return $this->hasMany(Composite::class, ['languageId' => 'id']);
+        return $this
+            ->hasMany(Composite::class, ['languageId' => 'id']);
     }
 
     /**
@@ -161,7 +164,8 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getNodes()
     {
-        return $this->hasMany(Node::class, ['languageId' => 'id']);
+        return $this
+            ->hasMany(Node::class, ['languageId' => 'id']);
     }
 
     /**

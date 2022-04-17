@@ -155,38 +155,38 @@ abstract class BaseElastic extends Model {
     /**
      * @var array
      */
-    private $_attributes = [];
+    private array $_attributes = [];
 
     /**
      * @var array
      */
-    private $_definedAttributes = [];
+    private array $_definedAttributes = [];
 
     /**
      * @var array
      */
-    private $_attributesLabels = [];
+    private array $_attributesLabels = [];
 
     /**
      * @var array
      */
-    private $_attributeHints = [];
+    private array $_attributeHints = [];
 
     /**
      * @var array
      */
-    private $_rules = [];
+    private array $_rules = [];
 
     /**
      * @var array
      */
-    private $_modelStructure = [];
+    private array $_modelStructure = [];
 
     /**
      * @return array model structure
      * @since XXX
      */
-    public function getModelStructure()
+    public function getModelStructure() :array
     {
         return $this->_modelStructure;
     }
@@ -194,7 +194,7 @@ abstract class BaseElastic extends Model {
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules() :array
     {
         return $this->_rules;
     }
@@ -264,7 +264,7 @@ abstract class BaseElastic extends Model {
     /**
      * {@inheritdoc}
      */
-    public function attributes()
+    public function attributes() :array
     {
         return $this->_definedAttributes;
     }
@@ -272,7 +272,7 @@ abstract class BaseElastic extends Model {
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels() :array
     {
         return $this->_attributesLabels;
     }
@@ -280,7 +280,7 @@ abstract class BaseElastic extends Model {
     /**
      * {@inheritdoc}
      */
-    public function attributeHints()
+    public function attributeHints() :array
     {
         return $this->_attributeHints;
     }
@@ -291,7 +291,7 @@ abstract class BaseElastic extends Model {
      * @return bool whether the model has an attribute with the specified name.
      * @since XXX
      */
-    public function hasAttribute($name)
+    public function hasAttribute(string $name) :bool
     {
         return isset($this->_attributes[$name]) || in_array($name, $this->attributes(), true);
     }
@@ -305,9 +305,9 @@ abstract class BaseElastic extends Model {
      * @see hasAttribute()
      * @since XXX
      */
-    public function getAttribute($name)
+    public function getAttribute($name) :?string
     {
-        return isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
+        return $this->_attributes[$name] ?? null;
     }
 
     /**
@@ -318,7 +318,7 @@ abstract class BaseElastic extends Model {
      * @see hasAttribute()
      * @since XXX
      */
-    public function setAttribute($name, $value)
+    public function setAttribute(string $name, $value)
     {
         if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
@@ -333,7 +333,7 @@ abstract class BaseElastic extends Model {
     /**
      * {@inheritdoc}
      */
-    public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
+    public function canGetProperty($name, $checkVars = true, $checkBehaviors = true) :bool
     {
         if (parent::canGetProperty($name, $checkVars, $checkBehaviors)) {
             return true;
@@ -350,7 +350,7 @@ abstract class BaseElastic extends Model {
     /**
      * {@inheritdoc}
      */
-    public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
+    public function canSetProperty($name, $checkVars = true, $checkBehaviors = true) :bool
     {
         if (parent::canSetProperty($name, $checkVars, $checkBehaviors)) {
             return true;
@@ -407,7 +407,7 @@ abstract class BaseElastic extends Model {
      * @param string $name the property name or the event name
      * @return bool whether the property value is null
      */
-    public function __isset($name)
+    public function __isset($name) :bool
     {
         try {
             return $this->__get($name) !== null;
@@ -466,7 +466,7 @@ abstract class BaseElastic extends Model {
      * @param Schema $property
      * @since XXX
      */
-    private function buildLabelsAndHints($name, $property)
+    private function buildLabelsAndHints(string $name, Schema $property)
     {
         if ($property->title !== null) {
             $this->_attributesLabels[$name] = $property->title;
@@ -495,7 +495,7 @@ abstract class BaseElastic extends Model {
      * @throws \Swaggest\JsonSchema\InvalidValue
      * @since XXX
      */
-    private function buildInternalObject($schema)
+    private function buildInternalObject(Schema $schema)
     {
         $schemaProperties = $schema->getProperties();
         if ($schema->required !== null && count($schema->required)>0) {
@@ -531,7 +531,7 @@ abstract class BaseElastic extends Model {
      * @return array
      * @since XXX
      */
-    private function buildField($name, Schema $property)
+    private function buildField(string $name, Schema $property) :array
     {
         $fieldData = [
             'field' => $property->field,
@@ -546,8 +546,22 @@ abstract class BaseElastic extends Model {
             if (empty($property->imageHeight) !== true) {
                 $fieldData['imageHeight'] = $property->imageHeight;
             }
-        } elseif ($property->type === 'string' && ($property->format === 'wysiwyg')) {
+        } elseif ($property->type === 'string' && (in_array($property->format, ['wysiwyg', 'textarea', 'email', 'date']))) {
             $fieldData['field'] = $property->format;
+        } elseif ($property->type === 'string' && ($property->format === 'date-time')) {
+            $fieldData['field'] = 'datetime-local';
+        } elseif ($property->type === 'string' && (in_array($property->format, ['radiolist', 'dropdownlist']))) {
+            $fieldData['field'] = $property->format;
+            $fieldData['items'] = [];
+            foreach($property->items as $item) {
+                $fieldData['items'][] = [
+                    'title' => $item->title ?? null,
+                    'value' => $item->value ?? null,
+                    'description' => $item->description ?? null,
+                ];
+            }
+        } elseif ($property->type === 'number') {
+            $fieldData['field'] = $property->type;
         }
         return $fieldData;
     }
@@ -558,7 +572,8 @@ abstract class BaseElastic extends Model {
      * @return array|null
      * @since XXX
      */
-    private function buildRule($name, Schema $property) {
+    private function buildRule(string $name, Schema $property) :?array
+    {
         $rule = null;
         $mapping = null;
         $type = $property->type;

@@ -22,6 +22,8 @@ use yii\base\InvalidArgumentException;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\caching\DbQueryDependency;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 use yii\db\Query;
@@ -60,7 +62,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
 {
     public const SCENARIO_REDIRECT = 'redirect';
 
-    const ELEMENT_TYPE  = 'slug';
+    public const ELEMENT_TYPE  = 'slug';
 
     /**
      * @var int
@@ -70,7 +72,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
         return Module::getInstance()->db;
     }
@@ -78,7 +80,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * @return string
      */
-    public function getRoute()
+    public function getRoute(): string
     {
         return RouteEncoder::encode(static::getElementType(), $this->id);
     }
@@ -86,7 +88,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * {@inheritDoc}
      */
-    public static function getElementType()
+    public static function getElementType(): string
     {
         return static::ELEMENT_TYPE;
         // return Inflector::camel2id(StringHelper::basename(static::class));
@@ -95,7 +97,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -128,7 +130,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%slugs}}';
     }
@@ -138,7 +140,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find(): FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -146,7 +148,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * {@inheritDoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[static::SCENARIO_REDIRECT] = ['httpCode', 'path', 'host', 'targetUrl', 'active'];
@@ -156,7 +158,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['host', 'path', 'targetUrl'], 'filter', 'filter' => function($value) {
@@ -179,7 +181,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/slug', 'ID'),
@@ -198,7 +200,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getCategory(): ActiveQuery
     {
         return $this
             ->hasOne(Category::class, ['slugId' => 'id']);
@@ -209,7 +211,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getComposite()
+    public function getComposite(): ActiveQuery
     {
         return $this
             ->hasOne(Composite::class, ['slugId' => 'id']);
@@ -220,7 +222,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getNode()
+    public function getNode(): ActiveQuery
     {
         return $this
             ->hasOne(Node::class, ['slugId' => 'id']);
@@ -231,7 +233,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getSitemap()
+    public function getSitemap(): ActiveQuery
     {
         return $this
             ->hasOne(Sitemap::class, ['slugId' => 'id']);
@@ -242,7 +244,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getSeo()
+    public function getSeo(): ActiveQuery
     {
         return $this
             ->hasOne(Seo::class, ['slugId' => 'id']);
@@ -253,7 +255,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getTag()
+    public function getTag(): ActiveQuery
     {
         return $this
             ->hasOne(Tag::class, ['slugId' => 'id']);
@@ -327,7 +329,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @todo: Fix ActiveQuery generation, ti's not working as expected for lists an idea would be to create a fake element based on a view
      */
-    public function getElement()
+    public function getElement(): ActiveQuery
     {
         $result = $this->findTargetElementInfo();
         if ($result !== null && is_array($result)) {
@@ -396,7 +398,9 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
         }
         /**/
 
-        $element = $query->one();
+        $element = $query
+            ->cache(true, QueryCache::getCmsDependencies())
+            ->one();
         if ($element !== null && !$element instanceof Slug) {
             // $slug = $element->getSlug()->active()->one();
             $slug = $element->getSlug()->one();

@@ -57,7 +57,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     /**
      * @var array
      */
-    private $_elementRoute;
+    private string $_elementRoute;
 
     /**
      * @var Node|Composite|Category|Tag|ElementInterface
@@ -95,7 +95,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
      * @param string $info element information
      * @throws \yii\base\NotSupportedException
      */
-    public function setElementInfo($info)
+    public function setElementInfo(string $info)
     {
         $this->_elementRoute = $info;
         $this->_element = null;
@@ -105,7 +105,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     /**
      * @param string $route route of element to instanciate
      */
-    public function beforeElement($route)
+    public function beforeElement(string $route)
     {
         $event = new BlackcubeControllerEvent([
             'route' => $route
@@ -117,7 +117,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
      * @param string $route route of element to instanciate
      * @param Node|Composite|Category|Tag|ElementInterface $element element instanciated
      */
-    public function afterElement($route, $element)
+    public function afterElement(string $route, $element)
     {
         $event = new BlackcubeControllerEvent([
             'route' => $route,

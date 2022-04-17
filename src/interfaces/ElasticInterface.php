@@ -34,6 +34,6 @@ interface ElasticInterface
      * @return array
      * @since XXX
      */
-    public function getStructure();
+    public function getStructure() :array;
 
 }

@@ -33,12 +33,12 @@ interface PluginsHandlerInterface extends UrlRuleInterface {
     /**
      * @return bool
      */
-    public function checkPluginsAvailable();
+    public function checkPluginsAvailable() :bool;
 
     /**
      * @return array|null
      */
-    public function getPluginManagersConfig();
+    public function getPluginManagersConfig() :?array;
 
     public function getPluginManagers();
 
@@ -47,13 +47,13 @@ interface PluginsHandlerInterface extends UrlRuleInterface {
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getPluginManager($id);
+    public function getPluginManager(int $id) :?PluginManagerInterface;
 
     /**
      * @return PluginManagerInterface[]|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getRegisteredPluginManagers();
+    public function getRegisteredPluginManagers() :?array;
 
     /**
      * @param string $id

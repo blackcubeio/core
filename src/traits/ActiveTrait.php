@@ -43,7 +43,7 @@ trait ActiveTrait
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
-    public function getIsActive()
+    public function getIsActive() :bool
     {
         $isActive = $this->active;
         $modelClass = get_class($this);
@@ -73,6 +73,6 @@ trait ActiveTrait
                     break;
             }
         }
-        return (boolean)$isActive;
+        return $isActive;
     }
 }

@@ -21,6 +21,7 @@ use blackcube\core\interfaces\ElasticInterface;
 use blackcube\core\traits\ElasticTrait;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -54,14 +55,12 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
 {
     public const DISABLED_ATTRIBUTES = ['id', 'blocTypeId', 'dateCreate', 'dateUpdate', 'data'];
 
-    use ElasticTrait;
-
-    const ELEMENT_TYPE  = 'bloc';
+    public const ELEMENT_TYPE  = 'bloc';
 
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb() :Connection
     {
         return Module::getInstance()->db;
     }
@@ -69,7 +68,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     /**
      * @return string type
      */
-    public static function getElementType()
+    public static function getElementType() :string
     {
         return static::ELEMENT_TYPE;
         // return Inflector::camel2id(StringHelper::basename(static::class));
@@ -78,7 +77,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors():array
+    public function behaviors() :array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -96,7 +95,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     /**
      * {@inheritdoc}
      */
-    public static function tableName():string
+    public static function tableName() :string
     {
         return '{{%blocs}}';
     }
@@ -114,14 +113,14 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find() :FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
     /**
      * {@inheritdoc}
      */
-    public function rules():array
+    public function rules() :array
     {
         return [
             [['blocTypeId'], 'required'],
@@ -136,7 +135,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels():array
+    public function attributeLabels()
     {
         return [
             'id' => Module::t('models/bloc', 'ID'),
@@ -153,7 +152,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBlocType():ActiveQuery
+    public function getBlocType() :ActiveQuery
     {
         return $this->hasOne(BlocType::class, ['id' => 'blocTypeId']);
     }
@@ -163,7 +162,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategories():ActiveQuery
+    public function getCategories() :ActiveQuery
     {
         return $this
             ->hasMany(Category::class, ['id' => 'categoryId'])
@@ -175,7 +174,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getComposites():ActiveQuery
+    public function getComposites() :ActiveQuery
     {
         return $this
             ->hasMany(Composite::class, ['id' => 'compositeId'])
@@ -187,7 +186,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNodes():ActiveQuery
+    public function getNodes() :ActiveQuery
     {
         return $this
             ->hasMany(Node::class, ['id' => 'nodeId'])
@@ -199,7 +198,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTags():ActiveQuery
+    public function getTags() :ActiveQuery
     {
         return $this
             ->hasMany(Tag::class, ['id' => 'tagId'])
@@ -209,7 +208,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     /**
      * @return string view name
      */
-    public function getView()
+    public function getView() :string
     {
         $targetView = 'bloc';
         if ($this->blocType !== null) {
@@ -218,9 +217,9 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
         return preg_replace('/\s+/', '_', $targetView);
     }
 
-    public function getAdminView($pathAlias, $asAlias = false)
+    public function getAdminView(string $pathAlias, bool $asAlias = false)
     {
-        if ($pathAlias !== null && $this->blocType !== null) {
+        if ($this->blocType !== null) {
             return $this->blocType->getAdminView($pathAlias, $asAlias);
         }
         return false;

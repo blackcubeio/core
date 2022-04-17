@@ -60,7 +60,7 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function getIsActive()
+    public function getIsActive() :bool
     {
         $plugin = $this->getDbPlugin();
         if ($plugin !== false) {
@@ -72,7 +72,7 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function getIsRegistered()
+    public function getIsRegistered() :bool
     {
         $plugin = $this->getDbPlugin();
         return ($plugin !== false);
@@ -81,7 +81,7 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function activate()
+    public function activate() :bool
     {
         $plugin = $this->getDbPlugin();
         if ($plugin !== false) {
@@ -94,7 +94,7 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function deactivate()
+    public function deactivate() :bool
     {
         $plugin = $this->getDbPlugin();
         if ($plugin !== false) {
@@ -124,7 +124,7 @@ abstract class PluginManager implements PluginManagerInterface {
      * Helper function to register plugin id DB
      * @return bool
      */
-    protected function registerDbPlugin()
+    protected function registerDbPlugin() :bool
     {
         if ($this->getIsRegistered() === false) {
             $plugin = new Plugin();
@@ -145,7 +145,7 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * @return bool Register plugin
      */
-    public function register()
+    public function register() :bool
     {
         return $this->registerDbPlugin();
     }
@@ -154,7 +154,7 @@ abstract class PluginManager implements PluginManagerInterface {
      * Helper function to unregister plugin id DB
      * @return bool
      */
-    protected function unregisterDbPlugin()
+    protected function unregisterDbPlugin() :bool
     {
         if ($this->getIsRegistered() === true) {
             $status = $this->getDbPlugin()->delete();
@@ -169,7 +169,7 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * @return bool Unregister plugin
      */
-    public function unregister()
+    public function unregister() :bool
     {
         return $this->unregisterDbPlugin();
     }

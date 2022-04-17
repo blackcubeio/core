@@ -39,11 +39,14 @@ use Yii;
 class Element
 {
 
-    public static function instanciate($route, $active = true)
+    public static function instanciate(string $route, bool $active = true)
     {
         try {
             $decodedRoute = RouteEncoder::decode($route);
         } catch (\Exception $e) {
+            return null;
+        }
+        if ($decodedRoute === false) {
             return null;
         }
         switch ($decodedRoute['type']) {

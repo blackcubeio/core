@@ -33,5 +33,5 @@ interface PluginManagerRoutableInterface extends UrlRuleInterface {
     /**
      * @return array controllerMap element to Add
      */
-    public function getControllerMap();
+    public function getControllerMap() :array;
 }

@@ -32,5 +32,5 @@ interface PluginManagerConfigurableInterface {
     /**
      * @return array route to configure the plugin
      */
-    public function getConfigureRoute();
+    public function getConfigureRoute() :array;
 }

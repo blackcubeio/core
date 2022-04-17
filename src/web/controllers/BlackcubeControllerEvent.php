@@ -14,6 +14,7 @@
 
 namespace blackcube\core\web\controllers;
 
+use blackcube\core\interfaces\BlackcubeControllerInterface;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\models\Category;
 use blackcube\core\models\Composite;
@@ -39,7 +40,7 @@ class BlackcubeControllerEvent extends Event {
     /**
      * @var string route called
      */
-    public $route;
+    public string $route;
 
     /**
      * @var Node|Composite|Category|Tag|ElementInterface element used
@@ -49,5 +50,5 @@ class BlackcubeControllerEvent extends Event {
     /**
      * @var BlackcubeController
      */
-    public $controller;
+    public BlackcubeControllerInterface $controller;
 }

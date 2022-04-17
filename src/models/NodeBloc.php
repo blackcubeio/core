@@ -16,6 +16,8 @@ namespace blackcube\core\models;
 
 use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -44,7 +46,7 @@ class NodeBloc extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
         return Module::getInstance()->db;
     }
@@ -52,7 +54,7 @@ class NodeBloc extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -75,7 +77,7 @@ class NodeBloc extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%nodes_blocs}}';
     }
@@ -83,7 +85,7 @@ class NodeBloc extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['nodeId', 'blocId'], 'required'],
@@ -98,7 +100,7 @@ class NodeBloc extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'nodeId' => Module::t('models/node-bloc', 'Node ID'),
@@ -114,7 +116,7 @@ class NodeBloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBloc()
+    public function getBloc(): ActiveQuery
     {
         return $this->hasOne(Bloc::class, ['id' => 'blocId']);
     }
@@ -124,7 +126,7 @@ class NodeBloc extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNode()
+    public function getNode(): ActiveQuery
     {
         return $this->hasOne(Node::class, ['id' => 'nodeId']);
     }

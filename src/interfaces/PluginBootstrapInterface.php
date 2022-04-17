@@ -34,6 +34,6 @@ interface PluginBootstrapInterface {
      * @param string $moduleUid Core module uniqueId
      * @param Application $app
      */
-    public function bootstrapCore($moduleUid, $app);
+    public function bootstrapCore(string $moduleUid, Application $app);
 
 }

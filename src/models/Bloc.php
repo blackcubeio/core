@@ -14,6 +14,8 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\traits\ElasticTrait;
+
 /**
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2020 Redcat
@@ -25,4 +27,5 @@ namespace blackcube\core\models;
  */
 class Bloc extends BaseBloc
 {
+    use ElasticTrait;
 }

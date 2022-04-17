@@ -14,8 +14,11 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 use yii\helpers\Inflector;
@@ -47,7 +50,7 @@ class BlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb() :Connection
     {
         return Module::getInstance()->db;
     }
@@ -55,7 +58,7 @@ class BlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors() :array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -78,7 +81,7 @@ class BlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName() :string
     {
         return '{{%blocTypes}}';
     }
@@ -86,7 +89,7 @@ class BlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules() :array
     {
         return [
             [['name'], 'required'],
@@ -100,7 +103,7 @@ class BlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels() :array
     {
         return [
             'id' => Module::t('models/bloc-type', 'ID'),
@@ -117,9 +120,10 @@ class BlocType extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBlocs()
+    public function getBlocs() :ActiveQuery
     {
-        return $this->hasMany(Bloc::class, ['blocTypeId' => 'id']);
+        return $this
+            ->hasMany(Bloc::class, ['blocTypeId' => 'id']);
     }
 
     /**
@@ -127,9 +131,10 @@ class BlocType extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTypesBlocTypes()
+    public function getTypesBlocTypes() :ActiveQuery
     {
-        return $this->hasMany(TypeBlocType::class, ['blocTypeId' => 'id']);
+        return $this
+            ->hasMany(TypeBlocType::class, ['blocTypeId' => 'id']);
     }
 
     /**
@@ -137,32 +142,32 @@ class BlocType extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTypes()
+    public function getTypes() :ActiveQuery
     {
-        return $this->hasMany(Type::class, ['id' => 'typeId'])->viaTable(TypeBlocType::tableName(), ['blocTypeId' => 'id']);
+        return $this
+            ->hasMany(Type::class, ['id' => 'typeId'])
+            ->viaTable(TypeBlocType::tableName(), ['blocTypeId' => 'id']);
     }
 
-    public function getAdminView($pathAlias, $asAlias = false)
+    public function getAdminView(string $pathAlias, bool $asAlias = false)
     {
-        if ($pathAlias !== null) {
-            $targetView = (empty($this->view) ? Inflector::underscore($this->name) : $this->view);
-            $targetView = preg_replace('/[-_\s]+/', '_', $targetView);
-            $transliterator = \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC');
-            if ($transliterator !== null) {
-                $transliterated = $transliterator->transliterate($targetView);
-                if ($transliterated !== false) {
-                    $targetView = $transliterated;
-                }
+        $targetView = (empty($this->view) ? Inflector::underscore($this->name) : $this->view);
+        $targetView = preg_replace('/[-_\s]+/', '_', $targetView);
+        $transliterator = \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC');
+        if ($transliterator !== null) {
+            $transliterated = $transliterator->transliterate($targetView);
+            if ($transliterated !== false) {
+                $targetView = $transliterated;
             }
+        }
 
-            if ($asAlias === true) {
+        if ($asAlias === true) {
+            return $pathAlias.'/'.$targetView.'.php';
+        } else {
+            $templatePath = Yii::getAlias($pathAlias);
+            $filePath = $templatePath . '/' . $targetView . '.php';
+            if (file_exists($filePath) === true) {
                 return $pathAlias.'/'.$targetView.'.php';
-            } else {
-                $templatePath = Yii::getAlias($pathAlias);
-                $filePath = $templatePath . '/' . $targetView . '.php';
-                if (file_exists($filePath) === true) {
-                    return $pathAlias.'/'.$targetView.'.php';
-                }
             }
         }
         return false;

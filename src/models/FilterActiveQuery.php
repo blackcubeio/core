@@ -15,6 +15,7 @@
 namespace blackcube\core\models;
 
 use blackcube\core\components\PreviewManager;
+use blackcube\core\interfaces\PreviewManagerInterface;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 use Yii;
@@ -33,7 +34,7 @@ class FilterActiveQuery extends ActiveQuery
     /**
      * @var PreviewManager
      */
-    private $previewManager;
+    private PreviewManagerInterface $previewManager;
 
     /**
      * {@inheritDoc}
@@ -48,7 +49,8 @@ class FilterActiveQuery extends ActiveQuery
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
-    public function active() {
+    public function active(): ActiveQuery
+    {
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
         if ($this->previewManager->check() === false) {

@@ -49,7 +49,7 @@ trait BlocTrait
     /**
      * @return string name of the column used to link element with blocs (blocId)
      */
-    protected function getBlocIdColumn()
+    protected function getBlocIdColumn() :string
     {
         return 'blocId';
     }
@@ -60,7 +60,7 @@ trait BlocTrait
      * @param int $position if position < 1, bloc will be appended at the end of the list
      * @return bool
      */
-    public function attachBloc(Bloc $bloc, $position = 1)
+    public function attachBloc(Bloc $bloc, int $position = 1) :bool
     {
         $status = true;
         $elementBlocClass = $this->getElementBlocClass();
@@ -104,7 +104,7 @@ trait BlocTrait
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function detachBloc(Bloc $bloc)
+    public function detachBloc(Bloc $bloc) :bool
     {
         $bloc->delete();
         $this->reorderBlocs();
@@ -117,7 +117,7 @@ trait BlocTrait
      * @param int $position if position < 1, bloc will be appended at the end of the list
      * @return bool
      */
-    public function moveBloc(Bloc $bloc, $position = 1)
+    public function moveBloc(Bloc $bloc, int $position = 1) :bool
     {
         $status = true;
         $elementBlocClass = $this->getElementBlocClass();
@@ -181,7 +181,7 @@ trait BlocTrait
      * @param Bloc $bloc
      * @return bool
      */
-    public function moveBlocUp(Bloc $bloc)
+    public function moveBlocUp(Bloc $bloc) :bool
     {
         $elementBlocClass = $this->getElementBlocClass();
         $blocCount = $this->getBlocs()->count();
@@ -204,7 +204,7 @@ trait BlocTrait
      * @param Bloc $bloc
      * @return bool
      */
-    public function moveBlocDown(Bloc $bloc)
+    public function moveBlocDown(Bloc $bloc) :bool
     {
         $elementBlocClass = $this->getElementBlocClass();
         $blocCount = $this->getBlocs()->count();
@@ -227,7 +227,7 @@ trait BlocTrait
      * Reset blocs order value to have the list 1 indexed
      * @return bool
      */
-    protected function reorderBlocs()
+    protected function reorderBlocs() :bool
     {
         $status = true;
         $elementBlocClass = $this->getElementBlocClass();
@@ -253,7 +253,7 @@ trait BlocTrait
     /**
      * @return CategoryBloc[]|TagBloc[]|CompositeBloc[]|NodeBloc[]
      */
-    public function getElementBlocs()
+    public function getElementBlocs() :array
     {
         $elementBlocs = [];
         if ($this->getIsNewRecord() === false) {

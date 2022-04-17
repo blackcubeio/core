@@ -47,7 +47,7 @@ use yii\web\View;
  */
 class SeoBehavior extends Behavior
 {
-    public function events()
+    public function events() :array
     {
         return [
             BlackcubeController::EVENT_AFTER_ELEMENT => 'registerSeo',
@@ -59,7 +59,7 @@ class SeoBehavior extends Behavior
      * @param BlackcubeControllerEvent $event
      * @throws \yii\base\InvalidConfigException
      */
-    public function registerSeo($event)
+    public function registerSeo(BlackcubeControllerEvent $event) :void
     {
         $slugId = $event->element->slugId;
         $seo = Seo::find()->active()

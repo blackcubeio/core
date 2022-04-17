@@ -17,6 +17,8 @@ namespace blackcube\core\models;
 use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -55,7 +57,7 @@ class TypeBlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
         return Module::getInstance()->db;
     }
@@ -63,7 +65,7 @@ class TypeBlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -86,7 +88,7 @@ class TypeBlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%types_blocTypes}}';
     }
@@ -94,7 +96,7 @@ class TypeBlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[static::SCENARIO_PRE_VALIDATE_TYPE] = ['allowed', 'typeId'];
@@ -105,7 +107,7 @@ class TypeBlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['typeId', 'blocTypeId'], 'required'],
@@ -121,7 +123,7 @@ class TypeBlocType extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'typeId' => Module::t('models/type-bloc-type', 'Type ID'),
@@ -137,9 +139,10 @@ class TypeBlocType extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBlocType()
+    public function getBlocType(): ActiveQuery
     {
-        return $this->hasOne(BlocType::class, ['id' => 'blocTypeId']);
+        return $this
+            ->hasOne(BlocType::class, ['id' => 'blocTypeId']);
     }
 
     /**
@@ -147,7 +150,7 @@ class TypeBlocType extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getType()
+    public function getType(): ActiveQuery
     {
         return $this
             ->hasOne(Type::class, ['id' => 'typeId']);

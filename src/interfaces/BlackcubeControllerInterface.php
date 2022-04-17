@@ -48,6 +48,6 @@ interface BlackcubeControllerInterface
      * @param string $info element information
      * @throws \yii\base\NotSupportedException
      */
-    public function setElementInfo($info);
+    public function setElementInfo(string $info);
 
 }
