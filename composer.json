@@ -27,18 +27,18 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-fileinfo": "*",
         "ext-dom": "*",
         "ext-xmlreader": "*",
-        "creocoder/yii2-flysystem": "~1.0",
+        "creocoder/yii2-flysystem": "~1.1",
         "hashids/hashids": "~4.1",
         "league/flysystem-aws-s3-v3": "~1.0",
         "league/flysystem-cached-adapter": "~1.1",
         "swaggest/json-schema": "~0.12",
-        "vlucas/phpdotenv": "~5.3",
+        "vlucas/phpdotenv": "~5.4",
         "yiisoft/yii2-imagine": "~2.3",
         "yiisoft/yii2": "~2.0"
     },
