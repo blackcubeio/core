@@ -55,7 +55,7 @@ abstract class Flysystem extends Component
     /**
      * @var array|null
      */
-    public $config;
+    public $config = [];
 
     /**
      * @var PathNormalizer
