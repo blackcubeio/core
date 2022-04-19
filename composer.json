@@ -33,21 +33,25 @@
         "ext-fileinfo": "*",
         "ext-dom": "*",
         "ext-xmlreader": "*",
-        "creocoder/yii2-flysystem": "~1.1",
         "hashids/hashids": "~4.1",
-        "league/flysystem-aws-s3-v3": "~1.0",
-        "league/flysystem-cached-adapter": "~1.1",
         "swaggest/json-schema": "~0.12",
         "vlucas/phpdotenv": "~5.4",
         "yiisoft/yii2-imagine": "~2.3",
-        "yiisoft/yii2": "~2.0"
+        "yiisoft/yii2": "~2.0",
+        "league/flysystem": "^2.4"
     },
     "require-dev" : {
         "codeception/codeception": "~4.1",
         "codeception/module-yii2": "~1.1",
         "codeception/module-asserts": "~1.3",
         "yiisoft/yii2-debug":"~2.1",
-        "yiisoft/yii2-gii": "~2.2"
+        "yiisoft/yii2-gii": "~2.2",
+        "league/flysystem-aws-s3-v3": "^2.4",
+        "league/flysystem-ftp": "^2.4",
+        "league/flysystem-memory": "^2.0",
+        "league/flysystem-async-aws-s3": "^2.0",
+        "league/flysystem-google-cloud-storage": "^2.4",
+        "league/flysystem-sftp": "^2.4"
     },
     "config": {
         "process-timeout": 1800,

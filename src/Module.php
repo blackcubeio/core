@@ -151,6 +151,9 @@ class Module extends BaseModule implements BootstrapInterface
      */
     public $cache;
 
+    /**
+     * @var string[]
+     */
     public $coreSingletons = [
         PluginsHandlerInterface::class => PluginsHandler::class,
         PreviewManagerInterface::class => PreviewManager::class,
@@ -187,6 +190,10 @@ class Module extends BaseModule implements BootstrapInterface
         TypeBlocType::class => TypeBlocType::class,
     ];
 
+    /**
+     * @var string version number
+     */
+    public $version = 'v3.0-dev';
     /**
      * {@inheritDoc}
      */
@@ -243,7 +250,6 @@ class Module extends BaseModule implements BootstrapInterface
                 Yii::$container->set($class, $definition);
             }
         }
-
     }
 
     /**
