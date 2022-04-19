@@ -13,9 +13,9 @@
  */
 namespace blackcube\core\behaviors;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\models\Bloc;
 use blackcube\core\Module;
-use creocoder\flysystem\Filesystem;
 use yii\base\Behavior;
 use yii\base\ErrorException;
 use yii\base\Event;
@@ -108,11 +108,8 @@ class FileSaveBehavior extends Behavior
                         }
                         $stream = fopen($realFilename, 'r+');
                         if ($stream !== false) {
-                            $copyStatus = Module::getInstance()->fs->putStream($targetFilename, $stream);
+                            Module::getInstance()->fs->writeStream($targetFilename, $stream);
                             fclose($stream);
-                            if ($copyStatus === false) {
-                                throw new ErrorException();
-                            }
                             $finaFiles[] = $uploadFs.$targetFilename;
                         }
                     }
@@ -144,7 +141,7 @@ class FileSaveBehavior extends Behavior
         /* @var ActiveRecord $model */
         $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
         $fs = Module::getInstance()->fs;
-        /* @var $fs Filesystem */
+        /* @var $fs Flysystem */
         foreach ($this->filesAttributes as $attribute) {
             $currentFiles = $model->{$attribute};
             $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
@@ -152,7 +149,7 @@ class FileSaveBehavior extends Behavior
                 if (strncmp($prefix, $file, strlen($prefix)) === 0) {
                     // file already saved in system we should remove it
                     $originalFilename = str_replace($prefix, '', $file);
-                    if ($fs->has($originalFilename) === true) {
+                    if ($fs->fileExists($originalFilename) === true) {
                         $fs->delete($originalFilename);
                     }
                 }

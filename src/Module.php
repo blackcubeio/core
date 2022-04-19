@@ -15,19 +15,14 @@
 namespace blackcube\core;
 
 use blackcube\core\commands\InitController;
-use blackcube\core\components\Plugins;
+use blackcube\core\components\Flysystem;
 use blackcube\core\components\PluginsHandler;
 use blackcube\core\components\PreviewManager;
 use blackcube\core\components\SlugGenerator;
-use blackcube\core\helpers\PluginHelper;
 use blackcube\core\interfaces\PluginBootstrapInterface;
-use blackcube\core\interfaces\PluginInterface;
-use blackcube\core\interfaces\PluginManagerRoutableInterface;
-use blackcube\core\interfaces\PluginServiceInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
 use blackcube\core\interfaces\PreviewManagerInterface;
 use blackcube\core\interfaces\SlugGeneratorInterface;
-use blackcube\core\models\Bloc;
 use blackcube\core\models\BlocType;
 use blackcube\core\models\Category;
 use blackcube\core\models\CategoryBloc;
@@ -54,7 +49,6 @@ use blackcube\core\models\Type;
 use blackcube\core\models\TypeBlocType;
 use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
-use creocoder\flysystem\Filesystem;
 use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
 use yii\caching\CacheInterface;
@@ -112,7 +106,7 @@ class Module extends BaseModule implements BootstrapInterface
     ];
 
     /**
-     * @var Filesystem|array|string flysystem access
+     * @var Flysystem|array|string flysystem access
      */
     public $fs = 'fs';
 
@@ -200,7 +194,7 @@ class Module extends BaseModule implements BootstrapInterface
     public function init()
     {
         parent::init();
-        $this->fs = Instance::ensure($this->fs, Filesystem::class);
+        $this->fs = Instance::ensure($this->fs, Flysystem::class);
         $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->cache !== null) {
             $this->cache = Instance::ensure($this->cache, CacheInterface::class);

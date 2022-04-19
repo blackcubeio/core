@@ -14,6 +14,7 @@
 
 namespace blackcube\core\web\helpers;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\Module;
 use blackcube\core\web\helpers\editorjs\DelimiterBlock;
 use blackcube\core\web\helpers\editorjs\EmbedBlock;
@@ -22,7 +23,6 @@ use blackcube\core\web\helpers\editorjs\ListBlock;
 use blackcube\core\web\helpers\editorjs\ParagraphBlock;
 use blackcube\core\web\helpers\editorjs\QuoteBlock;
 use blackcube\core\web\helpers\editorjs\RawBlock;
-use creocoder\flysystem\Filesystem;
 use Imagine\Image\ManipulatorInterface;
 use yii\base\Model;
 use yii\helpers\Html as YiiHtml;
@@ -138,15 +138,15 @@ class Html extends YiiHtml
         $resultFileUrl = $imageLink;
         if (strncmp($prefix, $imageLink, strlen($prefix)) === 0) {
             $fs = Module::getInstance()->fs;
-            /* @var $fs Filesystem */
+            /* @var $fs Flysystem */
             $originalFilename = str_replace($prefix, '', $imageLink);
-            if ($fs->has($originalFilename) === true) {
+            if ($fs->fileExists($originalFilename) === true) {
                 $fileData = pathinfo($originalFilename);
                 $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
                 if ($width !== null && $height !== null) {
                     $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-'.$width.'-'.$height.'.'.$fileData['extension'];
                 }
-                $originalFileTimestamp = $fs->getTimestamp($originalFilename);
+                $originalFileTimestamp = $fs->lastModified($originalFilename);
                 $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
                 $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
                 if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
@@ -187,12 +187,12 @@ class Html extends YiiHtml
         $resultFileUrl = $fileLink;
         if (strncmp($prefix, $fileLink, strlen($prefix)) === 0) {
             $fs = Module::getInstance()->fs;
-            /* @var $fs Filesystem */
+            /* @var $fs Flysystem */
             $originalFilename = str_replace($prefix, '', $fileLink);
-            if ($fs->has($originalFilename) === true) {
+            if ($fs->fileExists($originalFilename) === true) {
                 $fileData = pathinfo($originalFilename);
                 $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
-                $originalFileTimestamp = $fs->getTimestamp($originalFilename);
+                $originalFileTimestamp = $fs->lastModified($originalFilename);
                 $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
                 $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
                 if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
@@ -234,7 +234,7 @@ class Html extends YiiHtml
                 $currentDate = new DateTime($currentValue);
                 $value = $currentDate->format('Y-m-d\TH:i:s');;
             } else {
-                $value;
+                $value = null;
             }
         }
         if (!array_key_exists('id', $options)) {

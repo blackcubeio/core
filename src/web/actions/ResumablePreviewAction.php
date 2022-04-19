@@ -86,8 +86,8 @@ class ResumablePreviewAction extends ViewAction
 
         } elseif (strncmp($uploadFsPrefix, $name, strlen($uploadFsPrefix)) === 0) {
             $realName = str_replace($uploadFsPrefix, '', $name);
-            // file is in fly system (creocoder)
-            $mimeType = Module::getInstance()->fs->getMimetype($realName);
+            // file is in fly system
+            $mimeType = Module::getInstance()->fs->mimeType($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             if (strncmp('image/', $mimeType, 6) !== 0) {
                 $realName = $this->prepareImage($fileName);
