@@ -14,8 +14,10 @@
 
 namespace blackcube\core\web\actions;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\Module;
 use Imagine\Image\ManipulatorInterface;
+use yii\base\Action;
 use yii\base\Event;
 use yii\imagine\Image;
 use yii\web\NotFoundHttpException;
@@ -34,7 +36,7 @@ use Yii;
  * @package blackcube\core\web\actions
  * @since XXX
  */
-class ResumablePreviewAction extends ViewAction
+class ResumablePreviewAction extends Action
 {
     /**
      * @var string
@@ -44,7 +46,7 @@ class ResumablePreviewAction extends ViewAction
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(Flysystem $fs)
     {
         $name = Yii::$app->request->getQueryParam('name', null);
         $width = Yii::$app->request->getQueryParam('width', 200);
@@ -87,19 +89,20 @@ class ResumablePreviewAction extends ViewAction
         } elseif (strncmp($uploadFsPrefix, $name, strlen($uploadFsPrefix)) === 0) {
             $realName = str_replace($uploadFsPrefix, '', $name);
             // file is in fly system
-            $mimeType = Module::getInstance()->fs->mimeType($realName);
+            // $fs =  Module::getInstance()->fs;
+            $mimeType = $fs->mimeType($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             if (strncmp('image/', $mimeType, 6) !== 0) {
                 $realName = $this->prepareImage($fileName);
                 // $mimeType = mime_content_type($realName);
                 $handle = fopen($realName, 'r');
             } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
-                $handle = Module::getInstance()->fs->readStream($realName);
+                $handle = $fs->readStream($realName);
                 $mimeType = 'image/svg+xml'; // mime_content_type($realName);
                 // $handle = fopen($realName, 'r');
             } else {
                 Image::$thumbnailBackgroundAlpha = 0;
-                $handle = Module::getInstance()->fs->readStream($realName);
+                $handle = $fs->readStream($realName);
                 $image = Image::thumbnail($handle, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
                 // $image = Image::resize($realName, $width, $height, true, true);
                 $thumbnailName = Yii::getAlias($uploadAlias.'thumb_'.$width.'x'.$height.'_'.$fileName);

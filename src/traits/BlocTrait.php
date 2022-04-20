@@ -21,6 +21,7 @@ use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\NodeBloc;
 use blackcube\core\models\TagBloc;
 use Yii;
+use yii\db\Expression;
 
 /**
  * Bloc trait
@@ -73,14 +74,12 @@ trait BlocTrait
         try {
             // open space to add bloc
             if ($position <= $blocCount) {
-                $elementBlocs = $elementBlocClass::find()
-                    ->andWhere([$this->getElementIdColumn() => $this->id])
-                    ->andWhere(['>=', 'order', $position])
-                    ->orderBy(['order' => SORT_DESC])->all();
-                foreach($elementBlocs as $elementBloc) {
-                    $elementBloc->order++;
-                    $elementBloc->save(['order']);
-                }
+                $elementBlocClass::updateAll([
+                    'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
+                ], ['and',
+                    [$this->getElementIdColumn() => $this->id],
+                    ['>=', 'order', $position]
+                ]);
             } else {
                 $position = $blocCount + 1;
             }
@@ -139,26 +138,21 @@ trait BlocTrait
                 $currentPosition = $currentElementBloc->order;
                 $currentAttributes = $currentElementBloc->attributes;
                 $currentElementBloc->delete();
-                $elementBlocs = $elementBlocClass::find()
-                    ->andWhere([$this->getElementIdColumn() => $this->id])
-                    ->andWhere(['>=', 'order', $currentPosition])
-                    ->orderBy(['order' => SORT_ASC])->all();
-                foreach($elementBlocs as $elementBloc) {
-                    $elementBloc->order--;
-                    $elementBloc->save(['order']);
-                }
-
+                $elementBlocClass::updateAll([
+                    'order' => Yii::createObject(Expression::class, ['[[order]]-1'])
+                ], ['and',
+                    [$this->getElementIdColumn() => $this->id],
+                    ['>=', 'order', $currentPosition]
+                ]);
                 $blocCount = $this->getBlocs()->count();
                 // open space to add bloc
                 if ($position <= $blocCount) {
-                    $elementBlocs = $elementBlocClass::find()
-                        ->andWhere([$this->getElementIdColumn() => $this->id])
-                        ->andWhere(['>=', 'order', $position])
-                        ->orderBy(['order' => SORT_DESC])->all();
-                    foreach($elementBlocs as $elementBloc) {
-                        $elementBloc->order++;
-                        $elementBloc->save(['order']);
-                    }
+                    $elementBlocClass::updateAll([
+                        'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
+                    ], ['and',
+                        [$this->getElementIdColumn() => $this->id],
+                        ['>=', 'order', $position]
+                    ]);
                 } else {
                     $position = $blocCount + 1;
                 }
@@ -166,7 +160,7 @@ trait BlocTrait
                 $elementBloc->attributes = $currentAttributes;
                 $elementBloc->order = $position;
                 $elementBloc->save();
-                $this->reorderBlocs();
+                // $this->reorderBlocs();
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();

@@ -14,7 +14,9 @@
 
 namespace blackcube\core\web\actions;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\Module;
+use yii\base\Action;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ViewAction;
@@ -31,7 +33,7 @@ use Yii;
  * @package blackcube\core\web\actions
  * @since XXX
  */
-class ResumableDeleteAction extends ViewAction
+class ResumableDeleteAction extends Action
 {
     /**
      * @inheritdoc

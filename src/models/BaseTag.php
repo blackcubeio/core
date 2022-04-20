@@ -206,7 +206,8 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     {
         return $this
             ->hasMany(Composite::class, ['id' => 'compositeId'])
-            ->viaTable(CompositeTag::tableName(), ['tagId' => 'id']);
+            ->viaTable(CompositeTag::tableName(), ['tagId' => 'id'])
+            ->orderBy(['name' => SORT_ASC]);
     }
 
     /**

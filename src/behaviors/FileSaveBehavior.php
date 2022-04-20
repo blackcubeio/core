@@ -39,6 +39,14 @@ use Yii;
  */
 class FileSaveBehavior extends Behavior
 {
+    private $fs;
+
+    public function __construct(Flysystem $fs, $config = [])
+    {
+        $this->fs = $fs;
+        parent::__construct($config);
+    }
+
     /**
      * @var array list of attributes to handle
      */
@@ -108,7 +116,8 @@ class FileSaveBehavior extends Behavior
                         }
                         $stream = fopen($realFilename, 'r+');
                         if ($stream !== false) {
-                            Module::getInstance()->fs->writeStream($targetFilename, $stream);
+                            // $fs = Module::getInstance()->fs;
+                            $this->fs->writeStream($targetFilename, $stream);
                             fclose($stream);
                             $finaFiles[] = $uploadFs.$targetFilename;
                         }
@@ -140,8 +149,8 @@ class FileSaveBehavior extends Behavior
         $model = $this->owner;
         /* @var ActiveRecord $model */
         $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
-        $fs = Module::getInstance()->fs;
-        /* @var $fs Flysystem */
+        // $fs = Module::getInstance()->fs;
+        $fs = $this->fs;
         foreach ($this->filesAttributes as $attribute) {
             $currentFiles = $model->{$attribute};
             $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
