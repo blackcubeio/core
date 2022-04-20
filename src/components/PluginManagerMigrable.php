@@ -57,7 +57,7 @@ abstract class PluginManagerMigrable extends PluginManager {
     /**
      * @return bool Register plugin
      */
-    public function register()
+    public function register() :bool
     {
         $migrations = $this->getNewMigrations();
         try {
@@ -84,7 +84,7 @@ abstract class PluginManagerMigrable extends PluginManager {
     /**
      * @return bool Unregister plugin
      */
-    public function unregister()
+    public function unregister() :bool
     {
         $availableMigrations = $this->findMigrations();
         $appliedMigrations = array_keys($this->getMigrationHistory(null));
