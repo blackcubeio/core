@@ -60,7 +60,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * Check if current route is handled by the mapper
      * {@inheritDoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) :bool
     {
         return (RouteEncoder::decode($offset) !== false);
     }
@@ -71,6 +71,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * 2. if requested route is defined in the cms return controller definitions and element ids
      * {@inheritDoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $data = RouteEncoder::decode($offset);
@@ -95,7 +96,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * Allow backward compatibility with classic controllerMap
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) :void
     {
         // $this->additionalMap[$offset] = $value;
     }
@@ -104,7 +105,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * Allow backward compatibility with classic controllerMap
      * {@inheritDoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) :void
     {
         // unset($this->additionalMap[$offset]);
     }
