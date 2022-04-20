@@ -2,7 +2,7 @@
 /**
  * SeoBehavior.php
  *
- * PHP version 7.2+
+ * PHP version 7.4+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2022 Redcat
@@ -35,7 +35,7 @@ use yii\web\View;
 /**
  * Set seo data in front page
  *
- * PHP version 7.2+
+ * PHP version 7.4+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2022 Redcat
