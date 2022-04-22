@@ -16,8 +16,10 @@ namespace blackcube\core\components;
 
 use blackcube\core\interfaces\SlugGeneratorInterface;
 use blackcube\core\models\Category;
+use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
+use blackcube\core\models\Tag;
 use yii\db\Query;
 use yii\helpers\Inflector;
 use Transliterator;
@@ -37,20 +39,24 @@ class SlugGenerator implements SlugGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function getElementSlug($elementName, $parentElementType = null, $parentElementId = null)
+    public function getElementSlug($element)
     {
         $baseSlug = [];
-        if ($parentElementType !== null && $parentElementId !== null) {
-            switch ($parentElementType) {
-                case Node::getElementType():
-                    $baseSlug = $this->generateNodeSlug($parentElementId);
-                    break;
-                case Category::getElementType():
-                    $baseSlug = $this->generateCategorySlug($parentElementId);
-                    break;
+        if ($element instanceof Node) {
+            $baseSlug = $this->generateNodeSlug($element->id);
+        } elseif($element instanceof Composite) {
+            $parentNode = $element->getNodes()->one();
+            if ($parentNode !== null) {
+                $baseSlug = $this->generateNodeSlug($parentNode->id);
             }
+            $baseSlug[] = $this->urlize($element->name);
+        } elseif($element instanceof Category) {
+            $baseSlug = $this->generateCategorySlug($element->id);
+        } elseif($element instanceof Tag) {
+            $parentCatebgory = $element->getCategory()->one();
+            $baseSlug = $this->generateCategorySlug($parentCatebgory->id);
+            $baseSlug[] = $this->urlize($element->name);
         }
-        $baseSlug[] = $this->urlize($elementName);
         return implode('/', $baseSlug);
     }
 
@@ -76,7 +82,7 @@ class SlugGenerator implements SlugGeneratorInterface
             if (empty($slugData['path']) === false) {
                 $baseSlug[] = $slugData['path'];
             } else {
-                $baseSlug[] = $this->generateCategorySlug($slugData['name']);
+                $baseSlug[] = $this->urlize($slugData['name']);
             }
         }
         return $baseSlug;
@@ -135,6 +141,6 @@ class SlugGenerator implements SlugGeneratorInterface
         }
         $str = strtolower(trim($str));
         $str = preg_replace('/[^a-z0-9]+/', '-', $str);
-        return $str;
+        return trim($str, '-');
     }
 }
