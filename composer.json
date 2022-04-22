@@ -74,5 +74,10 @@
     "scripts": {
         "post-install-cmd": [
         ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-devel-3.x": "3.0.x-dev"
+        }
     }
 }
