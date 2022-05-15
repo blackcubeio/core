@@ -7,7 +7,7 @@ Blackcube Core
 Pre-requisites
 --------------
 
- * PHP 7.2+
+ * PHP 7.4+
    * Extension `dom`
    * Extension `fileinfo`
    * Extension `intl`
@@ -34,6 +34,26 @@ Installation
 
 ```php 
 // main configuration file
+   'container' => [
+      'singletons' => [
+         // local filesystem
+         blackcube\core\components\Flysystem::class => [
+            'class' => blackcube\core\components\FlysystemLocal::class,
+            'path' => getstrenv('FILESYSTEM_LOCAL_PATH'),
+         ],
+         // or s3
+         blackcube\core\components\Flysystem::class => [
+            'class' => blackcube\core\components\FlysystemAwsS3::class,
+           'key' => getstrenv('FILESYSTEM_S3_KEY'),
+           'secret' => getstrenv('FILESYSTEM_S3_SECRET'),
+           'bucket' => getstrenv('FILESYSTEM_S3_BUCKET'),
+           'region' => getstrenv('FILESYSTEM_S3_REGION'),
+           'version' => 'latest',
+           'endpoint' => getstrenv('FILESYSTEM_S3_ENDPOINT'),
+           'pathStyleEndpoint' => getboolenv('FILESYSTEM_S3_PATH_STYLE'),
+         ],
+      ]
+   ],
 // ...
     'bootstrap' => [
         // ... boostrapped modules
@@ -43,6 +63,20 @@ Installation
         // ... other modules
         'blackcube' => [
             'class' => blackcube\core\Module::class,
+            'plugins' => [
+               // additional plugins
+            ],
+            'cmsEnabledmodules' => [
+               // additional modules
+            ],
+            'allowedParameterDomains' => ['],
+            // override components if needed
+            'components' => [
+               'db' => ...
+               'cache' => ...
+               'fs' => ...
+            ],
+            /// end override
         ],
     ],
 // ...
@@ -53,13 +87,13 @@ Installation
 Add needed tables in DB
 
 ```
-php yii.php bcore:migrate
+php yii.php migrate
 ```
 
 Init database with basic stuff
 
 ```
-php yii.php bcore:init
+php yii.php bc:init
 ```
  
 > Blackcube core is now ready, you can use it

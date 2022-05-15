@@ -4,6 +4,9 @@ Blackcube Core - CHANGELOG
  * Upd: Add DI register
  * Upd: Prepare type hints
  * Upd: Update dependencies
+ * Chg: Prepare new plugin system
+ * Chg: move ```db```, ```cache``` and ```fs``` to components to allow tree traversal
+ * Upd: Change ```flysystem``` wrapper
 
 Release 2.2.3 March, 11th 2022 <pgaultier@redcat.io>
 ----------------------------------------------------
