@@ -1,7 +1,7 @@
 {
     "name": "blackcube/core",
-    "description": "Blackcube CMS Core",
-    "keywords": ["blackcube", "cms", "core"],
+    "description": "Blackcube CMS Core system",
+    "keywords": ["blackcube", "cms", "core", "yii", "yii2", "content management"],
     "homepage": "https://code.redcat.io/blackcube/core",
     "type": "yii2-extension",
     "license": "proprietary",
@@ -37,7 +37,7 @@
         "swaggest/json-schema": "~0.12",
         "vlucas/phpdotenv": "~5.4",
         "yiisoft/yii2-imagine": "~2.3",
-        "yiisoft/yii2": "~2.0",
+        "yiisoft/yii2": "~2.0.13",
         "league/flysystem": "^2.4"
     },
     "require-dev" : {
