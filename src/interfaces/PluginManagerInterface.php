@@ -96,19 +96,4 @@ interface PluginManagerInterface {
      */
     public function getIsActive() :bool;
 
-    /**
-     * @param string $hook
-     * @param ElementInterface|null $element
-     * @param array $additionalParameters
-     * @return array widget configuration
-     */
-    public function hookWidget(string $hook, ?ElementInterface $element = null, array $additionalParameters = []);
-
-    /**
-     * @param string $hook hook name
-     * @param ElementInterface $element
-     * @param array $additionalParams additional parameters passed at runtime
-     * @return mixed
-     */
-    public function hook(string $hook, ?ElementInterface $element = null, array $additionalParams = []);
 }

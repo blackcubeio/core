@@ -137,7 +137,7 @@ class Html extends YiiHtml
         $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
         $resultFileUrl = $imageLink;
         if (strncmp($prefix, $imageLink, strlen($prefix)) === 0) {
-            $fs = Module::getInstance()->fs;
+            $fs = Module::getInstance()->get('fs');
             /* @var $fs Flysystem */
             $originalFilename = str_replace($prefix, '', $imageLink);
             if ($fs->fileExists($originalFilename) === true) {
@@ -186,7 +186,7 @@ class Html extends YiiHtml
         $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
         $resultFileUrl = $fileLink;
         if (strncmp($prefix, $fileLink, strlen($prefix)) === 0) {
-            $fs = Module::getInstance()->fs;
+            $fs = Module::getInstance()->get('fs');
             /* @var $fs Flysystem */
             $originalFilename = str_replace($prefix, '', $fileLink);
             if ($fs->fileExists($originalFilename) === true) {

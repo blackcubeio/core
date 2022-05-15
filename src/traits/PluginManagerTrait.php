@@ -1,6 +1,6 @@
 <?php
 /**
- * PluginManager.php
+ * PluginManagerTrait.php
  *
  * PHP version 7.4+
  *
@@ -9,31 +9,29 @@
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\components
+ * @package blackcube\core\traits
  */
 
-namespace blackcube\core\components;
+namespace blackcube\core\traits;
 
-use blackcube\core\interfaces\PluginManagerInterface;
 use blackcube\core\models\Plugin;
 use Yii;
 use yii\base\BootstrapInterface;
 
 /**
- * Abstract class to build a PluginManager
+ * PluginManager trait
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\components
+ * @package blackcube\core\traits
+ * @since XXX
+ *
  */
-abstract class PluginManager implements PluginManagerInterface {
-    /**
-     * @var string id of the plugin
-     */
-    protected $id;
+trait PluginManagerTrait
+{
 
     /**
      * @var Plugin current plugin id db
@@ -43,19 +41,17 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function __construct($id)
-    {
-        $this->id = $id;
-        $this->setAlias();
-    }
+    abstract public function getId();
 
     /**
      * {@inheritDoc }
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    abstract public function getName();
+
+    /**
+     * {@inheritDoc }
+     */
+    abstract public function getVersion();
 
     /**
      * {@inheritDoc }
@@ -127,7 +123,7 @@ abstract class PluginManager implements PluginManagerInterface {
     protected function registerDbPlugin() :bool
     {
         if ($this->getIsRegistered() === false) {
-            $plugin = new Plugin();
+            $plugin = Yii::createObject(Plugin::class);
             $plugin->name = $this->getName();
             $plugin->className = get_class($this);
             $plugin->bootstrap = ($this instanceof BootstrapInterface);

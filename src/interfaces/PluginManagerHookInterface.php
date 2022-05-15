@@ -1,6 +1,6 @@
 <?php
 /**
- * PluginManagerRoutableInterface.php
+ * PluginManagerHookInterface.php
  *
  * PHP version 7.4+
  *
@@ -16,10 +16,9 @@ namespace blackcube\core\interfaces;
 
 use Yii;
 use yii\base\Action;
-use yii\web\UrlRuleInterface;
 
 /**
- * Interface PluginManagerRoutableInterface
+ * Interface PluginManagerHookInterface
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2022 Redcat
@@ -28,10 +27,12 @@ use yii\web\UrlRuleInterface;
  * @link https://www.redcat.io
  * @package blackcube\core\interfaces
  */
-interface PluginManagerRoutableInterface extends UrlRuleInterface {
-
+interface PluginManagerHookInterface {
     /**
-     * @return array controllerMap element to Add
+     * @param string $hook hook name
+     * @param ElementInterface $element
+     * @param array $additionalParams additional parameters passed at runtime
+     * @return mixed
      */
-    public function getControllerMap();
+    public function hook(string $hook, ?ElementInterface $element = null, array $additionalParams = []);
 }

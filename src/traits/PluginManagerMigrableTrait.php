@@ -1,6 +1,6 @@
 <?php
 /**
- * PluginManagerMigrable.php
+ * PluginManagerMigrableTrait.php
  *
  * PHP version 7.4+
  *
@@ -9,31 +9,34 @@
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\components
+ * @package blackcube\core\traits
  */
 
-namespace blackcube\core\components;
+namespace blackcube\core\traits;
 
+use blackcube\core\models\Plugin;
 use blackcube\core\Module;
+use Yii;
+use yii\base\BootstrapInterface;
 use yii\console\controllers\MigrateController;
 use yii\db\Migration;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
-use Yii;
 
 /**
- * PluginManagerMigrable
+ * PluginManagerMigrable trait
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\components
+ * @package blackcube\core\traits
  * @since XXX
+ *
  */
-abstract class PluginManagerMigrable extends PluginManager {
-
+trait PluginManagerMigrableTrait
+{
     /**
      * @var string namespace for plugin migrations
      */
@@ -45,6 +48,89 @@ abstract class PluginManagerMigrable extends PluginManager {
     public $migrationTable = '{{%migration}}';
 
     /**
+     * @var Plugin current plugin id db
+     */
+    protected $dbPlugin;
+
+    /**
+     * {@inheritDoc }
+     */
+    abstract public function getId();
+
+    /**
+     * {@inheritDoc }
+     */
+    abstract public function getName();
+
+    /**
+     * {@inheritDoc }
+     */
+    abstract public function getVersion();
+
+    /**
+     * @return Plugin false if plugin is not registered in database
+     */
+    protected function getDbPlugin()
+    {
+        if ($this->dbPlugin === null) {
+            $plugin = Plugin::find()->andWhere(['id' => $this->getId()])->one();
+            if ($plugin instanceof Plugin) {
+                $this->dbPlugin = $plugin;
+            } else {
+                $this->dbPlugin = false;
+            }
+        }
+        return $this->dbPlugin;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    public function getIsActive() :bool
+    {
+        $plugin = $this->getDbPlugin();
+        if ($plugin !== false) {
+            return (bool)$plugin->active;
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    public function getIsRegistered() :bool
+    {
+        $plugin = $this->getDbPlugin();
+        return ($plugin !== false);
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    public function activate() :bool
+    {
+        $plugin = $this->getDbPlugin();
+        if ($plugin !== false) {
+            $plugin->active = true;
+            return $plugin->save(true, ['active', 'dateUpdate']);
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    public function deactivate() :bool
+    {
+        $plugin = $this->getDbPlugin();
+        if ($plugin !== false) {
+            $plugin->active = false;
+            return $plugin->save(true, ['active', 'dateUpdate']);
+        }
+        return false;
+    }
+
+    /**
      * Returns the file path matching the give namespace.
      * @param string $namespace namespace.
      * @return string file path.
@@ -52,6 +138,44 @@ abstract class PluginManagerMigrable extends PluginManager {
     private function getNamespacePath($namespace)
     {
         return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
+    }
+
+    /**
+     * Helper function to register plugin id DB
+     * @return bool
+     */
+    protected function registerDbPlugin() :bool
+    {
+        if ($this->getIsRegistered() === false) {
+            $plugin = Yii::createObject(Plugin::class);
+            $plugin->name = $this->getName();
+            $plugin->className = get_class($this);
+            $plugin->bootstrap = ($this instanceof BootstrapInterface);
+            $plugin->id = $this->getId();
+            $plugin->version = $this->getVersion();
+            $plugin->active = false;
+            if ($plugin->save() === true) {
+                $this->dbPlugin = $plugin;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper function to unregister plugin id DB
+     * @return bool
+     */
+    protected function unregisterDbPlugin() :bool
+    {
+        if ($this->getIsRegistered() === true) {
+            $status = $this->getDbPlugin()->delete();
+            if ($status !== false) {
+                $this->dbPlugin = null;
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -65,7 +189,7 @@ abstract class PluginManagerMigrable extends PluginManager {
             foreach($migrations as $version) {
                 $migration = Yii::createObject([
                     'class' => $version,
-                    'db' => Module::getInstance()->db,
+                    'db' => Module::getInstance()->get('db'),
                 ]);
                 /* @var $migration Migration */
                 if ($migration->up() === false) {
@@ -96,7 +220,7 @@ abstract class PluginManagerMigrable extends PluginManager {
             foreach($migrations as $version) {
                 $migration = Yii::createObject([
                     'class' => $version,
-                    'db' => Module::getInstance()->db,
+                    'db' => Module::getInstance()->get('db'),
                 ]);
                 /* @var $migration Migration */
                 if ($migration->down() === false) {
@@ -123,7 +247,7 @@ abstract class PluginManagerMigrable extends PluginManager {
             return [];
         }
 
-        $db = Module::getInstance()->db;
+        $db = Module::getInstance()->get('db');
         $query = (new Query())
             ->select(['version', 'apply_time'])
             ->from($this->migrationTable)
@@ -244,7 +368,7 @@ abstract class PluginManagerMigrable extends PluginManager {
      */
     protected function addMigrationHistory($version)
     {
-        $db = Module::getInstance()->db;
+        $db = Module::getInstance()->get('db');
         $command = $db->createCommand();
         $command->insert($this->migrationTable, [
             'version' => $version,
@@ -257,7 +381,7 @@ abstract class PluginManagerMigrable extends PluginManager {
      */
     protected function removeMigrationHistory($version)
     {
-        $db = Module::getInstance()->db;
+        $db = Module::getInstance()->get('db');
         $command = $db->createCommand();
         $command->delete($this->migrationTable, [
             'version' => $version,

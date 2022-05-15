@@ -106,19 +106,9 @@ class Module extends BaseModule implements BootstrapInterface
     ];
 
     /**
-     * @var Flysystem|array|string flysystem access
-     */
-    public $fs = 'fs';
-
-    /**
      * @var string command prefix
      */
     public $commandNameSpace = 'bc:';
-
-    /**
-     * @var Connection|array|string database access
-     */
-    public $db = 'db';
 
     /**
      * @var string prefix used for temporary async files
@@ -139,11 +129,6 @@ class Module extends BaseModule implements BootstrapInterface
      * @var array plugins definitions
      */
     public $plugins = [];
-
-    /**
-     * @var CacheInterface|array|string|null
-     */
-    public $cache;
 
     /**
      * @var string[]
@@ -194,11 +179,6 @@ class Module extends BaseModule implements BootstrapInterface
     public function init()
     {
         parent::init();
-        $this->fs = Instance::ensure($this->fs, Flysystem::class);
-        $this->db = Instance::ensure($this->db, Connection::class);
-        if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, CacheInterface::class);
-        }
         if (empty($this->allowedParameterDomains) === false && in_array(Parameter::HOST_DOMAIN, $this->allowedParameterDomains) === false) {
             $this->allowedParameterDomains[] = Parameter::HOST_DOMAIN;
         }
@@ -304,7 +284,7 @@ class Module extends BaseModule implements BootstrapInterface
                     'blackcube\core\migrations',
                 ],
                 'migrationPath' => null,
-                'db' => $this->db,
+                'db' => $this->get('db'),
             ];
         }
         /**/

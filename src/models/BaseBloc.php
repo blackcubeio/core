@@ -62,7 +62,7 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
      */
     public static function getDb() :Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**

@@ -52,7 +52,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
-        $cache = Module::getInstance()->cache;
+        $cache = Module::getInstance()->get('cache');
         $prettyUrl = false;
         // $params = ['elementTarget' => 'tag-1']
         // $route = 'modules/controller?/action?/element-id

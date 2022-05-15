@@ -116,7 +116,6 @@ class FileSaveBehavior extends Behavior
                         }
                         $stream = fopen($realFilename, 'r+');
                         if ($stream !== false) {
-                            // $fs = Module::getInstance()->fs;
                             $this->fs->writeStream($targetFilename, $stream);
                             fclose($stream);
                             $finaFiles[] = $uploadFs.$targetFilename;
@@ -149,7 +148,6 @@ class FileSaveBehavior extends Behavior
         $model = $this->owner;
         /* @var ActiveRecord $model */
         $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
-        // $fs = Module::getInstance()->fs;
         $fs = $this->fs;
         foreach ($this->filesAttributes as $attribute) {
             $currentFiles = $model->{$attribute};

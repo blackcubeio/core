@@ -72,7 +72,7 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
      */
     public static function getDb() :Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**

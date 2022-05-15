@@ -43,11 +43,11 @@ interface PluginsHandlerInterface extends UrlRuleInterface {
     public function getPluginManagers();
 
     /**
-     * @param $id
+     * @param string $id
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getPluginManager(int $id) :?PluginManagerInterface;
+    public function getPluginManager(string $id) :?PluginManagerInterface;
 
     /**
      * @return PluginManagerInterface[]|null

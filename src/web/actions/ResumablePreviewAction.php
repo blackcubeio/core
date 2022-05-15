@@ -89,7 +89,7 @@ class ResumablePreviewAction extends Action
         } elseif (strncmp($uploadFsPrefix, $name, strlen($uploadFsPrefix)) === 0) {
             $realName = str_replace($uploadFsPrefix, '', $name);
             // file is in fly system
-            // $fs =  Module::getInstance()->fs;
+            // $fs =  Module::getInstance()->get('fs');
             $mimeType = $fs->mimeType($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             if (strncmp('image/', $mimeType, 6) !== 0) {

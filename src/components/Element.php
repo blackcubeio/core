@@ -39,7 +39,7 @@ use Yii;
 class Element
 {
 
-    public static function instanciate(string $route, bool $active = true)
+    public static function query(string $route, bool $active = true)
     {
         try {
             $decodedRoute = RouteEncoder::decode($route);
@@ -70,6 +70,11 @@ class Element
         if ($active === true) {
             $query->active();
         }
+        return $query;
+    }
+    public static function instanciate(string $route, bool $active = true)
+    {
+        $query = static::query($route, $active);
         return $query->one();
     }
 }

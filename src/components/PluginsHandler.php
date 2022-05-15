@@ -16,6 +16,8 @@ namespace blackcube\core\components;
 
 use blackcube\core\helpers\PluginHelper;
 use blackcube\core\interfaces\ElementInterface;
+use blackcube\core\interfaces\PluginManagerHookInterface;
+use blackcube\core\interfaces\PluginManagerHookWidgetInterface;
 use blackcube\core\interfaces\PluginManagerInterface;
 use blackcube\core\interfaces\PluginManagerRoutableInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
@@ -50,7 +52,7 @@ class PluginsHandler implements PluginsHandlerInterface {
     public function checkPluginsAvailable() :bool
     {
         if ($this->pluginsAvailable === null) {
-            $db = CoreModule::getInstance()->db;
+            $db = CoreModule::getInstance()->get('db');
             $pluginTable = $db->schema->getRawTableName(Plugin::tableName());
             $this->pluginsAvailable = ($db->getTableSchema($pluginTable) !== null);
         }
@@ -99,7 +101,7 @@ class PluginsHandler implements PluginsHandlerInterface {
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
@@ -210,7 +212,9 @@ class PluginsHandler implements PluginsHandlerInterface {
     public function runHook($hook, ElementInterface $element = null, $additionalParams = []) {
         $hooksResults = [];
         foreach ($this->getActivePluginManagers() as $id => $plugin) {
-            $hooksResults[$id] = $plugin->hook($hook, $element, $additionalParams);
+            if($plugin instanceof PluginManagerHookInterface) {
+                $hooksResults[$id] = $plugin->hook($hook, $element, $additionalParams);
+            }
         }
         return $hooksResults;
     }
@@ -225,7 +229,9 @@ class PluginsHandler implements PluginsHandlerInterface {
     public function runWidgetHook($hook, ElementInterface $element = null, $additionalParams = []) {
         $hooksResults = [];
         foreach ($this->getActivePluginManagers() as $id => $plugin) {
-            $hooksResults[$id] = $plugin->hookWidget($hook, $element, $additionalParams);
+            if($plugin instanceof PluginManagerHookWidgetInterface) {
+                $hooksResults[$id] = $plugin->hookWidget($hook, $element, $additionalParams);
+            }
         }
         return $hooksResults;
     }

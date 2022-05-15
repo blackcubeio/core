@@ -25,6 +25,7 @@ use blackcube\core\models\Node;
 use blackcube\core\models\Tag;
 use yii\base\InvalidArgumentException;
 use yii\base\Module;
+use yii\db\ActiveQuery;
 use yii\helpers\Inflector;
 use yii\web\Controller;
 use Yii;
@@ -89,6 +90,19 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
             $this->afterElement($this->_elementRoute, $this->_element);
         }
         return $this->_element;
+    }
+
+    /**
+     * Return element if it exists
+     *
+     * @return ActiveQuery
+     * @since XXX
+     */
+    public function getElementQuery()
+    {
+        if ($this->_elementRoute !== null) {
+            return Element::query($this->_elementRoute);
+        }
     }
 
     /**

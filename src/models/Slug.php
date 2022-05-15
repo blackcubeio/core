@@ -74,7 +74,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**

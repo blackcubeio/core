@@ -35,6 +35,7 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property string $config
  * @property string $version
  * @property string $className
  * @property boolean $bootstrap
@@ -52,7 +53,7 @@ class Plugin extends \yii\db\ActiveRecord
      */
     public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
@@ -116,6 +117,7 @@ class Plugin extends \yii\db\ActiveRecord
         return [
             [['name', 'version', 'className'], 'required'],
             [['name', 'version'], 'string', 'max' => 128],
+            [['config'], 'string'],
             [['className'], 'string', 'max' => 190],
             [['active', 'bootstrap'], 'boolean'],
             [['dateCreate', 'dateUpdate'], 'safe'],
@@ -130,6 +132,7 @@ class Plugin extends \yii\db\ActiveRecord
         return [
             'id' => Module::t('models/plugin', 'ID'),
             'name' => Module::t('models/plugin', 'Name'),
+            'config' => Module::t('models/plugin', 'Config'),
             'version' => Module::t('models/plugin', 'Version'),
             'className' => Module::t('models/plugin', 'Class Name'),
             'bootstrap' => Module::t('models/plugin', 'Bootstrap'),

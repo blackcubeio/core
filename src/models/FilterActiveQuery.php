@@ -36,13 +36,10 @@ class FilterActiveQuery extends ActiveQuery
      */
     private PreviewManagerInterface $previewManager;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function init()
+    public function __construct($modelClass, PreviewManagerInterface $previewManager, $config = [])
     {
-        parent::init();
-        $this->previewManager = Yii::createObject(PreviewManager::class);
+        $this->previewManager = $previewManager;
+        parent::__construct($modelClass, $config);
     }
 
     /**

@@ -74,7 +74,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      */
     public static function getDb() :Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**

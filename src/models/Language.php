@@ -50,7 +50,7 @@ class Language extends \yii\db\ActiveRecord
      */
     public static function getDb()
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**

@@ -48,7 +48,7 @@ class CategoryBloc extends \yii\db\ActiveRecord
      */
     public static function getDb() :Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**

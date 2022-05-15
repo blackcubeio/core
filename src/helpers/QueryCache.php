@@ -131,7 +131,7 @@ class QueryCache {
             $cacheQuery->select($expression)->from($maxQueryResult);
             self::$cmsDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -159,7 +159,7 @@ class QueryCache {
             $cacheQuery->select($expression)->from($maxQueryResult);
             self::$nodeDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -188,7 +188,7 @@ class QueryCache {
             $cacheQuery->select($expression)->from($maxQueryResult);
             self::$compositeDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -216,7 +216,7 @@ class QueryCache {
             $cacheQuery->select($expression)->from($maxQueryResult);
             self::$categoryDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -244,7 +244,7 @@ class QueryCache {
             $cacheQuery->select($expression)->from($maxQueryResult);
             self::$tagDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -270,7 +270,7 @@ class QueryCache {
             $cacheQuery->select($expression)->from($maxQueryResult);
             self::$menuDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -293,7 +293,7 @@ class QueryCache {
                 ->from(Slug::tableName());
             self::$slugDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -315,7 +315,7 @@ class QueryCache {
                 ->from(Language::tableName());
             self::$languageDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);
@@ -337,7 +337,7 @@ class QueryCache {
                 ->from(Type::tableName());
             self::$typeDependencies = Yii::createObject([
                 'class' => DbQueryDependency::class,
-                'db' => Module::getInstance()->db,
+                'db' => Module::getInstance()->get('db'),
                 'query' => $cacheQuery,
                 'reusable' => true,
             ]);

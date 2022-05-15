@@ -67,7 +67,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
      */
     public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
