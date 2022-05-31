@@ -36,9 +36,14 @@ interface PluginManagerInterface {
     public function __construct(string $id);
 
     /**
+     * @return PluginManagerInterface|null
+     */
+    public static function getInstance();
+
+    /**
      * @return string plugin id
      */
-    public function getId();
+    public function getId() :string;
 
     /**
      * @return string plugin name
@@ -70,11 +75,6 @@ interface PluginManagerInterface {
      * @return bool register and install plugin
      */
     public function register() :bool;
-
-    /**
-     * @return bool upgrade plugin to new version
-     */
-    public function upgrade() :bool;
 
     /**
      * @return bool unregister and uninstall plugin

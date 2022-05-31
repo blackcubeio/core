@@ -435,11 +435,11 @@ msgid "Active"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
-msgid "Bootstrap"
+msgid "Cannot build plugin"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
-msgid "Class Name"
+msgid "Configuration is invalid"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
@@ -456,6 +456,18 @@ msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
 msgid "Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Plugin Config"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Registered"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Runtime Config"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"

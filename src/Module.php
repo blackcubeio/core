@@ -19,7 +19,7 @@ use blackcube\core\components\Flysystem;
 use blackcube\core\components\PluginsHandler;
 use blackcube\core\components\PreviewManager;
 use blackcube\core\components\SlugGenerator;
-use blackcube\core\interfaces\PluginBootstrapInterface;
+use blackcube\core\interfaces\PluginManagerBootstrapInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
 use blackcube\core\interfaces\PreviewManagerInterface;
 use blackcube\core\interfaces\SlugGeneratorInterface;
@@ -233,10 +233,10 @@ class Module extends BaseModule implements BootstrapInterface
     public function registerPlugins($app)
     {
         if ($app instanceof WebApplication) {
-            $pluginHandlerUrlManager = Yii::createObject(PluginsHandlerInterface::class);
-            foreach($pluginHandlerUrlManager->getActivePluginManagers() as $pluginManager) {
-                if ($pluginManager instanceof PluginBootstrapInterface) {
-                    $pluginManager->bootstrapCore($this->getUniqueId(), $app);
+            $pluginHandlerManager = Yii::createObject(PluginsHandlerInterface::class);
+            foreach($pluginHandlerManager->getActivePluginManagers() as $pluginManager) {
+                if ($pluginManager instanceof PluginManagerBootstrapInterface) {
+                    $pluginManager->bootstrapCore($this, $app);
                 }
             }
         }

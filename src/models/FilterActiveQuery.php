@@ -99,4 +99,20 @@ class FilterActiveQuery extends ActiveQuery
         }
         return $this;
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @since XXX
+     */
+    public function registered(): ActiveQuery
+    {
+        $modelClass = $this->modelClass;
+        if ($modelClass === Plugin::class) {
+            $tableName = $modelClass::tableName();
+            $this->andWhere([
+                $tableName.'.[[registered]]' => true,
+            ]);
+        }
+        return $this;
+    }
 }

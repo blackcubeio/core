@@ -101,7 +101,10 @@ trait PluginManagerMigrableTrait
     public function getIsRegistered() :bool
     {
         $plugin = $this->getDbPlugin();
-        return ($plugin !== false);
+        if ($plugin !== false) {
+            return (bool)$plugin->registered;
+        }
+        return false;
     }
 
     /**
@@ -147,17 +150,12 @@ trait PluginManagerMigrableTrait
     protected function registerDbPlugin() :bool
     {
         if ($this->getIsRegistered() === false) {
-            $plugin = Yii::createObject(Plugin::class);
-            $plugin->name = $this->getName();
-            $plugin->className = get_class($this);
-            $plugin->bootstrap = ($this instanceof BootstrapInterface);
-            $plugin->id = $this->getId();
-            $plugin->version = $this->getVersion();
-            $plugin->active = false;
-            if ($plugin->save() === true) {
-                $this->dbPlugin = $plugin;
-                return true;
+            $plugin = $this->getDbPlugin();
+            if ($plugin !== false) {
+                $plugin->registered = true;
+                return $plugin->save(true, ['registered', 'dateUpdate']);
             }
+            return false;
         }
         return false;
     }
@@ -169,11 +167,13 @@ trait PluginManagerMigrableTrait
     protected function unregisterDbPlugin() :bool
     {
         if ($this->getIsRegistered() === true) {
-            $status = $this->getDbPlugin()->delete();
-            if ($status !== false) {
-                $this->dbPlugin = null;
-                return true;
+            $plugin = $this->getDbPlugin();
+            if ($plugin !== false) {
+                $plugin->registered = false;
+                $plugin->active = false;
+                return $plugin->save(true, ['registered', 'active', 'dateUpdate']);
             }
+            return false;
         }
         return false;
     }
@@ -183,26 +183,36 @@ trait PluginManagerMigrableTrait
      */
     public function register() :bool
     {
-        $migrations = $this->getNewMigrations();
-        try {
-            ob_start();
-            foreach($migrations as $version) {
-                $migration = Yii::createObject([
-                    'class' => $version,
-                    'db' => Module::getInstance()->get('db'),
-                ]);
-                /* @var $migration Migration */
-                if ($migration->up() === false) {
-                    throw new \Exception('Migrate error');
+        if ($this->getIsRegistered() === false) {
+            $migrations = $this->getNewMigrations();
+            $transaction = Module::getInstance()->get('db')->beginTransaction();
+            try {
+                ob_start();
+                foreach ($migrations as $version) {
+                    $migration = Yii::createObject([
+                        'class' => $version,
+                        'db' => Module::getInstance()->get('db'),
+                    ]);
+                    /* @var $migration Migration */
+                    if ($migration->up() === false) {
+                        throw new \Exception('Migrate error');
+                    }
+                    $this->addMigrationHistory($version);
                 }
-                $this->addMigrationHistory($version);
+                $content = ob_get_clean();
+                $status = $this->registerDbPlugin();
+                if ($status === true) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                }
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                $status = false;
             }
-            $content = ob_get_clean();
-            $status = $this->registerDbPlugin();
-        } catch (\Exception $e) {
-            $status = false;
+            return $status;
         }
-        return $status;
+        return false;
     }
 
     /**
@@ -210,31 +220,41 @@ trait PluginManagerMigrableTrait
      */
     public function unregister() :bool
     {
-        $availableMigrations = $this->findMigrations();
-        $appliedMigrations = array_keys($this->getMigrationHistory(null));
-        $migrations = array_filter($appliedMigrations, function($item) use ($availableMigrations) {
-            return in_array($item, $availableMigrations);
-        });
-        try {
-            ob_start();
-            foreach($migrations as $version) {
-                $migration = Yii::createObject([
-                    'class' => $version,
-                    'db' => Module::getInstance()->get('db'),
-                ]);
-                /* @var $migration Migration */
-                if ($migration->down() === false) {
-                    throw new \Exception('Migrate error');
+        if ($this->getIsRegistered() === true) {
+            $transaction = Module::getInstance()->get('db')->beginTransaction();
+            $availableMigrations = $this->findMigrations();
+            $appliedMigrations = array_keys($this->getMigrationHistory(null));
+            $migrations = array_filter($appliedMigrations, function ($item) use ($availableMigrations) {
+                return in_array($item, $availableMigrations);
+            });
+            try {
+                ob_start();
+                foreach ($migrations as $version) {
+                    $migration = Yii::createObject([
+                        'class' => $version,
+                        'db' => Module::getInstance()->get('db'),
+                    ]);
+                    /* @var $migration Migration */
+                    if ($migration->down() === false) {
+                        throw new \Exception('Migrate error');
+                    }
+                    $this->removeMigrationHistory($version);
                 }
-                $this->removeMigrationHistory($version);
+                $content = ob_get_clean();
+                $status = $this->unregisterDbPlugin();
+                if ($status === true) {
+                    $transaction->commit();
+                } else {
+                    $transaction->rollBack();
+                }
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                $status = false;
             }
-            $content = ob_get_clean();
-            $status = $this->unregisterDbPlugin();
-        } catch (\Exception $e) {
-            $status = false;
-        }
 
-        return $status;
+            return $status;
+        }
+        return false;
     }
 
     /**
@@ -343,6 +363,7 @@ trait PluginManagerMigrableTrait
         $migrationPath = $this->getNamespacePath($this->migrationsNamespace);
         $namespace = $this->migrationsNamespace;
         if (file_exists($migrationPath)) {
+            $migrations = [];
             $handle = opendir($migrationPath);
             while (($file = readdir($handle)) !== false) {
                 if ($file === '.' || $file === '..') {

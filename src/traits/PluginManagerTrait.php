@@ -71,7 +71,10 @@ trait PluginManagerTrait
     public function getIsRegistered() :bool
     {
         $plugin = $this->getDbPlugin();
-        return ($plugin !== false);
+        if ($plugin !== false) {
+            return (bool)$plugin->registered;
+        }
+        return false;
     }
 
     /**
@@ -123,17 +126,12 @@ trait PluginManagerTrait
     protected function registerDbPlugin() :bool
     {
         if ($this->getIsRegistered() === false) {
-            $plugin = Yii::createObject(Plugin::class);
-            $plugin->name = $this->getName();
-            $plugin->className = get_class($this);
-            $plugin->bootstrap = ($this instanceof BootstrapInterface);
-            $plugin->id = $this->getId();
-            $plugin->version = $this->getVersion();
-            $plugin->active = false;
-            if ($plugin->save() === true) {
-                $this->dbPlugin = $plugin;
-                return true;
+            $plugin = $this->getDbPlugin();
+            if ($plugin !== false) {
+                $plugin->registered = true;
+                return $plugin->save(true, ['registered', 'dateUpdate']);
             }
+            return false;
         }
         return false;
     }
@@ -143,7 +141,10 @@ trait PluginManagerTrait
      */
     public function register() :bool
     {
-        return $this->registerDbPlugin();
+        if ($this->getIsRegistered() === false) {
+            return $this->registerDbPlugin();
+        }
+        return false;
     }
 
     /**
@@ -153,11 +154,12 @@ trait PluginManagerTrait
     protected function unregisterDbPlugin() :bool
     {
         if ($this->getIsRegistered() === true) {
-            $status = $this->getDbPlugin()->delete();
-            if ($status !== false) {
-                $this->dbPlugin = null;
-                return true;
+            $plugin = $this->getDbPlugin();
+            if ($plugin !== false) {
+                $plugin->registered = false;
+                return $plugin->save(true, ['registered', 'dateUpdate']);
             }
+            return false;
         }
         return false;
     }
@@ -167,7 +169,10 @@ trait PluginManagerTrait
      */
     public function unregister() :bool
     {
-        return $this->unregisterDbPlugin();
+        if ($this->getIsRegistered() === true) {
+            return $this->unregisterDbPlugin();
+        }
+        return false;
     }
 
 }
