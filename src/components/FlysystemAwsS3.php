@@ -101,7 +101,7 @@ class FlysystemAwsS3 extends Flysystem
     protected function prepareAdapter()
     {
         $config = [];
-        if ($this->credentials === null || ($this->key === null && $this->secret === null)) {
+        if ($this->credentials === null && ($this->key === null || $this->secret === null)) {
             throw new InvalidConfigException();
         }
         if ($this->credentials === null) {
