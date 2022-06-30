@@ -128,7 +128,13 @@ class SitemapAction extends ViewAction
             $sitemapPath = Yii::getAlias($this->additionalSitemap);
             if (file_exists($sitemapPath) && is_file($sitemapPath)) {
                 try {
-                    $sitemapReader = XMLReader::open($sitemapPath);
+                    if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+                        $sitemapReader = new XMLReader();
+                        $sitemapReader->open($sitemapPath);
+                    } else {
+                        $sitemapReader = XMLReader::open($sitemapPath);
+                    }
+
                     /* @var $sitemapReader XMLReader */
                     $url = [];
                     while($sitemapReader->read()) {
