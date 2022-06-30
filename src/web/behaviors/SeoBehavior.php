@@ -63,7 +63,7 @@ class SeoBehavior extends Behavior
     {
         $slugId = $event->element->slugId;
         $seo = Seo::find()->active()
-            ->andWhere(['id' => $slugId])
+            ->andWhere(['slugId' => $slugId])
             ->one();
         if ($seo !== null) {
             /* @var \blackcube\core\models\Seo $seo */
