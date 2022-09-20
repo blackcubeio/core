@@ -75,6 +75,11 @@ class Element
     public static function instanciate(string $route, bool $active = true)
     {
         $query = static::query($route, $active);
-        return $query->one();
+        if ($query !== null) {
+            $element = $query->one();
+        } else {
+            $element = null;
+        }
+        return $element;
     }
 }
