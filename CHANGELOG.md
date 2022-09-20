@@ -1,6 +1,7 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Fix: Element instanciate for controller routing
  * Upd: Add DI register
  * Upd: Prepare type hints
  * Upd: Update dependencies
