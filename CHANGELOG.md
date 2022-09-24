@@ -1,6 +1,7 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: add password strength validator
  * Fix: Element instanciate for controller routing
  * Upd: Add DI register
  * Upd: Prepare type hints
