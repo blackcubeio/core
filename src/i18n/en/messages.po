@@ -9,7 +9,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
 
 msgctxt "blackcube/core/console"
@@ -700,10 +699,42 @@ msgctxt "blackcube/core/routing"
 msgid "Type {type} is not supported."
 msgstr ""
 
+msgctxt "blackcube/core/validators"
+msgid "Submodel \"{attribute}\" is invalid"
+msgstr ""
+
 msgctxt "blackcube/core/web"
 msgid "Element \"{type}-{id}\" is not routable"
 msgstr ""
 
-msgctxt "blackcube/core/validators"
-msgid "Submodel \"{attribute}\" is invalid"
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} cannot contain any spaces"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} cannot contain the username"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one character} other{# characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one lower case character} other{# lower case characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one numeric character} other{# numeric characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one special character} other{# special characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one upper case character} other{# upper case characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at most {n, plural, one{one character} other{# characters}} ({found} found)!"
 msgstr ""
