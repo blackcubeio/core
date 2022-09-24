@@ -47,6 +47,7 @@ use blackcube\core\models\Tag;
 use blackcube\core\models\TagBloc;
 use blackcube\core\models\Type;
 use blackcube\core\models\TypeBlocType;
+use blackcube\core\validators\PasswordStrengthValidator;
 use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
 use yii\base\BootstrapInterface;
@@ -167,6 +168,10 @@ class Module extends BaseModule implements BootstrapInterface
         TagBloc::class => TagBloc::class,
         Type::class => Type::class,
         TypeBlocType::class => TypeBlocType::class,
+        'passwordSecurity' => [
+            'class' => PasswordStrengthValidator::class,
+            'preset' => PasswordStrengthValidator::PRESET_NORMAL,
+        ]
     ];
 
     /**
