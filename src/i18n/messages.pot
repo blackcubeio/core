@@ -707,6 +707,10 @@ msgid "Element \"{type}-{id}\" is not routable"
 msgstr ""
 
 msgctxt "blackcube/core/validators/passwordStrength"
+msgid "Password should contain at least {minLength, plural, one{# character} other{# characters}}, {upper, plural, one{# upper character} other{# upper characters}}, {lower, plural, one{# lower character} other{# lower characters}}, {special, plural, one{# special character} other{# special characters}}, {digit, plural, one{# numeric character} other{# numeric characters}}. "
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
 msgid "{attribute} cannot contain any spaces"
 msgstr ""
 

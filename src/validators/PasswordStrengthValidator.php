@@ -53,7 +53,7 @@ class PasswordStrengthValidator extends Validator {
             self::RULE_USERNAME => false,
             self::RULE_LOWER => 1,
             self::RULE_UPPER => 0,
-            self::RULE_DIGIT => 1,
+            self::RULE_DIGIT => 0,
             self::RULE_SPECIAL => 0,
             self::RULE_REPEAT => 0,
         ],
@@ -145,6 +145,17 @@ class PasswordStrengthValidator extends Validator {
         $this->checkDigit($model, $attribute, $params);
         $this->checkSpecial($model, $attribute, $params);
         //$this->checkRepeat($model, $attribute, $params);
+    }
+
+    public function showPasswordRules() {
+        return Module::t('validators/passwordStrength', 'Password should contain at least {minLength, plural, one{# character} other{# characters}}, {upper, plural, one{# upper character} other{# upper characters}}, {lower, plural, one{# lower character} other{# lower characters}}, {special, plural, one{# special character} other{# special characters}}, {digit, plural, one{# numeric character} other{# numeric characters}}. ', [
+            'minLength' => $this->min,
+            'maxLength' => $this->max,
+            'upper' => $this->upper,
+            'lower' => $this->lower,
+            'digit' => $this->digit,
+            'special' => $this->special,
+        ]);
     }
     /**
      * @param \yii\base\Model $model
