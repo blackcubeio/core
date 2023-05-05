@@ -38,6 +38,12 @@ use Yii;
  */
 class ResumablePreviewAction extends Action
 {
+    public const IMAGES_EXTENSIONS = [
+        'png',
+        'jpg',
+        'jpeg',
+        'gif'
+    ];
     /**
      * @var string
      */
@@ -55,6 +61,7 @@ class ResumablePreviewAction extends Action
         $uploadTmpPrefix = trim(Module::getInstance()->uploadTmpPrefix, '/') . '/';
         $uploadFsPrefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
         $uploadAlias = trim(Module::getInstance()->uploadAlias, '/') . '/';
+
 
         if (strncmp($uploadTmpPrefix, $name, strlen($uploadTmpPrefix)) === 0) {
             $realNameAlias = str_replace($uploadTmpPrefix, $uploadAlias, $name);
@@ -92,15 +99,8 @@ class ResumablePreviewAction extends Action
             // $fs =  Module::getInstance()->get('fs');
             $mimeType = $fs->mimeType($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
-            if (strncmp('image/', $mimeType, 6) !== 0) {
-                $realName = $this->prepareImage($fileName);
-                // $mimeType = mime_content_type($realName);
-                $handle = fopen($realName, 'r');
-            } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
-                $handle = $fs->readStream($realName);
-                $mimeType = 'image/svg+xml'; // mime_content_type($realName);
-                // $handle = fopen($realName, 'r');
-            } else {
+            $fileExt = pathinfo($realName, PATHINFO_EXTENSION);
+            if (strncmp('image/', $mimeType, 6) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::IMAGES_EXTENSIONS))) {
                 Image::$thumbnailBackgroundAlpha = 0;
                 $handle = $fs->readStream($realName);
                 $image = Image::thumbnail($handle, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
@@ -120,6 +120,14 @@ class ResumablePreviewAction extends Action
                         unlink($thumbnailName);
                     }
                 });
+                $handle = fopen($realName, 'r');
+            } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
+                $handle = $fs->readStream($realName);
+                $mimeType = 'image/svg+xml'; // mime_content_type($realName);
+                // $handle = fopen($realName, 'r');
+            } else { // (strncmp('image/', $mimeType, 6) !== 0) {
+                $realName = $this->prepareImage($fileName);
+                // $mimeType = mime_content_type($realName);
                 $handle = fopen($realName, 'r');
             }
         } else {
