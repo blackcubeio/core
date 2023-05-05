@@ -12,7 +12,7 @@
  * @package tests\unit
  */
 namespace tests\type;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use tests\TestBase;
 
 /**

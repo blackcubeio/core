@@ -15,7 +15,7 @@ namespace tests\tree;
 use blackcube\core\helpers\MatrixHelper;
 use blackcube\core\helpers\TreeHelper;
 use blackcube\core\exceptions\InvalidTreeSegmentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test matrix basic functions
@@ -28,7 +28,7 @@ use PHPUnit_Framework_TestCase;
  * @package tests\unit
  * @since XXX
  */
-class TreeHelperTest extends PHPUnit_Framework_TestCase
+class TreeHelperTest extends TestCase
 {
     /**
      * Test last path segment computation

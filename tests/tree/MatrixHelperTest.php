@@ -14,7 +14,7 @@
 namespace tests\tree;
 
 use blackcube\core\helpers\MatrixHelper;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test matrix basic functions
@@ -27,7 +27,7 @@ use PHPUnit_Framework_TestCase;
  * @package tests\tree
  * @since XXX
  */
-class MatrixHelperTest extends PHPUnit_Framework_TestCase
+class MatrixHelperTest extends TestCase
 {
     /**
      * Test matrix creation

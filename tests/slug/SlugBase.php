@@ -20,7 +20,7 @@ use app\models\Node;
 use app\models\NodeTag;
 use app\models\Slug;
 use app\models\Tag;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use tests\NodeTester;
 use tests\TestBase;
 

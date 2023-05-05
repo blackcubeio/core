@@ -20,6 +20,9 @@ use yii\db\pgsql\Schema as PgsqlSchema;
 use yii\i18n\Formatter;
 use yii\log\FileTarget;
 use yii\rbac\DbManager;
+use blackcube\core\components\Flysystem;
+
+
 Yii::setAlias('@tmpfs', dirname(__DIR__));
 $config = [
     'sourceLanguage' => 'en',
@@ -94,27 +97,23 @@ if ($_ENV['DB_DRIVER'] === 'pgsql') {
 
 /**/
 if ($_ENV['FILESYSTEM_TYPE'] === 'local') {
-    $config['components']['fs'] = [
-        'class' => LocalFilesystem::class,
+    $config['container']['singletons'][Flysystem::class] = [
+        'class' => \blackcube\core\components\FlysystemLocal::class,
         'path' => $_ENV['FILESYSTEM_LOCAL_PATH'],
-        'cache' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'cache' : null,
-        'cacheKey' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'flysystem' : null,
-        'cacheDuration' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? $_ENV['FILESYSTEM_CACHE_DURATION'] : null,
     ];
+    $config['components']['fs'] = Flysystem::class;
 } elseif ($_ENV['FILESYSTEM_TYPE'] === 's3') {
-    $config['components']['fs'] = [
-        'class' => AwsS3Filesystem::class,
+    $config['container']['singletons'][Flysystem::class] = [
+        '__class' => \blackcube\core\components\FlysystemAwsS3::class,
         'key' => $_ENV['FILESYSTEM_S3_KEY'],
         'secret' => $_ENV['FILESYSTEM_S3_SECRET'],
         'bucket' => $_ENV['FILESYSTEM_S3_BUCKET'],
-        'region' => 'us-east-1',
+        'region' => $_ENV['FILESYSTEM_S3_REGION'],
         'version' => 'latest',
         'endpoint' => $_ENV['FILESYSTEM_S3_ENDPOINT'],
-        'pathStyleEndpoint' => ($_ENV['FILESYSTEM_S3_PATH_STYLE'] == 1) ? true : false,
-        'cache' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'cache' : null,
-        'cacheKey' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? 'flysystem' : null,
-        'cacheDuration' => ($_ENV['FILESYSTEM_CACHE'] == 1) ? $_ENV['FILESYSTEM_CACHE_DURATION'] : null,
+        'pathStyleEndpoint' => $_ENV['FILESYSTEM_S3_PATH_STYLE'],
     ];
+    $config['components']['fs'] = Flysystem::class;
 }
 /**/
 
