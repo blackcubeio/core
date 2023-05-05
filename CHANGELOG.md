@@ -10,6 +10,7 @@ Blackcube Core - CHANGELOG
  * Chg: move ```db```, ```cache``` and ```fs``` to components to allow tree traversal
  * Upd: Change ```flysystem``` wrapper
  * Chg: Rewrite ```plugin``` system
+ * Fix: Preview was not working when mimetype is incorrect
 
 Release 2.2.3 March, 11th 2022 <pgaultier@redcat.io>
 ----------------------------------------------------
