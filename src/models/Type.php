@@ -95,10 +95,19 @@ class Type extends \yii\db\ActiveRecord
     {
         return [
             [['route'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['minBlocs', 'maxBlocs'], 'filter', 'filter' => function($value) {
-                return (trim($value) > 0 ) ? trim($value) : null;
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return (trim($value) > 0 ) ? trim($value) : null;
+                }
+
             }],
             [['name'], 'required'],
             [['minBlocs', 'maxBlocs'], 'integer'],

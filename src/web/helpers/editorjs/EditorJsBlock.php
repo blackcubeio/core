@@ -53,6 +53,11 @@ abstract class EditorJsBlock extends BaseObject
      */
     protected function filterRaw($text)
     {
-        return preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/si",'<$1$2>', $text);
+        if($text !== null) {
+            return preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/si",'<$1$2>', $text);
+        } else {
+            return $text;
+        }
+
     }
 }

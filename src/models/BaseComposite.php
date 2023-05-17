@@ -181,7 +181,11 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     {
         return [
             [['name', 'slugId', 'typeId', 'dateStart', 'dateEnd'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['slugId', 'typeId'], 'integer'],
             [['active'], 'boolean'],

@@ -143,7 +143,11 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     {
         return [
             [['slugId', 'canonicalSlugId', 'title', 'image', 'twitterCard', 'ogType', 'description'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['slugId'], 'required'],
             [['slugId', 'canonicalSlugId'], 'integer'],

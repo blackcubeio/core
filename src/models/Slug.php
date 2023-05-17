@@ -162,7 +162,11 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     {
         return [
             [['host', 'path', 'targetUrl'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['path'], 'filter', 'filter' => function($value) {
                 return ($value === null) ? null : ltrim($value, '/');

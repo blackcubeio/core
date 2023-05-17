@@ -101,7 +101,12 @@ class FileSaveBehavior extends Behavior
         }
         foreach ($this->filesAttributes as $attribute) {
             $currentFiles = $model->{$attribute};
-            $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            if ($currentFiles != null) {
+                $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            } else {
+                $files = [];
+            }
+
             $finaFiles = [];
             foreach ($files as $file) {
                 if (strncmp($uploadTmp, $file, strlen($uploadTmp)) === 0) {
@@ -151,7 +156,12 @@ class FileSaveBehavior extends Behavior
         $fs = $this->fs;
         foreach ($this->filesAttributes as $attribute) {
             $currentFiles = $model->{$attribute};
-            $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            if ($currentFiles != null) {
+                $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            } else {
+                $files = [];
+            }
+
             foreach ($files as $file) {
                 if (strncmp($prefix, $file, strlen($prefix)) === 0) {
                     // file already saved in system we should remove it

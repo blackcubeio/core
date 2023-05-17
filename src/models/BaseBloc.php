@@ -214,7 +214,12 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
         if ($this->blocType !== null) {
             $targetView = (empty($this->blocType->view) ? Inflector::underscore($this->blocType->name) : $this->blocType->view);
         }
-        return preg_replace('/\s+/', '_', $targetView);
+        if ($targetView === null) {
+            return $targetView;
+        } else {
+            return preg_replace('/\s+/', '_', $targetView);
+        }
+
     }
 
     public function getAdminView(string $pathAlias, bool $asAlias = false)

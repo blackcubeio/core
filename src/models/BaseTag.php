@@ -165,7 +165,11 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     {
         return [
             [['name', 'slugId', 'typeId'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['name', 'categoryId'], 'required'],
             [['slugId', 'categoryId', 'typeId'], 'integer'],

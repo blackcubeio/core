@@ -99,7 +99,11 @@ class MenuItem extends \yii\db\ActiveRecord
         return [
             [['menuId', 'parentId', 'order'], 'integer'],
             [['parentId'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['name', 'route'], 'required'],
             [['dateCreate', 'dateUpdate'], 'safe'],

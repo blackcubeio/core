@@ -152,7 +152,10 @@ class BlocType extends \yii\db\ActiveRecord
     public function getAdminView(string $pathAlias, bool $asAlias = false)
     {
         $targetView = (empty($this->view) ? Inflector::underscore($this->name) : $this->view);
-        $targetView = preg_replace('/[-_\s]+/', '_', $targetView);
+        if ($targetView !== null) {
+            $targetView = preg_replace('/[-_\s]+/', '_', $targetView);
+        }
+
         $transliterator = \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC');
         if ($transliterator !== null) {
             $transliterated = $transliterator->transliterate($targetView);

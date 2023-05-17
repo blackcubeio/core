@@ -351,7 +351,10 @@ class Module extends BaseModule implements BootstrapInterface
         }
 
         // double slashes or leading/ending slashes may cause substr problem
-        $route = trim($route, '/');
+        if ($route !== null) {
+            $route = trim($route, '/');
+        }
+
         if (strpos($route, '//') !== false) {
             return false;
         }

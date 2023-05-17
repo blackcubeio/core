@@ -169,7 +169,10 @@ class ResumableUploadAction extends ViewAction
      */
     protected function getTmpChunkDir($identifier)
     {
-        $identifier = preg_replace('/[^a-z0-9_\-.]+/i', '_', $identifier);
+        if ($identifier !== null) {
+            $identifier = preg_replace('/[^a-z0-9_\-.]+/i', '_', $identifier);
+        }
+
         $identifier = self::cleanUpFilename($identifier);
 
         $tmpChunkDir = Yii::getAlias($this->uploadAlias.'/'.$identifier);
@@ -219,7 +222,12 @@ class ResumableUploadAction extends ViewAction
      */
     public static function cleanUpFilename($filename)
     {
-        return preg_replace('/[^a-z0-9_\-.]+/i', '_', $filename);
+        if ($filename !== null) {
+            return preg_replace('/[^a-z0-9_\-.]+/i', '_', $filename);
+        } else {
+            return $filename;
+        }
+
     }
 
     /**

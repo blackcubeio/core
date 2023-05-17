@@ -168,7 +168,11 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     {
         return [
             [['name', 'slugId', 'typeId'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['name', 'languageId'], 'required'],
             [['slugId', 'typeId'], 'integer'],

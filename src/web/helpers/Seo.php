@@ -58,7 +58,7 @@ class Seo
                     $view->registerMetaTag(['name' => 'description', 'content' => $slug->seo->description], 'meta-description');
                 }
                 $image = null;
-                if (empty($slug->seo->image) === false) {
+                if ($slug->seo->image !== null && empty($slug->seo->image) === false) {
                     $images = preg_split('/[, ]+/', $slug->seo->image, PREG_SPLIT_NO_EMPTY);
                     if (is_array($images) && isset($images[0])) {
                         $image = Html::cacheImage($images[0], 1200, 630);
