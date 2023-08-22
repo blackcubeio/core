@@ -44,6 +44,9 @@ class ResumablePreviewAction extends Action
         'jpeg',
         'gif'
     ];
+    public const SVG_EXTENSIONS = [
+        'svg'
+    ];
     /**
      * @var string
      */
@@ -100,7 +103,7 @@ class ResumablePreviewAction extends Action
             $mimeType = $fs->mimeType($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             $fileExt = pathinfo($realName, PATHINFO_EXTENSION);
-            if (strncmp('image/', $mimeType, 6) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::IMAGES_EXTENSIONS))) {
+            if ((strncmp('image/', $mimeType, 6) === 0 && (strncmp('image/svg', $mimeType, 9) !== 0)) || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::IMAGES_EXTENSIONS))) {
                 Image::$thumbnailBackgroundAlpha = 0;
                 $handle = $fs->readStream($realName);
                 $image = Image::thumbnail($handle, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
@@ -121,7 +124,7 @@ class ResumablePreviewAction extends Action
                     }
                 });
                 $handle = fopen($realName, 'r');
-            } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
+            } elseif (strncmp('image/svg', $mimeType, 9) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::SVG_EXTENSIONS))) {
                 $handle = $fs->readStream($realName);
                 $mimeType = 'image/svg+xml'; // mime_content_type($realName);
                 // $handle = fopen($realName, 'r');

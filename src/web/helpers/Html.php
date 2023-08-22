@@ -51,7 +51,15 @@ class Html extends YiiHtml
     public const EDITORJS_BLOCK_RAW = 'raw';
     public const EDITORJS_BLOCK_QUOTE = 'quote';
     public const EDITORJS_BLOCK_EMBED = 'embed';
-
+    public const IMAGES_EXTENSIONS = [
+        'png',
+        'jpg',
+        'jpeg',
+        'gif'
+    ];
+    public const SVG_EXTENSIONS = [
+        'svg'
+    ];
     public static $editorJsRenderers = [
         self::EDITORJS_BLOCK_PARAGRAPH => ParagraphBlock::class,
         self::EDITORJS_BLOCK_LIST => ListBlock::class,
@@ -141,33 +149,39 @@ class Html extends YiiHtml
             /* @var $fs Flysystem */
             $originalFilename = str_replace($prefix, '', $imageLink);
             if ($fs->fileExists($originalFilename) === true) {
-                $fileData = pathinfo($originalFilename);
-                $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
-                if ($width !== null && $height !== null) {
-                    $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-'.$width.'-'.$height.'.'.$fileData['extension'];
-                }
-                $originalFileTimestamp = $fs->lastModified($originalFilename);
-                $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
-                $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
-                if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
-                    $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
-                    if (is_dir($targetCachePath) === false) {
-                        mkdir($targetCachePath, 0777, true);
+                $mimeType = $fs->mimeType($originalFilename);
+                $fileExt = pathinfo($originalFilename, PATHINFO_EXTENSION);
+                if ((strncmp('image/', $mimeType, 6) === 0 && (strncmp('image/svg', $mimeType, 9) !== 0)) || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::IMAGES_EXTENSIONS))) {
+                    $fileData = pathinfo($originalFilename);
+                    $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
+                    if ($width !== null && $height !== null) {
+                        $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-'.$width.'-'.$height.'.'.$fileData['extension'];
                     }
-                    if ($width !== null || $height !== null) {
-                        $sourceStream = $fs->readStream($originalFilename);
-                        $image = Image::thumbnail($sourceStream, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
-                        $image->save($cachedFilePath);
-                        fclose($sourceStream);
-                    } else {
-                        $sourceStream = $fs->readStream($originalFilename);
-                        $targetStream = fopen($cachedFilePath, 'w');
-                        stream_copy_to_stream($sourceStream, $targetStream);
-                        fclose($sourceStream);
-                        fclose($targetStream);
+                    $originalFileTimestamp = $fs->lastModified($originalFilename);
+                    $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
+                    $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
+                    if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
+                        $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
+                        if (is_dir($targetCachePath) === false) {
+                            mkdir($targetCachePath, 0777, true);
+                        }
+                        if ($width !== null || $height !== null) {
+                            $sourceStream = $fs->readStream($originalFilename);
+                            $image = Image::thumbnail($sourceStream, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
+                            $image->save($cachedFilePath);
+                            fclose($sourceStream);
+                        } else {
+                            $sourceStream = $fs->readStream($originalFilename);
+                            $targetStream = fopen($cachedFilePath, 'w');
+                            stream_copy_to_stream($sourceStream, $targetStream);
+                            fclose($sourceStream);
+                            fclose($targetStream);
+                        }
                     }
+                    $resultFileUrl = $cachedFileUrl;
+                } elseif (strncmp('image/svg', $mimeType, 9) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::SVG_EXTENSIONS))) {
+                    return self::cacheFile($imageLink);
                 }
-                $resultFileUrl = $cachedFileUrl;
             }
 
         }
