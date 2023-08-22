@@ -11,6 +11,7 @@ Blackcube Core - CHANGELOG
  * Upd: Change ```flysystem``` wrapper
  * Chg: Rewrite ```plugin``` system
  * Fix: Preview was not working when mimetype is incorrect
+ * Fix: Fix `cacheImage()` when image is svg
 
 Release 2.2.3 March, 11th 2022 <pgaultier@redcat.io>
 ----------------------------------------------------
