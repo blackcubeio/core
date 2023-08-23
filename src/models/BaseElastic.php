@@ -19,6 +19,7 @@ use blackcube\core\validators\ElasticValidator;
 use Swaggest\JsonSchema\Schema;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
+use yii\helpers\Json;
 use Yii;
 
 /**
@@ -548,6 +549,10 @@ abstract class BaseElastic extends Model {
             }
         } elseif ($property->type === 'string' && (in_array($property->format, ['wysiwyg', 'textarea', 'email', 'date']))) {
             $fieldData['field'] = $property->format;
+            if ($property->options instanceof \StdClass) {
+                $options = Json::encode($property->options);
+                $fieldData['options'] = Json::decode($options);
+            }
         } elseif ($property->type === 'string' && ($property->format === 'date-time')) {
             $fieldData['field'] = 'datetime-local';
         } elseif ($property->type === 'string' && (in_array($property->format, ['radiolist', 'dropdownlist']))) {
