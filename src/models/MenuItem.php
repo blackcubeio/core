@@ -105,7 +105,7 @@ class MenuItem extends \yii\db\ActiveRecord
                     return empty(trim($value)) ? null : trim($value);
                 }
             }],
-            [['name', 'route'], 'required'],
+            [['name'], 'required'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['name', 'route', 'queryString'], 'string', 'max' => 190],
             [['name'], 'unique', 'targetAttribute' => ['name', 'menuId']],
