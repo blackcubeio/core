@@ -1,6 +1,7 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: set minimal requirements to PHP 8.0
  * Upd: add password strength validator
  * Fix: Element instanciate for controller routing
  * Upd: Add DI register
