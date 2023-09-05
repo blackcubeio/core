@@ -66,10 +66,10 @@ class SitemapAction extends ViewAction
             if ($currentSlug !== null && $currentSlug->active) {
                 $noIndex = false;
                 if ($currentSlug->seo !== null && $currentSlug->seo->active === true) {
-                    $noIndex = $currentSlug->seo->noindex;
+                    $noIndex = (bool)$currentSlug->seo->noindex;
                 }
                 $element = $currentSlug->getElement()->active()->one();
-                if ($element !== null && $noIndex == false) {
+                if ($element !== null && $noIndex === false) {
                     $url = $this->dom->createElement('url');
                     $currentHost = $sitemap->slug->host;
                     if ($currentHost === null) {
