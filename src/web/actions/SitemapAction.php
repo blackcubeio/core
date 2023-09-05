@@ -40,12 +40,12 @@ class SitemapAction extends ViewAction
     /**
      * @var DOMDocument
      */
-    private $dom;
+    private ?DOMDocument $dom = null;
 
     /**
      * @var string alias to additional sitemap file
      */
-    public $additionalSitemap;
+    public ?string $additionalSitemap = null;
 
     /**
      * {@inheritdoc}
