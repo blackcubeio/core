@@ -58,12 +58,12 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     /**
      * @var array
      */
-    private string $_elementRoute;
+    private ?string $_elementRoute = null;
 
     /**
      * @var Node|Composite|Category|Tag|ElementInterface
      */
-    private $_element;
+    private $_element = null;
 
     /**
      * {@inheritdoc}
