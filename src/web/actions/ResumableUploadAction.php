@@ -46,17 +46,17 @@ class ResumableUploadAction extends ViewAction
     /**
      * @var string
      */
-    protected $extension;
+    protected $extension = null;
 
     /**
      * @var string
      */
-    protected $originalFilename;
+    protected $originalFilename = null;
 
     /**
      * @var string
      */
-    protected $finalPath;
+    protected $finalPath = null;
 
     /**
      * @var bool
@@ -66,7 +66,7 @@ class ResumableUploadAction extends ViewAction
     /**
      * @var string
      */
-    protected $finalFilename;
+    protected $finalFilename = null;
 
     /**
      * @inheritdoc

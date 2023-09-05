@@ -40,15 +40,15 @@ class BlackcubeControllerEvent extends Event {
     /**
      * @var string route called
      */
-    public string $route;
+    public $route = null;
 
     /**
      * @var Node|Composite|Category|Tag|ElementInterface element used
      */
-    public $element;
+    public $element = null;
 
     /**
      * @var BlackcubeController
      */
-    public BlackcubeControllerInterface $controller;
+    public $controller = null;
 }

@@ -47,17 +47,17 @@ class RedirectController extends Controller
     /**
      * @var integer
      */
-    private $_elementId;
+    private $_elementId = null;
 
     /**
      * @var string
      */
-    private $_elementType;
+    private $_elementType = null;
 
     /**
      * @var Slug
      */
-    private $_element;
+    private $_element = null;
 
     /**
      * Constructor

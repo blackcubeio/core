@@ -43,7 +43,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     /**
      * @var string  suffix used for faked url
      */
-    public $suffix;
+    public $suffix = null;
 
     private static $slugs = [];
 

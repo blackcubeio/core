@@ -40,12 +40,12 @@ class SitemapAction extends ViewAction
     /**
      * @var DOMDocument
      */
-    private ?DOMDocument $dom = null;
+    private $dom = null;
 
     /**
      * @var string alias to additional sitemap file
      */
-    public ?string $additionalSitemap = null;
+    public $additionalSitemap = null;
 
     /**
      * {@inheritdoc}
@@ -62,10 +62,14 @@ class SitemapAction extends ViewAction
         $timeZone = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
         foreach($sitemaps->each() as $sitemap) {
             /* @var $sitemap \blackcube\core\models\Sitemap */
-            $currentSlug = Slug::findByPathinfoAndHostname($sitemap->slug->path, $hostname)->active()->one();
+            $currentSlug = Slug::findByPathinfoAndHostname($sitemap->slug->path, $hostname)->active()->with('seo')->one();
             if ($currentSlug !== null && $currentSlug->active) {
+                $noIndex = false;
+                if ($currentSlug->seo !== null && $currentSlug->seo->active === true) {
+                    $noIndex = $currentSlug->seo->noindex;
+                }
                 $element = $currentSlug->getElement()->active()->one();
-                if ($element !== null) {
+                if ($element !== null && $noIndex == false) {
                     $url = $this->dom->createElement('url');
                     $currentHost = $sitemap->slug->host;
                     if ($currentHost === null) {
