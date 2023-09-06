@@ -39,22 +39,22 @@ class SlugGenerator implements SlugGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function getElementSlug($element)
+    public function getElementSlug($element, $refresh = false)
     {
         $baseSlug = [];
         if ($element instanceof Node) {
-            $baseSlug = $this->generateNodeSlug($element->id);
+            $baseSlug = $this->generateNodeSlug($element->id, $refresh);
         } elseif($element instanceof Composite) {
             $parentNode = $element->getNodes()->one();
             if ($parentNode !== null) {
-                $baseSlug = $this->generateNodeSlug($parentNode->id);
+                $baseSlug = $this->generateNodeSlug($parentNode->id, $refresh);
             }
             $baseSlug[] = $this->urlize($element->name);
         } elseif($element instanceof Category) {
-            $baseSlug = $this->generateCategorySlug($element->id);
+            $baseSlug = $this->generateCategorySlug($element->id, $refresh);
         } elseif($element instanceof Tag) {
             $parentCatebgory = $element->getCategory()->one();
-            $baseSlug = $this->generateCategorySlug($parentCatebgory->id);
+            $baseSlug = $this->generateCategorySlug($parentCatebgory->id, $refresh);
             $baseSlug[] = $this->urlize($element->name);
         }
         return implode('/', $baseSlug);
@@ -64,7 +64,7 @@ class SlugGenerator implements SlugGeneratorInterface
      * @param int|null $categoryId
      * @return array
      */
-    private function generateCategorySlug($categoryId)
+    private function generateCategorySlug($categoryId, $refresh = false)
     {
         $baseSlug = [];
         $query = new Query();
@@ -79,7 +79,7 @@ class SlugGenerator implements SlugGeneratorInterface
             ->andWhere([Category::tableName().'.[[id]]' => $categoryId])
             ->one();
         if ($slugData !== false) {
-            if (empty($slugData['path']) === false) {
+            if (empty($slugData['path']) === false && $refresh === false) {
                 $baseSlug[] = $slugData['path'];
             } else {
                 $baseSlug[] = $this->urlize($slugData['name']);
@@ -92,7 +92,7 @@ class SlugGenerator implements SlugGeneratorInterface
      * @param int $nodeId
      * @return array
      */
-    private function generateNodeSlug($nodeId)
+    private function generateNodeSlug($nodeId, $refresh = false)
     {
         $baseSlug = [];
         $node = Node::find()->andWhere(['id' => $nodeId])->one();
@@ -113,7 +113,7 @@ class SlugGenerator implements SlugGeneratorInterface
                 ->orderBy([Node::tableName().'.[[left]]' => SORT_DESC])
                 ->all();
             foreach($slugData as $slug) {
-                if (empty($slug['path']) === false) {
+                if (empty($slug['path']) === false && $refresh === false) {
                     $baseSlug[] = $slug['path'];
                     break;
                 }

@@ -35,5 +35,5 @@ interface SlugGeneratorInterface {
      * @param Node|Composite|Category|Tag $element
      * @return string
      */
-    public function getElementSlug($element);
+    public function getElementSlug($element, $refresh = false);
 }
