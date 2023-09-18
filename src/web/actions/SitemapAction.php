@@ -47,6 +47,8 @@ class SitemapAction extends ViewAction
      */
     public $additionalSitemap = null;
 
+    public $addHeaderXRobotsTag = true;
+
     /**
      * {@inheritdoc}
      */
@@ -115,6 +117,9 @@ class SitemapAction extends ViewAction
             }
         }
         $this->dom->appendChild($urlSet);
+        if ($this->addHeaderXRobotsTag === true) {
+            Yii::$app->response->headers->add('X-Robots-Tag', 'noindex');
+        }
 
         Yii::$app->response->format = Response::FORMAT_XML;
         Yii::$app->response->content = $this->dom->saveXML();
