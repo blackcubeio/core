@@ -15,6 +15,7 @@
 namespace blackcube\core\traits;
 
 use blackcube\core\models\Composite;
+use blackcube\core\models\CompositeTag;
 use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\NodeComposite;
 use blackcube\core\Module;
@@ -67,6 +68,7 @@ trait CompositeTrait
     {
         $status = true;
         $elementCompositeClass = $this->getElementCompositeClass();
+        if ($elementCompositeClass === CompositeTag::class)
         $compositeCount = $this->getComposites()->count();
         if ($position < 1) {
             $position = $compositeCount + 1;

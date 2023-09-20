@@ -102,6 +102,14 @@ abstract class BaseTag extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
+    protected function getElementCompositeClass(): string
+    {
+        return CompositeTag::class;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function getElementIdColumn() :string
     {
         return 'tagId';

@@ -101,6 +101,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     public function getElementQuery()
     {
         if ($this->_elementRoute !== null) {
+            $this->getElement();
             return Element::query($this->_elementRoute);
         }
     }
