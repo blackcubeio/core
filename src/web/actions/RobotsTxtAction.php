@@ -12,7 +12,7 @@
  * @package webapp\actions
  */
 
-namespace blackcube\core\web\actions;
+namespace webapp\actions;
 
 use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Sitemap;
@@ -76,10 +76,6 @@ class RobotsTxtAction extends ViewAction
         $content = Yii::$app->cache->get('robots.txt');
         if ($content === false) {
             $hostname = Yii::$app->request->getHostName();
-            $sitemaps = Sitemap::find()
-                ->cache(true, QueryCache::getCmsDependencies())
-                ->active()
-                ->with('slug');
             $robotsTxtContent = [];
             if ($this->sitemapRoute !== null) {
                 $this->sitemapUrl = Url::to([$this->sitemapRoute], true);
@@ -99,13 +95,13 @@ class RobotsTxtAction extends ViewAction
                     $robotsTxtContent[] = 'Allow: '.$allowed;
                 }
             }
+            $sitemaps = Sitemap::find()
+                ->cache(true, QueryCache::getCmsDependencies())
+                ->active()
+                ->with(['slug', 'slug.seo']);
+
             foreach($sitemaps->each() as $sitemap) {
-                /* @var $sitemap \blackcube\core\models\Sitemap */
-                $currentSlug = Slug::findByPathinfoAndHostname($sitemap->slug->path, $hostname)
-                    ->cache(true, QueryCache::getCmsDependencies())
-                    ->active()
-                    ->with('seo')
-                    ->one();
+                $currentSlug = $sitemap->slug;
                 if ($currentSlug !== null && $currentSlug->active) {
                     $noIndex = false;
                     if ($currentSlug->seo !== null && $currentSlug->seo->active === true) {
