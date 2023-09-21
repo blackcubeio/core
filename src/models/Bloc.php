@@ -2,10 +2,10 @@
 /**
  * Bloc.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,9 +14,11 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\traits\ElasticTrait;
+
 /**
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -25,4 +27,5 @@ namespace blackcube\core\models;
  */
 class Bloc extends BaseBloc
 {
+    use ElasticTrait;
 }

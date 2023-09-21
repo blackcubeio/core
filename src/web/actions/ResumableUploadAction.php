@@ -2,10 +2,10 @@
 /**
  * ResumableUploadAction.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -24,7 +24,7 @@ use Yii;
  * resumable action
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -46,17 +46,17 @@ class ResumableUploadAction extends ViewAction
     /**
      * @var string
      */
-    protected $extension;
+    protected $extension = null;
 
     /**
      * @var string
      */
-    protected $originalFilename;
+    protected $originalFilename = null;
 
     /**
      * @var string
      */
-    protected $finalPath;
+    protected $finalPath = null;
 
     /**
      * @var bool
@@ -66,7 +66,7 @@ class ResumableUploadAction extends ViewAction
     /**
      * @var string
      */
-    protected $finalFilename;
+    protected $finalFilename = null;
 
     /**
      * @inheritdoc
@@ -169,7 +169,10 @@ class ResumableUploadAction extends ViewAction
      */
     protected function getTmpChunkDir($identifier)
     {
-        $identifier = preg_replace('/[^a-z0-9_\-.]+/i', '_', $identifier);
+        if ($identifier !== null) {
+            $identifier = preg_replace('/[^a-z0-9_\-.]+/i', '_', $identifier);
+        }
+
         $identifier = self::cleanUpFilename($identifier);
 
         $tmpChunkDir = Yii::getAlias($this->uploadAlias.'/'.$identifier);
@@ -219,7 +222,12 @@ class ResumableUploadAction extends ViewAction
      */
     public static function cleanUpFilename($filename)
     {
-        return preg_replace('/[^a-z0-9_\-.]+/i', '_', $filename);
+        if ($filename !== null) {
+            return preg_replace('/[^a-z0-9_\-.]+/i', '_', $filename);
+        } else {
+            return $filename;
+        }
+
     }
 
     /**

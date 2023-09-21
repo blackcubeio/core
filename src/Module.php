@@ -2,10 +2,10 @@
 /**
  * Module.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -15,21 +15,41 @@
 namespace blackcube\core;
 
 use blackcube\core\commands\InitController;
-use blackcube\core\components\Plugins;
+use blackcube\core\components\Flysystem;
 use blackcube\core\components\PluginsHandler;
+use blackcube\core\components\PreviewManager;
 use blackcube\core\components\SlugGenerator;
-use blackcube\core\helpers\PluginHelper;
-use blackcube\core\interfaces\PluginBootstrapInterface;
-use blackcube\core\interfaces\PluginInterface;
-use blackcube\core\interfaces\PluginManagerRoutableInterface;
-use blackcube\core\interfaces\PluginServiceInterface;
+use blackcube\core\interfaces\PluginManagerBootstrapInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
+use blackcube\core\interfaces\PreviewManagerInterface;
 use blackcube\core\interfaces\SlugGeneratorInterface;
+use blackcube\core\models\BlocType;
+use blackcube\core\models\Category;
+use blackcube\core\models\CategoryBloc;
+use blackcube\core\models\Composite;
+use blackcube\core\models\CompositeBloc;
+use blackcube\core\models\CompositeTag;
+use blackcube\core\models\Elastic;
+use blackcube\core\models\FilterActiveQuery;
+use blackcube\core\models\Language;
+use blackcube\core\models\Menu;
+use blackcube\core\models\MenuItem;
+use blackcube\core\models\Node;
+use blackcube\core\models\NodeBloc;
+use blackcube\core\models\NodeComposite;
+use blackcube\core\models\NodeTag;
 use blackcube\core\models\Parameter;
 use blackcube\core\models\Plugin;
+use blackcube\core\models\Seo;
+use blackcube\core\models\Sitemap;
+use blackcube\core\models\Slug;
+use blackcube\core\models\Tag;
+use blackcube\core\models\TagBloc;
+use blackcube\core\models\Type;
+use blackcube\core\models\TypeBlocType;
+use blackcube\core\validators\PasswordStrengthValidator;
 use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
-use creocoder\flysystem\Filesystem;
 use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
 use yii\caching\CacheInterface;
@@ -46,7 +66,7 @@ use Yii;
  * Class module
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -87,19 +107,9 @@ class Module extends BaseModule implements BootstrapInterface
     ];
 
     /**
-     * @var Filesystem|array|string flysystem access
-     */
-    public $fs = 'fs';
-
-    /**
      * @var string command prefix
      */
     public $commandNameSpace = 'bc:';
-
-    /**
-     * @var Connection|array|string database access
-     */
-    public $db = 'db';
 
     /**
      * @var string prefix used for temporary async files
@@ -122,21 +132,58 @@ class Module extends BaseModule implements BootstrapInterface
     public $plugins = [];
 
     /**
-     * @var CacheInterface|array|string|null
+     * @var string[]
      */
-    public $cache;
+    public $coreSingletons = [
+        PluginsHandlerInterface::class => PluginsHandler::class,
+        PreviewManagerInterface::class => PreviewManager::class,
+        SlugGeneratorInterface::class => SlugGenerator::class,
+    ];
 
+    /**
+     * @var string[]
+     */
+    public $coreElements = [
+        BlocType::class => BlocType::class,
+        Category::class => Category::class,
+        CategoryBloc::class => CategoryBloc::class,
+        Composite::class => Composite::class,
+        CompositeBloc::class => CompositeBloc::class,
+        CompositeTag::class => CompositeTag::class,
+        Elastic::class => Elastic::class,
+        FilterActiveQuery::class => FilterActiveQuery::class,
+        Language::class => Language::class,
+        Menu::class => Menu::class,
+        MenuItem::class => MenuItem::class,
+        Node::class => Node::class,
+        NodeBloc::class => NodeBloc::class,
+        NodeComposite::class => NodeComposite::class,
+        NodeTag::class => NodeTag::class,
+        Parameter::class => Parameter::class,
+        Plugin::class => Plugin::class,
+        Seo::class => Seo::class,
+        Sitemap::class => Sitemap::class,
+        Slug::class => Slug::class,
+        Tag::class => Tag::class,
+        TagBloc::class => TagBloc::class,
+        Type::class => Type::class,
+        TypeBlocType::class => TypeBlocType::class,
+        'passwordSecurity' => [
+            'class' => PasswordStrengthValidator::class,
+            'preset' => PasswordStrengthValidator::PRESET_NORMAL,
+        ]
+    ];
+
+    /**
+     * @var string version number
+     */
+    public $version = 'v3.0-dev';
     /**
      * {@inheritDoc}
      */
     public function init()
     {
         parent::init();
-        $this->fs = Instance::ensure($this->fs, Filesystem::class);
-        $this->db = Instance::ensure($this->db, Connection::class);
-        if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, CacheInterface::class);
-        }
         if (empty($this->allowedParameterDomains) === false && in_array(Parameter::HOST_DOMAIN, $this->allowedParameterDomains) === false) {
             $this->allowedParameterDomains[] = Parameter::HOST_DOMAIN;
         }
@@ -172,8 +219,15 @@ class Module extends BaseModule implements BootstrapInterface
      */
     public function registerDi($app)
     {
-        if (Yii::$container->hasSingleton(SlugGeneratorInterface::class) === false) {
-            Yii::$container->setSingleton(SlugGeneratorInterface::class, SlugGenerator::class);
+        foreach($this->coreSingletons as $class => $definition) {
+            if (Yii::$container->hasSingleton($class) === false) {
+                Yii::$container->setSingleton($class, $definition);
+            }
+        }
+        foreach($this->coreElements as $class => $definition) {
+            if (Yii::$container->has($class) === false) {
+                Yii::$container->set($class, $definition);
+            }
         }
     }
 
@@ -183,14 +237,11 @@ class Module extends BaseModule implements BootstrapInterface
      */
     public function registerPlugins($app)
     {
-        if (Yii::$container->hasSingleton(PluginsHandlerInterface::class) === false) {
-            Yii::$container->setSingleton(PluginsHandlerInterface::class, PluginsHandler::class);
-        }
         if ($app instanceof WebApplication) {
-            $pluginHandlerUrlManager = Yii::createObject(PluginsHandlerInterface::class);
-            foreach($pluginHandlerUrlManager->getActivePluginManagers() as $pluginManager) {
-                if ($pluginManager instanceof PluginBootstrapInterface) {
-                    $pluginManager->bootstrapCore($this->getUniqueId(), $app);
+            $pluginHandlerManager = Yii::createObject(PluginsHandlerInterface::class);
+            foreach($pluginHandlerManager->getActivePluginManagers() as $pluginManager) {
+                if ($pluginManager instanceof PluginManagerBootstrapInterface) {
+                    $pluginManager->bootstrapCore($this, $app);
                 }
             }
         }
@@ -238,7 +289,7 @@ class Module extends BaseModule implements BootstrapInterface
                     'blackcube\core\migrations',
                 ],
                 'migrationPath' => null,
-                'db' => $this->db,
+                'db' => $this->get('db'),
             ];
         }
         /**/
@@ -300,7 +351,10 @@ class Module extends BaseModule implements BootstrapInterface
         }
 
         // double slashes or leading/ending slashes may cause substr problem
-        $route = trim($route, '/');
+        if ($route !== null) {
+            $route = trim($route, '/');
+        }
+
         if (strpos($route, '//') !== false) {
             return false;
         }

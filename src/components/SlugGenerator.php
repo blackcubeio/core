@@ -2,10 +2,10 @@
 /**
  * SlugGenerator.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -16,8 +16,10 @@ namespace blackcube\core\components;
 
 use blackcube\core\interfaces\SlugGeneratorInterface;
 use blackcube\core\models\Category;
+use blackcube\core\models\Composite;
 use blackcube\core\models\Node;
 use blackcube\core\models\Slug;
+use blackcube\core\models\Tag;
 use yii\db\Query;
 use yii\helpers\Inflector;
 use Transliterator;
@@ -26,7 +28,7 @@ use Transliterator;
  * Class SlugGenerator
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -37,20 +39,24 @@ class SlugGenerator implements SlugGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function getElementSlug($elementName, $parentElementType = null, $parentElementId = null)
+    public function getElementSlug($element, $refresh = false)
     {
         $baseSlug = [];
-        if ($parentElementType !== null && $parentElementId !== null) {
-            switch ($parentElementType) {
-                case Node::getElementType():
-                    $baseSlug = $this->generateNodeSlug($parentElementId);
-                    break;
-                case Category::getElementType():
-                    $baseSlug = $this->generateCategorySlug($parentElementId);
-                    break;
+        if ($element instanceof Node) {
+            $baseSlug = $this->generateNodeSlug($element->id, $refresh);
+        } elseif($element instanceof Composite) {
+            $parentNode = $element->getNodes()->one();
+            if ($parentNode !== null) {
+                $baseSlug = $this->generateNodeSlug($parentNode->id, $refresh);
             }
+            $baseSlug[] = $this->urlize($element->name);
+        } elseif($element instanceof Category) {
+            $baseSlug = $this->generateCategorySlug($element->id, $refresh);
+        } elseif($element instanceof Tag) {
+            $parentCatebgory = $element->getCategory()->one();
+            $baseSlug = $this->generateCategorySlug($parentCatebgory->id, $refresh);
+            $baseSlug[] = $this->urlize($element->name);
         }
-        $baseSlug[] = $this->urlize($elementName);
         return implode('/', $baseSlug);
     }
 
@@ -58,7 +64,7 @@ class SlugGenerator implements SlugGeneratorInterface
      * @param int|null $categoryId
      * @return array
      */
-    private function generateCategorySlug($categoryId)
+    private function generateCategorySlug($categoryId, $refresh = false)
     {
         $baseSlug = [];
         $query = new Query();
@@ -73,10 +79,10 @@ class SlugGenerator implements SlugGeneratorInterface
             ->andWhere([Category::tableName().'.[[id]]' => $categoryId])
             ->one();
         if ($slugData !== false) {
-            if (empty($slugData['path']) === false) {
+            if (empty($slugData['path']) === false && $refresh === false) {
                 $baseSlug[] = $slugData['path'];
             } else {
-                $baseSlug[] = $this->generateCategorySlug($slugData['name']);
+                $baseSlug[] = $this->urlize($slugData['name']);
             }
         }
         return $baseSlug;
@@ -86,7 +92,7 @@ class SlugGenerator implements SlugGeneratorInterface
      * @param int $nodeId
      * @return array
      */
-    private function generateNodeSlug($nodeId)
+    private function generateNodeSlug($nodeId, $refresh = false)
     {
         $baseSlug = [];
         $node = Node::find()->andWhere(['id' => $nodeId])->one();
@@ -107,7 +113,7 @@ class SlugGenerator implements SlugGeneratorInterface
                 ->orderBy([Node::tableName().'.[[left]]' => SORT_DESC])
                 ->all();
             foreach($slugData as $slug) {
-                if (empty($slug['path']) === false) {
+                if (empty($slug['path']) === false && $refresh === false) {
                     $baseSlug[] = $slug['path'];
                     break;
                 }
@@ -133,8 +139,11 @@ class SlugGenerator implements SlugGeneratorInterface
                 $str = $transliterated;
             }
         }
-        $str = strtolower(trim($str));
-        $str = preg_replace('/[^a-z0-9]+/', '-', $str);
-        return $str;
+        if ($str !== null) {
+            $str = strtolower(trim($str));
+            $str = preg_replace('/[^a-z0-9]+/', '-', $str);
+        }
+
+        return trim($str, '-');
     }
 }

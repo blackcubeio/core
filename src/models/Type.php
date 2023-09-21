@@ -2,10 +2,10 @@
 /**
  * Type.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,8 +14,11 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -23,7 +26,7 @@ use Yii;
  * This is the model class for table "{{%types}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -49,15 +52,15 @@ class Type extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -80,7 +83,7 @@ class Type extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%types}}';
     }
@@ -88,14 +91,23 @@ class Type extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['route'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['minBlocs', 'maxBlocs'], 'filter', 'filter' => function($value) {
-                return (trim($value) > 0 ) ? trim($value) : null;
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return (trim($value) > 0 ) ? trim($value) : null;
+                }
+
             }],
             [['name'], 'required'],
             [['minBlocs', 'maxBlocs'], 'integer'],
@@ -108,7 +120,7 @@ class Type extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/type', 'ID'),
@@ -126,9 +138,10 @@ class Type extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategories()
+    public function getCategories(): ActiveQuery
     {
-        return $this->hasMany(Category::class, ['typeId' => 'id']);
+        return $this
+            ->hasMany(Category::class, ['typeId' => 'id']);
     }
 
     /**
@@ -136,9 +149,10 @@ class Type extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getComposites()
+    public function getComposites(): ActiveQuery
     {
-        return $this->hasMany(Composite::class, ['typeId' => 'id']);
+        return $this
+            ->hasMany(Composite::class, ['typeId' => 'id']);
     }
 
     /**
@@ -146,9 +160,10 @@ class Type extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNode()
+    public function getNode(): ActiveQuery
     {
-        return $this->hasOne(Node::class, ['typeId' => 'id']);
+        return $this
+            ->hasOne(Node::class, ['typeId' => 'id']);
     }
 
     /**
@@ -156,9 +171,10 @@ class Type extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTags()
+    public function getTags(): ActiveQuery
     {
-        return $this->hasMany(Tag::class, ['typeId' => 'id']);
+        return $this
+            ->hasMany(Tag::class, ['typeId' => 'id']);
     }
 
     public function getElementsCount()
@@ -205,7 +221,7 @@ class Type extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBlocTypes()
+    public function getBlocTypes(): ActiveQuery
     {
         return $this->hasMany(BlocType::class, ['id' => 'blocTypeId'])->viaTable(TypeBlocType::tableName(), ['typeId' => 'id'], function ($query) {
             /* @var $query \yii\db\ActiveQuery */

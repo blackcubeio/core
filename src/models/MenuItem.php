@@ -2,10 +2,10 @@
 /**
  * MenuItem.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -18,6 +18,8 @@ use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -43,15 +45,15 @@ class MenuItem extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -84,7 +86,7 @@ class MenuItem extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%menus_items}}';
     }
@@ -92,14 +94,18 @@ class MenuItem extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['menuId', 'parentId', 'order'], 'integer'],
             [['parentId'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
-            [['name', 'route'], 'required'],
+            [['name'], 'required'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['name', 'route', 'queryString'], 'string', 'max' => 190],
             [['name'], 'unique', 'targetAttribute' => ['name', 'menuId']],
@@ -111,7 +117,7 @@ class MenuItem extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/menus_items', 'ID'),
@@ -131,7 +137,7 @@ class MenuItem extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getMenu()
+    public function getMenu(): ActiveQuery
     {
         return $this
             ->hasOne(Menu::class, ['id' => 'menuId']);
@@ -142,7 +148,7 @@ class MenuItem extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getChildren()
+    public function getChildren(): ActiveQuery
     {
         return $this
             ->hasMany(MenuItem::class, ['parentId' => 'id'])
@@ -154,13 +160,14 @@ class MenuItem extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getParent()
+    public function getParent(): ActiveQuery
     {
         return $this
             ->hasOne(MenuItem::class, ['id' => 'parentId']);
     }
 
-    public static function reorder($menuId) {
+    public static function reorder($menuId)
+    {
         $transaction = static::getDb()->beginTransaction();
         $items = static::find()->andWhere(['menuId' => $menuId])
             ->orderBy(['parentId' => SORT_ASC, 'order' => SORT_ASC])->all();

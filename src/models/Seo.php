@@ -2,10 +2,10 @@
 /**
  * Seo.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -20,6 +20,8 @@ use blackcube\core\behaviors\FileSaveBehavior;
 use blackcube\core\interfaces\SluggedInterface;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -27,7 +29,7 @@ use Yii;
  * This is the model class for table "{{%seos}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -63,9 +65,9 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
@@ -79,7 +81,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -109,7 +111,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%seos}}';
     }
@@ -119,7 +121,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find(): FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -127,7 +129,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritDoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[static::SCENARIO_PRE_VALIDATE] = ['canonicalSlugId', 'noindex', 'nofollow', 'og', 'twitter', 'active', 'description', 'title', 'image', 'ogType', 'twitterCard'];
@@ -137,11 +139,15 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['slugId', 'canonicalSlugId', 'title', 'image', 'twitterCard', 'ogType', 'description'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['slugId'], 'required'],
             [['slugId', 'canonicalSlugId'], 'integer'],
@@ -158,7 +164,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/seo', 'ID'),
@@ -184,7 +190,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCanonicalSlug()
+    public function getCanonicalSlug(): ActiveQuery
     {
         return $this
             ->hasOne(Slug::class, ['id' => 'canonicalSlugId']);
@@ -195,7 +201,7 @@ class Seo extends \yii\db\ActiveRecord implements SluggedInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSlug()
+    public function getSlug(): ActiveQuery
     {
         return $this
             ->hasOne(Slug::class, ['id' => 'slugId']);

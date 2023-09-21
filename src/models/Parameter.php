@@ -2,10 +2,10 @@
 /**
  * Parameter.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -16,6 +16,7 @@ namespace blackcube\core\models;
 
 use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -23,7 +24,7 @@ use Yii;
  * This is the model class for table "{{%parameters}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -43,15 +44,15 @@ class Parameter extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -74,7 +75,7 @@ class Parameter extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%parameters}}';
     }
@@ -82,7 +83,7 @@ class Parameter extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['domain', 'name'], 'required'],
@@ -96,7 +97,7 @@ class Parameter extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'domain' => Module::t('models/parameter', 'Domain'),
@@ -110,7 +111,7 @@ class Parameter extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public static function getAllowedHosts()
+    public static function getAllowedHosts(): array
     {
         $parameters = static::find()
             ->andWhere(['domain' => static::HOST_DOMAIN])

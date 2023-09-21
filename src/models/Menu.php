@@ -2,10 +2,10 @@
 /**
  * Menu.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -18,6 +18,8 @@ use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -39,15 +41,15 @@ class Menu extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -80,7 +82,7 @@ class Menu extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%menus}}';
     }
@@ -90,7 +92,7 @@ class Menu extends \yii\db\ActiveRecord
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find(): FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -98,7 +100,7 @@ class Menu extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'languageId'], 'required'],
@@ -114,7 +116,7 @@ class Menu extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/menus', 'ID'),
@@ -131,7 +133,7 @@ class Menu extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getLanguage()
+    public function getLanguage(): ActiveQuery
     {
         return $this
             ->hasOne(Language::class, ['id' => 'languageId']);
@@ -142,7 +144,7 @@ class Menu extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getChildren()
+    public function getChildren(): ActiveQuery
     {
         return $this
             ->hasMany(MenuItem::class, ['menuId' => 'id'])

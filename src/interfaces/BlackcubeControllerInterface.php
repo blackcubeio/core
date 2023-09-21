@@ -2,10 +2,10 @@
 /**
  * BlackcubeControllerInterface.php
  *
- * PHP version 7.2+
+ * PHP version 7.4+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -23,7 +23,7 @@ use blackcube\core\models\Tag;
  * BlackcubeControllerInterface interface
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -48,6 +48,6 @@ interface BlackcubeControllerInterface
      * @param string $info element information
      * @throws \yii\base\NotSupportedException
      */
-    public function setElementInfo($info);
+    public function setElementInfo(string $info);
 
 }

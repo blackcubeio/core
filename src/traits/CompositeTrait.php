@@ -2,10 +2,10 @@
 /**
  * CompositeTrait.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -15,14 +15,18 @@
 namespace blackcube\core\traits;
 
 use blackcube\core\models\Composite;
+use blackcube\core\models\CompositeTag;
 use blackcube\core\models\FilterActiveQuery;
+use blackcube\core\models\NodeComposite;
+use blackcube\core\Module;
 use Yii;
+use yii\db\Expression;
 
 /**
  * Composite trait
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -64,6 +68,7 @@ trait CompositeTrait
     {
         $status = true;
         $elementCompositeClass = $this->getElementCompositeClass();
+        if ($elementCompositeClass === CompositeTag::class)
         $compositeCount = $this->getComposites()->count();
         if ($position < 1) {
             $position = $compositeCount + 1;
@@ -73,14 +78,12 @@ trait CompositeTrait
         try {
             // open space to add composite
             if ($position <= $compositeCount) {
-                $elementComposites = $elementCompositeClass::find()
-                    ->andWhere(([$this->getElementIdColumn() => $this->id]))
-                    ->andWhere(['>=', 'order', $position])
-                    ->orderBy(['order' => SORT_DESC])->all();
-                foreach($elementComposites as $elementComposite) {
-                    $elementComposite->order++;
-                    $elementComposite->save(['order']);
-                }
+                $elementCompositeClass::updateAll([
+                    'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
+                ], ['and',
+                    [$this->getElementIdColumn() => $this->id],
+                    ['>=', 'order', $position]
+                ]);
             } else {
                 $position = $compositeCount + 1;
             }
@@ -146,26 +149,25 @@ trait CompositeTrait
                 $currentPosition = $currentElementComposite->order;
                 $currentAttributes = $currentElementComposite->attributes;
                 $currentElementComposite->delete();
-                $elementComposites = $elementCompositeClass::find()
-                    ->andWhere([$this->getElementIdColumn() => $this->id])
-                    ->andWhere(['>=', 'order', $currentPosition])
-                    ->orderBy(['order' => SORT_ASC])->all();
-                foreach($elementComposites as $elementComposite) {
-                    $elementComposite->order--;
-                    $elementComposite->save(['order']);
-                }
+                /**/
+                $elementCompositeClass::updateAll([
+                    'order' => Yii::createObject(Expression::class, ['[[order]]-1'])
+                ], ['and',
+                    [$this->getElementIdColumn() => $this->id],
+                    ['>=', 'order', $currentPosition]
+                ]);
 
                 $compositeCount = $this->getComposites()->count();
                 // open space to add composite
                 if ($position <= $compositeCount) {
-                    $elementComposites = $elementCompositeClass::find()
-                        ->andWhere([$this->getElementIdColumn() => $this->id])
-                        ->andWhere(['>=', 'order', $position])
-                        ->orderBy(['order' => SORT_DESC])->all();
-                    foreach($elementComposites as $elementComposite) {
-                        $elementComposite->order++;
-                        $elementComposite->save(['order']);
-                    }
+                    /**/
+                    $elementCompositeClass::updateAll([
+                        'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
+                    ], ['and',
+                        [$this->getElementIdColumn() => $this->id],
+                        ['>=', 'order', $position]
+                    ]);
+
                 } else {
                     $position = $compositeCount + 1;
                 }
@@ -173,6 +175,7 @@ trait CompositeTrait
                 $elementComposite->attributes = $currentAttributes;
                 $elementComposite->order = $position;
                 $elementComposite->save();
+                //$this->reorderComposites();
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
@@ -242,8 +245,7 @@ trait CompositeTrait
             $elementComposites = $elementCompositeClass::find()->where([
                 $this->getElementIdColumn() => $this->id
             ])
-                ->orderBy(['order' => SORT_ASC])
-                ->all();
+                ->orderBy(['order' => SORT_ASC])->all();
             foreach($elementComposites as $index => $elementComposite) {
                 $elementComposite->order = $index + 1;
                 $elementComposite->save(['order']);

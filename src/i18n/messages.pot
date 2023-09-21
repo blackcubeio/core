@@ -435,11 +435,11 @@ msgid "Active"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
-msgid "Bootstrap"
+msgid "Cannot build plugin"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
-msgid "Class Name"
+msgid "Configuration is invalid"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
@@ -456,6 +456,18 @@ msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
 msgid "Name"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Plugin Config"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Registered"
+msgstr ""
+
+msgctxt "blackcube/core/models/plugin"
+msgid "Runtime Config"
 msgstr ""
 
 msgctxt "blackcube/core/models/plugin"
@@ -686,11 +698,46 @@ msgctxt "blackcube/core/routing"
 msgid "Type {type} is not supported."
 msgstr ""
 
-msgctxt "blackcube/core/web"
-msgid "Element \"{type}-{id}\" is not routable"
-msgstr ""
-
 msgctxt "blackcube/core/validators"
 msgid "Submodel \"{attribute}\" is invalid"
 msgstr ""
 
+msgctxt "blackcube/core/web"
+msgid "Element \"{type}-{id}\" is not routable"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "Password should contain at least {minLength, plural, one{# character} other{# characters}}, {upper, plural, one{# upper character} other{# upper characters}}, {lower, plural, one{# lower character} other{# lower characters}}, {special, plural, one{# special character} other{# special characters}}, {digit, plural, one{# numeric character} other{# numeric characters}}. "
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} cannot contain any spaces"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} cannot contain the username"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one character} other{# characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one lower case character} other{# lower case characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one numeric character} other{# numeric characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one special character} other{# special characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at least {n, plural, one{one upper case character} other{# upper case characters}} ({found} found)!"
+msgstr ""
+
+msgctxt "blackcube/core/validators/passwordStrength"
+msgid "{attribute} should contain at most {n, plural, one{one character} other{# characters}} ({found} found)!"
+msgstr ""

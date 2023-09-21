@@ -2,10 +2,10 @@
 /**
  * BaseComposite.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -26,6 +26,8 @@ use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -37,7 +39,7 @@ use Yii;
  * This is the model class for table "{{%composites}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -71,27 +73,27 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     use SlugTrait;
     use ActiveTrait;
 
-    const ELEMENT_TYPE  = 'composite';
+    public const ELEMENT_TYPE  = 'composite';
 
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb() :Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * @return string
      */
-    public function getRoute()
+    public function getRoute() :string
     {
         return RouteEncoder::encode(static::getElementType(), $this->id);
     }
     /**
      * {@inheritDoc}
      */
-    public static function getElementType()
+    public static function getElementType() :string
     {
         return static::ELEMENT_TYPE;
         // return Inflector::camel2id(StringHelper::basename(static::class));
@@ -100,7 +102,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     /**
      * {@inheritDoc}
      */
-    protected function getElementBlocClass()
+    protected function getElementBlocClass() :string
     {
         return CompositeBloc::class;
     }
@@ -108,7 +110,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     /**
      * {@inheritDoc}
      */
-    protected function getElementTagClass()
+    protected function getElementTagClass() :string
     {
         return CompositeTag::class;
     }
@@ -116,7 +118,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     /**
      * {@inheritDoc}
      */
-    protected function getElementIdColumn()
+    protected function getElementIdColumn() :string
     {
         return 'compositeId';
     }
@@ -132,7 +134,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors() :array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -157,7 +159,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName() :string
     {
         return '{{%composites}}';
     }
@@ -167,7 +169,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find() :FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -175,11 +177,15 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules() :array
     {
         return [
             [['name', 'slugId', 'typeId', 'dateStart', 'dateEnd'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['slugId', 'typeId'], 'integer'],
             [['active'], 'boolean'],
@@ -197,7 +203,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels() :array
     {
         return [
             'id' => Module::t('models/composite', 'ID'),
@@ -219,7 +225,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
-    public function getLanguage()
+    public function getLanguage() :ActiveQuery
     {
         return $this
             ->hasOne(Language::class, ['id' => 'languageId']);
@@ -230,7 +236,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getSlug()
+    public function getSlug() :ActiveQuery
     {
         return $this
             ->hasOne(Slug::class, ['id' => 'slugId']);
@@ -241,7 +247,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getType()
+    public function getType() :ActiveQuery
     {
         return $this
             ->hasOne(Type::class, ['id' => 'typeId']);
@@ -252,7 +258,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getTags()
+    public function getTags() :ActiveQuery
     {
         return $this
             ->hasMany(Tag::class, ['id' => 'tagId'])
@@ -265,7 +271,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getNodes()
+    public function getNodes() :ActiveQuery
     {
         return $this
             ->hasMany(Node::class, ['id' => 'nodeId'])
@@ -278,7 +284,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public static function findOrphans()
+    public static function findOrphans() :ActiveQuery
     {
         $compositeQuery = static::find()
             ->leftJoin(NodeComposite::tableName(), NodeComposite::tableName().'.[[compositeId]] = '.static::tableName().'.[[id]]')
@@ -308,7 +314,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * @throws \yii\base\InvalidConfigException
      * @since XXX
      */
-    public function getActiveDateStart()
+    public function getActiveDateStart() :?DateTime
     {
         if (empty($this->dateStart) === false) {
             $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
@@ -342,7 +348,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      * @throws \yii\base\InvalidConfigException
      * @since XXX
      */
-    public function getActiveDateEnd()
+    public function getActiveDateEnd() :?DateTime
     {
         if (empty($this->dateEnd) === false) {
             $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
@@ -357,7 +363,8 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getBlocs() {
+    public function getBlocs() :ActiveQuery
+    {
         return $this
             ->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(CompositeBloc::tableName(), ['compositeId' => 'id'])

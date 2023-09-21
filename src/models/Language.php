@@ -2,10 +2,10 @@
 /**
  * Language.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,6 +14,7 @@
 
 namespace blackcube\core\models;
 
+use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -24,7 +25,7 @@ use Yii;
  * This is the model class for table "{{%languages}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -49,7 +50,7 @@ class Language extends \yii\db\ActiveRecord
      */
     public static function getDb()
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
@@ -141,7 +142,8 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getCategories()
     {
-        return $this->hasMany(Category::class, ['languageId' => 'id']);
+        return $this
+            ->hasMany(Category::class, ['languageId' => 'id']);
     }
 
     /**
@@ -151,7 +153,8 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getComposites()
     {
-        return $this->hasMany(Composite::class, ['languageId' => 'id']);
+        return $this
+            ->hasMany(Composite::class, ['languageId' => 'id']);
     }
 
     /**
@@ -161,7 +164,8 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getNodes()
     {
-        return $this->hasMany(Node::class, ['languageId' => 'id']);
+        return $this
+            ->hasMany(Node::class, ['languageId' => 'id']);
     }
 
     /**

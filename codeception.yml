@@ -4,6 +4,7 @@ paths:
   tests: tests
   log: tests/_output
   data: tests/_data
+  output: tests/_output
   support: tests/_support
   helpers: tests/_support/Helper
 bootstrap: _bootstrap.php

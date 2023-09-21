@@ -2,10 +2,10 @@
 /**
  * BlackcubeController.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -25,6 +25,7 @@ use blackcube\core\models\Node;
 use blackcube\core\models\Tag;
 use yii\base\InvalidArgumentException;
 use yii\base\Module;
+use yii\db\ActiveQuery;
 use yii\helpers\Inflector;
 use yii\web\Controller;
 use Yii;
@@ -33,7 +34,7 @@ use Yii;
  * This is class allow transcoding url from route to DB
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -57,12 +58,12 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     /**
      * @var array
      */
-    private $_elementRoute;
+    private $_elementRoute = null;
 
     /**
      * @var Node|Composite|Category|Tag|ElementInterface
      */
-    private $_element;
+    private $_element = null;
 
     /**
      * {@inheritdoc}
@@ -92,10 +93,24 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     }
 
     /**
+     * Return element if it exists
+     *
+     * @return ActiveQuery
+     * @since XXX
+     */
+    public function getElementQuery()
+    {
+        if ($this->_elementRoute !== null) {
+            $this->getElement();
+            return Element::query($this->_elementRoute);
+        }
+    }
+
+    /**
      * @param string $info element information
      * @throws \yii\base\NotSupportedException
      */
-    public function setElementInfo($info)
+    public function setElementInfo(string $info)
     {
         $this->_elementRoute = $info;
         $this->_element = null;
@@ -105,7 +120,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
     /**
      * @param string $route route of element to instanciate
      */
-    public function beforeElement($route)
+    public function beforeElement(string $route)
     {
         $event = new BlackcubeControllerEvent([
             'route' => $route
@@ -117,7 +132,7 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
      * @param string $route route of element to instanciate
      * @param Node|Composite|Category|Tag|ElementInterface $element element instanciated
      */
-    public function afterElement($route, $element)
+    public function afterElement(string $route, $element)
     {
         $event = new BlackcubeControllerEvent([
             'route' => $route,

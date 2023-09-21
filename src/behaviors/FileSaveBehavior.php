@@ -2,10 +2,10 @@
 /**
  * FileSaveBehavior.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -13,9 +13,9 @@
  */
 namespace blackcube\core\behaviors;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\models\Bloc;
 use blackcube\core\Module;
-use creocoder\flysystem\Filesystem;
 use yii\base\Behavior;
 use yii\base\ErrorException;
 use yii\base\Event;
@@ -27,10 +27,10 @@ use Yii;
 /**
  * Save files in fly system
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -39,6 +39,14 @@ use Yii;
  */
 class FileSaveBehavior extends Behavior
 {
+    private $fs;
+
+    public function __construct(Flysystem $fs, $config = [])
+    {
+        $this->fs = $fs;
+        parent::__construct($config);
+    }
+
     /**
      * @var array list of attributes to handle
      */
@@ -93,7 +101,12 @@ class FileSaveBehavior extends Behavior
         }
         foreach ($this->filesAttributes as $attribute) {
             $currentFiles = $model->{$attribute};
-            $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            if ($currentFiles != null) {
+                $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            } else {
+                $files = [];
+            }
+
             $finaFiles = [];
             foreach ($files as $file) {
                 if (strncmp($uploadTmp, $file, strlen($uploadTmp)) === 0) {
@@ -108,11 +121,8 @@ class FileSaveBehavior extends Behavior
                         }
                         $stream = fopen($realFilename, 'r+');
                         if ($stream !== false) {
-                            $copyStatus = Module::getInstance()->fs->putStream($targetFilename, $stream);
+                            $this->fs->writeStream($targetFilename, $stream);
                             fclose($stream);
-                            if ($copyStatus === false) {
-                                throw new ErrorException();
-                            }
                             $finaFiles[] = $uploadFs.$targetFilename;
                         }
                     }
@@ -143,16 +153,20 @@ class FileSaveBehavior extends Behavior
         $model = $this->owner;
         /* @var ActiveRecord $model */
         $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
-        $fs = Module::getInstance()->fs;
-        /* @var $fs Filesystem */
+        $fs = $this->fs;
         foreach ($this->filesAttributes as $attribute) {
             $currentFiles = $model->{$attribute};
-            $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            if ($currentFiles != null) {
+                $files = preg_split('/\s*,\s*/', $currentFiles, -1, PREG_SPLIT_NO_EMPTY);
+            } else {
+                $files = [];
+            }
+
             foreach ($files as $file) {
                 if (strncmp($prefix, $file, strlen($prefix)) === 0) {
                     // file already saved in system we should remove it
                     $originalFilename = str_replace($prefix, '', $file);
-                    if ($fs->has($originalFilename) === true) {
+                    if ($fs->fileExists($originalFilename) === true) {
                         $fs->delete($originalFilename);
                     }
                 }

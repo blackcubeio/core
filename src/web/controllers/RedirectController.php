@@ -2,10 +2,10 @@
 /**
  * RedirectController.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -32,7 +32,7 @@ use Yii;
  * This is class allow to use easy redirect
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -47,17 +47,17 @@ class RedirectController extends Controller
     /**
      * @var integer
      */
-    private $_elementId;
+    private $_elementId = null;
 
     /**
      * @var string
      */
-    private $_elementType;
+    private $_elementType = null;
 
     /**
      * @var Slug
      */
-    private $_element;
+    private $_element = null;
 
     /**
      * Constructor

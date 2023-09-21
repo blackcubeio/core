@@ -1,6 +1,26 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.0.0 September, 21st 2023 <pgaultier@redcat.io>
+----------------------------------------------------
+
+ * Add: Adding `Quill` helper to clean generated html
+ * Add: Adding Element helper to compute `dateCreate` and `dateUpdate`
+ * Add: Adding `RobotsTxtAction` to generate `robots.txt`
+ * Upd: Update `SitemapAction` to generate `sitemap.xml`
+ * Upd: set minimal requirements to PHP 8.0
+ * Upd: add password strength validator
+ * Fix: Element instanciate for controller routing
+ * Upd: Add DI register
+ * Upd: Prepare type hints
+ * Upd: Update dependencies
+ * Chg: Prepare new plugin system
+ * Chg: move ```db```, ```cache``` and ```fs``` to components to allow tree traversal
+ * Upd: Change ```flysystem``` wrapper
+ * Chg: Rewrite ```plugin``` system
+ * Fix: Preview was not working when mimetype is incorrect
+ * Fix: Fix `cacheImage()` when image is svg
+
 Release 2.2.3 March, 11th 2022 <pgaultier@redcat.io>
 ----------------------------------------------------
 

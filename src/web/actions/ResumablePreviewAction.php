@@ -2,10 +2,10 @@
 /**
  * ResumablePreviewAction.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,8 +14,10 @@
 
 namespace blackcube\core\web\actions;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\Module;
 use Imagine\Image\ManipulatorInterface;
+use yii\base\Action;
 use yii\base\Event;
 use yii\imagine\Image;
 use yii\web\NotFoundHttpException;
@@ -27,15 +29,24 @@ use Yii;
  * preview action
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\web\actions
  * @since XXX
  */
-class ResumablePreviewAction extends ViewAction
+class ResumablePreviewAction extends Action
 {
+    public const IMAGES_EXTENSIONS = [
+        'png',
+        'jpg',
+        'jpeg',
+        'gif'
+    ];
+    public const SVG_EXTENSIONS = [
+        'svg'
+    ];
     /**
      * @var string
      */
@@ -44,7 +55,7 @@ class ResumablePreviewAction extends ViewAction
     /**
      * @inheritdoc
      */
-    public function run()
+    public function run(Flysystem $fs)
     {
         $name = Yii::$app->request->getQueryParam('name', null);
         $width = Yii::$app->request->getQueryParam('width', 200);
@@ -53,6 +64,7 @@ class ResumablePreviewAction extends ViewAction
         $uploadTmpPrefix = trim(Module::getInstance()->uploadTmpPrefix, '/') . '/';
         $uploadFsPrefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
         $uploadAlias = trim(Module::getInstance()->uploadAlias, '/') . '/';
+
 
         if (strncmp($uploadTmpPrefix, $name, strlen($uploadTmpPrefix)) === 0) {
             $realNameAlias = str_replace($uploadTmpPrefix, $uploadAlias, $name);
@@ -86,20 +98,14 @@ class ResumablePreviewAction extends ViewAction
 
         } elseif (strncmp($uploadFsPrefix, $name, strlen($uploadFsPrefix)) === 0) {
             $realName = str_replace($uploadFsPrefix, '', $name);
-            // file is in fly system (creocoder)
-            $mimeType = Module::getInstance()->fs->getMimetype($realName);
+            // file is in fly system
+            // $fs =  Module::getInstance()->get('fs');
+            $mimeType = $fs->mimeType($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
-            if (strncmp('image/', $mimeType, 6) !== 0) {
-                $realName = $this->prepareImage($fileName);
-                // $mimeType = mime_content_type($realName);
-                $handle = fopen($realName, 'r');
-            } elseif (strncmp('image/svg', $mimeType, 9) === 0) {
-                $handle = Module::getInstance()->fs->readStream($realName);
-                $mimeType = 'image/svg+xml'; // mime_content_type($realName);
-                // $handle = fopen($realName, 'r');
-            } else {
+            $fileExt = pathinfo($realName, PATHINFO_EXTENSION);
+            if ((strncmp('image/', $mimeType, 6) === 0 && (strncmp('image/svg', $mimeType, 9) !== 0)) || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::IMAGES_EXTENSIONS))) {
                 Image::$thumbnailBackgroundAlpha = 0;
-                $handle = Module::getInstance()->fs->readStream($realName);
+                $handle = $fs->readStream($realName);
                 $image = Image::thumbnail($handle, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
                 // $image = Image::resize($realName, $width, $height, true, true);
                 $thumbnailName = Yii::getAlias($uploadAlias.'thumb_'.$width.'x'.$height.'_'.$fileName);
@@ -117,6 +123,14 @@ class ResumablePreviewAction extends ViewAction
                         unlink($thumbnailName);
                     }
                 });
+                $handle = fopen($realName, 'r');
+            } elseif (strncmp('image/svg', $mimeType, 9) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::SVG_EXTENSIONS))) {
+                $handle = $fs->readStream($realName);
+                $mimeType = 'image/svg+xml'; // mime_content_type($realName);
+                // $handle = fopen($realName, 'r');
+            } else { // (strncmp('image/', $mimeType, 6) !== 0) {
+                $realName = $this->prepareImage($fileName);
+                // $mimeType = mime_content_type($realName);
                 $handle = fopen($realName, 'r');
             }
         } else {

@@ -2,10 +2,10 @@
 /**
  * ElementInterface.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -15,12 +15,13 @@
 namespace blackcube\core\interfaces;
 
 use blackcube\core\models\FilterActiveQuery;
+use yii\db\ActiveQuery;
 
 /**
  * Element interface
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -39,30 +40,30 @@ interface ElementInterface
      * @return string
      * @since XXX
      */
-    public static function getElementType();
+    public static function getElementType() :string;
 
     /**
      * @return FilterActiveQuery
      * @since XXX
      */
-    public function getBlocs();
+    public function getBlocs() :ActiveQuery;
 
     /**
      * @return FilterActiveQuery
      * @since XXX
      */
-    public function getSlug();
+    public function getSlug() :ActiveQuery;
 
     /**
      * @return FilterActiveQuery
      * @since XXX
      */
-    public function getType();
+    public function getType() :ActiveQuery;
 
     /**
      * @return boolean
      * @since XXX
      */
-    public function getIsActive();
+    public function getIsActive() :bool;
 
 }

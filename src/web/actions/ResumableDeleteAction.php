@@ -2,10 +2,10 @@
 /**
  * ResumableDeleteAction.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,7 +14,9 @@
 
 namespace blackcube\core\web\actions;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\Module;
+use yii\base\Action;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ViewAction;
@@ -24,14 +26,14 @@ use Yii;
  * delete only tmp files action
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
  * @package blackcube\core\web\actions
  * @since XXX
  */
-class ResumableDeleteAction extends ViewAction
+class ResumableDeleteAction extends Action
 {
     /**
      * @inheritdoc

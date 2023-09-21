@@ -2,10 +2,10 @@
 /**
  * UrlMapper.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -40,7 +40,7 @@ use Yii;
  * This is class allow transcoding url from route to DB
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -60,7 +60,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * Check if current route is handled by the mapper
      * {@inheritDoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) :bool
     {
         return (RouteEncoder::decode($offset) !== false);
     }
@@ -71,6 +71,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * 2. if requested route is defined in the cms return controller definitions and element ids
      * {@inheritDoc}
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $data = RouteEncoder::decode($offset);
@@ -95,7 +96,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * Allow backward compatibility with classic controllerMap
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) :void
     {
         // $this->additionalMap[$offset] = $value;
     }
@@ -104,7 +105,7 @@ class UrlMapper extends BaseObject implements ArrayAccess
      * Allow backward compatibility with classic controllerMap
      * {@inheritDoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) :void
     {
         // unset($this->additionalMap[$offset]);
     }
@@ -139,7 +140,10 @@ class UrlMapper extends BaseObject implements ArrayAccess
             $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
         }
         /**/
-        $element = $query->andWhere(['id' => $id])->active()->one();
+        $element = $query
+            ->andWhere(['id' => $id])
+            ->active()
+            ->one();
         /* @var $element \blackcube\core\models\Node|\blackcube\core\models\Composite|\blackcube\core\models\Category|\blackcube\core\models\Tag */
         if ($element === null) {
             throw new NotFoundHttpException();

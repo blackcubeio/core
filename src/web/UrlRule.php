@@ -2,10 +2,10 @@
 /**
  * UrlRule.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -30,7 +30,7 @@ use Yii;
  * This is class allow transcoding url from route to DB
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -43,7 +43,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     /**
      * @var string  suffix used for faked url
      */
-    public $suffix;
+    public $suffix = null;
 
     private static $slugs = [];
 
@@ -52,7 +52,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
-        $cache = Module::getInstance()->cache;
+        $cache = Module::getInstance()->get('cache');
         $prettyUrl = false;
         // $params = ['elementTarget' => 'tag-1']
         // $route = 'modules/controller?/action?/element-id
@@ -90,7 +90,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 if (empty($params) === false) {
                     $cacheId .= '?'.http_build_query($params);
                 }
-                $cache->set($cacheId, $prettyUrl, 3600, QueryCache::getCmsDependencies());
+                $cache->set($cacheId, $prettyUrl, 3600, QueryCache::getSlugDependencies());
             }
         }
         return $prettyUrl;
@@ -121,6 +121,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             static::$slugs[$key] = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
                 ->active()
                 ->with(['element' => function($query) { $query->active(); }])
+                ->cache(3600, QueryCache::getSlugDependencies())
                 ->one();
         }
         $slug = static::$slugs[$key];

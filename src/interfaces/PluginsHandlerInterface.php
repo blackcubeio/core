@@ -2,10 +2,10 @@
 /**
  * PluginsHandlerInterface.php
  *
- * PHP version 7.2+
+ * PHP version 7.4+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -22,7 +22,7 @@ use yii\web\UrlRuleInterface;
  * Interface PluginsHandlerInterface
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -33,27 +33,27 @@ interface PluginsHandlerInterface extends UrlRuleInterface {
     /**
      * @return bool
      */
-    public function checkPluginsAvailable();
+    public function checkPluginsAvailable() :bool;
 
     /**
      * @return array|null
      */
-    public function getPluginManagersConfig();
+    public function getPluginManagersConfig() :?array;
 
     public function getPluginManagers();
 
     /**
-     * @param $id
+     * @param string $id
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getPluginManager($id);
+    public function getPluginManager(string $id) :?PluginManagerInterface;
 
     /**
      * @return PluginManagerInterface[]|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getRegisteredPluginManagers();
+    public function getRegisteredPluginManagers() :?array;
 
     /**
      * @param string $id

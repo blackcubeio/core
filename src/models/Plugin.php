@@ -2,10 +2,10 @@
 /**
  * Plugin.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -18,14 +18,16 @@ use blackcube\core\Module;
 use blackcube\core\interfaces\SluggedInterface;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "{{%plugins}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -34,14 +36,14 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property string $config
  * @property string $version
- * @property string $className
- * @property boolean $bootstrap
+ * @property string $pluginConfig
+ * @property boolean $runtimeConfig
+ * @property boolean $registered
  * @property boolean $active
  * @property string $dateCreate
  * @property string|null $dateUpdate
- *
- * @property Slug $slug
  */
 class Plugin extends \yii\db\ActiveRecord
 {
@@ -49,15 +51,15 @@ class Plugin extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -70,7 +72,7 @@ class Plugin extends \yii\db\ActiveRecord
             'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
                 'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-                'bootstrap' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                'registered' => AttributeTypecastBehavior::TYPE_BOOLEAN
             ],
             'typecastAfterFind' => true,
             'typecastAfterSave' => true,
@@ -92,7 +94,7 @@ class Plugin extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%plugins}}';
     }
@@ -102,7 +104,7 @@ class Plugin extends \yii\db\ActiveRecord
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find(): FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -110,31 +112,73 @@ class Plugin extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['name', 'version', 'className'], 'required'],
+            [['id', 'name', 'version', 'pluginConfig'], 'required'],
             [['name', 'version'], 'string', 'max' => 128],
-            [['className'], 'string', 'max' => 190],
-            [['active', 'bootstrap'], 'boolean'],
+            [['id'], 'string', 'max' => 32],
+            [['pluginConfig', 'runtimeConfig'], 'string'],
+            [['pluginConfig'], 'buildable'],
+            [['active', 'registered'], 'boolean'],
             [['dateCreate', 'dateUpdate'], 'safe'],
         ];
+    }
+
+    public function buildable($attribute, $params)
+    {
+        try {
+            $conf = Json::decode($this->{$attribute});
+            if (is_string($conf) || (is_array($conf) && (isset($conf['class']) || isset($conf['__class'])))) {
+                /* cannot build fake object ... / $obj = Yii::createObject($conf, [$this->id]);
+                if ($obj === null) {
+                    $this->addError($attribute, Module::t('models/plugin', 'Cannot build plugin'));
+                }
+                /**/
+            } else {
+                $this->addError($attribute, Module::t('models/plugin', 'Configuration is invalid'));
+            }
+        } catch(\Exception $e) {
+            $this->addError($attribute, Module::t('models/plugin', 'Configuration is invalid'));
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/plugin', 'ID'),
             'name' => Module::t('models/plugin', 'Name'),
             'version' => Module::t('models/plugin', 'Version'),
-            'className' => Module::t('models/plugin', 'Class Name'),
-            'bootstrap' => Module::t('models/plugin', 'Bootstrap'),
+            'pluginConfig' => Module::t('models/plugin', 'Plugin Config'),
+            'runtimeConfig' => Module::t('models/plugin', 'Runtime Config'),
+            'registered' => Module::t('models/plugin', 'Registered'),
             'active' => Module::t('models/plugin', 'Active'),
             'dateCreate' => Module::t('models/plugin', 'Date Create'),
             'dateUpdate' => Module::t('models/plugin', 'Date Update'),
         ];
+    }
+
+    public function getPlugin()
+    {
+        $obj = null;
+        try {
+            $conf = Json::decode($this->pluginConfig);
+            if(is_string($conf)) {
+                $obj = $conf::getInstance();
+            } elseif (isset($conf['class'])) {
+                $obj = $conf['class']::getInstance();
+            } elseif (isset($conf['__class'])) {
+                $obj = $conf['__class']::getInstance();
+            }
+            if ($obj === null && (is_string($conf) || (is_array($conf) && (isset($conf['class']) || isset($conf['__class']))))) {
+                $obj = Yii::createObject($conf, [$this->id]);
+            }
+        } catch(\Exception $e) {
+            Yii::error(Module::t('models/plugin', 'Cannot build plugin'));
+        }
+        return $obj;
     }
 }

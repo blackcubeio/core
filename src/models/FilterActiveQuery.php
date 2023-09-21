@@ -2,10 +2,10 @@
 /**
  * FilterActiveQuery.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -15,13 +15,14 @@
 namespace blackcube\core\models;
 
 use blackcube\core\components\PreviewManager;
+use blackcube\core\interfaces\PreviewManagerInterface;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 use Yii;
 
 /**
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -33,22 +34,20 @@ class FilterActiveQuery extends ActiveQuery
     /**
      * @var PreviewManager
      */
-    private $previewManager;
+    private PreviewManagerInterface $previewManager;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function init()
+    public function __construct($modelClass, PreviewManagerInterface $previewManager, $config = [])
     {
-        parent::init();
-        $this->previewManager = Yii::createObject(PreviewManager::class);
+        $this->previewManager = $previewManager;
+        parent::__construct($modelClass, $config);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
-    public function active() {
+    public function active(): ActiveQuery
+    {
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
         if ($this->previewManager->check() === false) {
@@ -97,6 +96,22 @@ class FilterActiveQuery extends ActiveQuery
                 }
             }
 
+        }
+        return $this;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @since XXX
+     */
+    public function registered(): ActiveQuery
+    {
+        $modelClass = $this->modelClass;
+        if ($modelClass === Plugin::class) {
+            $tableName = $modelClass::tableName();
+            $this->andWhere([
+                $tableName.'.[[registered]]' => true,
+            ]);
         }
         return $this;
     }

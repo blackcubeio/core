@@ -2,10 +2,10 @@
 /**
  * SeoBehavior.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -35,10 +35,10 @@ use yii\web\View;
 /**
  * Set seo data in front page
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -47,7 +47,7 @@ use yii\web\View;
  */
 class SeoBehavior extends Behavior
 {
-    public function events()
+    public function events() :array
     {
         return [
             BlackcubeController::EVENT_AFTER_ELEMENT => 'registerSeo',
@@ -59,11 +59,11 @@ class SeoBehavior extends Behavior
      * @param BlackcubeControllerEvent $event
      * @throws \yii\base\InvalidConfigException
      */
-    public function registerSeo($event)
+    public function registerSeo(BlackcubeControllerEvent $event) :void
     {
         $slugId = $event->element->slugId;
         $seo = Seo::find()->active()
-            ->andWhere(['id' => $slugId])
+            ->andWhere(['slugId' => $slugId])
             ->one();
         if ($seo !== null) {
             /* @var \blackcube\core\models\Seo $seo */

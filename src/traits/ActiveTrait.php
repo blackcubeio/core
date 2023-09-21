@@ -2,10 +2,10 @@
 /**
  * ActiveTrait.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -28,7 +28,7 @@ use Yii;
  * Active trait
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -43,7 +43,7 @@ trait ActiveTrait
      * @return bool
      * @throws \yii\base\InvalidConfigException
      */
-    public function getIsActive()
+    public function getIsActive() :bool
     {
         $isActive = $this->active;
         $modelClass = get_class($this);
@@ -73,6 +73,6 @@ trait ActiveTrait
                     break;
             }
         }
-        return (boolean)$isActive;
+        return $isActive;
     }
 }

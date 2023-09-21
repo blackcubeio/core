@@ -2,10 +2,10 @@
 /**
  * Element.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -29,7 +29,7 @@ use Yii;
  * retrieve element frop route
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -39,11 +39,14 @@ use Yii;
 class Element
 {
 
-    public static function instanciate($route, $active = true)
+    public static function query(string $route, bool $active = true)
     {
         try {
             $decodedRoute = RouteEncoder::decode($route);
         } catch (\Exception $e) {
+            return null;
+        }
+        if ($decodedRoute === false) {
             return null;
         }
         switch ($decodedRoute['type']) {
@@ -67,6 +70,16 @@ class Element
         if ($active === true) {
             $query->active();
         }
-        return $query->one();
+        return $query;
+    }
+    public static function instanciate(string $route, bool $active = true)
+    {
+        $query = static::query($route, $active);
+        if ($query !== null) {
+            $element = $query->one();
+        } else {
+            $element = null;
+        }
+        return $element;
     }
 }

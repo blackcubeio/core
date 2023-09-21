@@ -2,10 +2,10 @@
 /**
  * NodeTag.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -16,6 +16,8 @@ namespace blackcube\core\models;
 
 use blackcube\core\Module;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use Yii;
 
@@ -23,7 +25,7 @@ use Yii;
  * This is the model class for table "{{%nodes_tags}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -43,15 +45,15 @@ class NodeTag extends \yii\db\ActiveRecord
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -74,7 +76,7 @@ class NodeTag extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%nodes_tags}}';
     }
@@ -82,7 +84,7 @@ class NodeTag extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['nodeId', 'tagId'], 'required'],
@@ -97,7 +99,7 @@ class NodeTag extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'nodeId' => Module::t('models/node-tag', 'Node ID'),
@@ -112,7 +114,7 @@ class NodeTag extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNode()
+    public function getNode(): ActiveQuery
     {
         return $this->hasOne(Node::class, ['id' => 'nodeId']);
     }
@@ -122,7 +124,7 @@ class NodeTag extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTag()
+    public function getTag(): ActiveQuery
     {
         return $this->hasOne(Tag::class, ['id' => 'tagId']);
     }

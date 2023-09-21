@@ -2,10 +2,10 @@
 /**
  * PluginManagerInterface.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -21,7 +21,7 @@ use yii\base\Action;
  * Interface PluginManagerInterface
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -33,82 +33,67 @@ interface PluginManagerInterface {
      * PluginInterface constructor.
      * @param string $id
      */
-    public function __construct($id);
+    public function __construct(string $id);
+
+    /**
+     * @return PluginManagerInterface|null
+     */
+    public static function getInstance();
 
     /**
      * @return string plugin id
      */
-    public function getId();
+    public function getId() :string;
 
     /**
      * @return string plugin name
      */
-    public function getName();
+    public function getName() :string;
 
     /**
      * Define alias for plugin
      * @return void
      */
-    public function setAlias();
+    public function setAlias() :void;
 
     /**
      * @return string Semver version
      */
-    public function getVersion();
+    public function getVersion() :string;
 
     /**
      * @return bool check if plugin is compatible with current core version
      */
-    public function getIsCompatible();
+    public function getIsCompatible() :bool;
 
     /**
      * @return bool check if plugin is installed
      */
-    public function getIsRegistered();
+    public function getIsRegistered() :bool;
 
     /**
      * @return bool register and install plugin
      */
-    public function register();
-
-    /**
-     * @return bool upgrade plugin to new version
-     */
-    public function upgrade();
+    public function register() :bool;
 
     /**
      * @return bool unregister and uninstall plugin
      */
-    public function unregister();
+    public function unregister() :bool;
 
     /**
      * @return bool activate plugin
      */
-    public function activate();
+    public function activate() :bool;
 
     /**
      * @return bool deactivate plugin
      */
-    public function deactivate();
+    public function deactivate() :bool;
 
     /**
      * @return bool check if plugin is active
      */
-    public function getIsActive();
+    public function getIsActive() :bool;
 
-    /**
-     * @param string $hook
-     * @param ElementInterface|null $element
-     * @param array $additionalParameters
-     * @return array widget configuration
-     */
-    public function hookWidget($hook, ElementInterface $element = null, $additionalParameters = []);
-
-    /**
-     * @param string $hook hook name
-     * @param ElementInterface $element
-     * @param array $additionalParams additional parameters passed at runtime
-     * @return mixed
-     */
-    public function hook($hook, ElementInterface $element = null, $additionalParams = []);
 }

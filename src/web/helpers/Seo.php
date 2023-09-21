@@ -2,10 +2,10 @@
 /**
  * Seo.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -23,7 +23,7 @@ use Yii;
  * Seo helpers to handle Blackcube SEO fields
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -58,7 +58,7 @@ class Seo
                     $view->registerMetaTag(['name' => 'description', 'content' => $slug->seo->description], 'meta-description');
                 }
                 $image = null;
-                if (empty($slug->seo->image) === false) {
+                if ($slug->seo->image !== null && empty($slug->seo->image) === false) {
                     $images = preg_split('/[, ]+/', $slug->seo->image, PREG_SPLIT_NO_EMPTY);
                     if (is_array($images) && isset($images[0])) {
                         $image = Html::cacheImage($images[0], 1200, 630);

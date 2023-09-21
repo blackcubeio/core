@@ -2,10 +2,10 @@
 /**
  * ElasticTrait.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -24,7 +24,7 @@ use Yii;
  * Elastic trait
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -42,19 +42,19 @@ trait ElasticTrait
     /**
      * @var Elastic
      */
-    private $elastic;
+    private ?Elastic $elastic = null;
 
     /**
      * @var string default JSON Schema
      */
-    public $defaultJsonSchema = '{"type":"object"}';
+    public string $defaultJsonSchema = '{"type":"object"}';
 
     /**
      * Lazy load json schemas
      * @param int $blocTypeId
      * @return string json schema
      */
-    private function getStoredBlocTypeSchemas($blocTypeId)
+    private function getStoredBlocTypeSchemas(int $blocTypeId): string
     {
         if (self::$elasticBlocTypes === null) {
             $blocTypes = BlocType::find()->select(['id', 'template'])->asArray()->all();
@@ -79,7 +79,7 @@ trait ElasticTrait
     /**
      * {@inheritDoc}
      */
-    public function attributes()
+    public function attributes(): array
     {
         $attributes = parent::attributes();
         if ($this->elastic instanceof Elastic) {
@@ -92,7 +92,7 @@ trait ElasticTrait
     /**
      * {@inheritDoc}
      */
-    public function activeAttributes()
+    public function activeAttributes(): array
     {
         $activeAttributes = parent::activeAttributes();
         if ($this->elastic instanceof Elastic) {
@@ -172,7 +172,7 @@ trait ElasticTrait
     /**
      * {@inheritDoc}
      */
-    public function hasAttribute($name)
+    public function hasAttribute($name): bool
     {
         if ($this->elastic instanceof Elastic && $this->elastic->hasAttribute($name) === true) {
             return true;
@@ -326,7 +326,7 @@ trait ElasticTrait
         $this->elastic =  Yii::createObject(['class' => Elastic::class, 'schema' => $jsonSchema]);
     }
 
-    public function getStructure()
+    public function getStructure(): array
     {
         return $this->elastic->getModelStructure();
     }

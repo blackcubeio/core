@@ -14,7 +14,7 @@
 namespace tests\tree;
 use blackcube\core\helpers\MatrixHelper;
 use tests\tree\components\Node;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 /**
  * Test node basic functions
  *
@@ -26,7 +26,7 @@ use PHPUnit_Framework_TestCase;
  * @package tests\unit
  * @since XXX
  */
-class NodeTraitTest extends PHPUnit_Framework_TestCase
+class NodeTraitTest extends TestCase
 {
     /**
      * Test node creation from path

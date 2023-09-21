@@ -2,10 +2,10 @@
 /**
  * Html.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -14,6 +14,7 @@
 
 namespace blackcube\core\web\helpers;
 
+use blackcube\core\components\Flysystem;
 use blackcube\core\Module;
 use blackcube\core\web\helpers\editorjs\DelimiterBlock;
 use blackcube\core\web\helpers\editorjs\EmbedBlock;
@@ -22,7 +23,6 @@ use blackcube\core\web\helpers\editorjs\ListBlock;
 use blackcube\core\web\helpers\editorjs\ParagraphBlock;
 use blackcube\core\web\helpers\editorjs\QuoteBlock;
 use blackcube\core\web\helpers\editorjs\RawBlock;
-use creocoder\flysystem\Filesystem;
 use Imagine\Image\ManipulatorInterface;
 use yii\base\Model;
 use yii\helpers\Html as YiiHtml;
@@ -35,7 +35,7 @@ use Yii;
  * Html helpers to handle Blackcube CMS fields
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -51,7 +51,15 @@ class Html extends YiiHtml
     public const EDITORJS_BLOCK_RAW = 'raw';
     public const EDITORJS_BLOCK_QUOTE = 'quote';
     public const EDITORJS_BLOCK_EMBED = 'embed';
-
+    public const IMAGES_EXTENSIONS = [
+        'png',
+        'jpg',
+        'jpeg',
+        'gif'
+    ];
+    public const SVG_EXTENSIONS = [
+        'svg'
+    ];
     public static $editorJsRenderers = [
         self::EDITORJS_BLOCK_PARAGRAPH => ParagraphBlock::class,
         self::EDITORJS_BLOCK_LIST => ListBlock::class,
@@ -137,37 +145,43 @@ class Html extends YiiHtml
         $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
         $resultFileUrl = $imageLink;
         if (strncmp($prefix, $imageLink, strlen($prefix)) === 0) {
-            $fs = Module::getInstance()->fs;
-            /* @var $fs Filesystem */
+            $fs = Module::getInstance()->get('fs');
+            /* @var $fs Flysystem */
             $originalFilename = str_replace($prefix, '', $imageLink);
-            if ($fs->has($originalFilename) === true) {
-                $fileData = pathinfo($originalFilename);
-                $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
-                if ($width !== null && $height !== null) {
-                    $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-'.$width.'-'.$height.'.'.$fileData['extension'];
-                }
-                $originalFileTimestamp = $fs->getTimestamp($originalFilename);
-                $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
-                $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
-                if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
-                    $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
-                    if (is_dir($targetCachePath) === false) {
-                        mkdir($targetCachePath, 0777, true);
+            if ($fs->fileExists($originalFilename) === true) {
+                $mimeType = $fs->mimeType($originalFilename);
+                $fileExt = pathinfo($originalFilename, PATHINFO_EXTENSION);
+                if ((strncmp('image/', $mimeType, 6) === 0 && (strncmp('image/svg', $mimeType, 9) !== 0)) || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::IMAGES_EXTENSIONS))) {
+                    $fileData = pathinfo($originalFilename);
+                    $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
+                    if ($width !== null && $height !== null) {
+                        $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-'.$width.'-'.$height.'.'.$fileData['extension'];
                     }
-                    if ($width !== null || $height !== null) {
-                        $sourceStream = $fs->readStream($originalFilename);
-                        $image = Image::thumbnail($sourceStream, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
-                        $image->save($cachedFilePath);
-                        fclose($sourceStream);
-                    } else {
-                        $sourceStream = $fs->readStream($originalFilename);
-                        $targetStream = fopen($cachedFilePath, 'w');
-                        stream_copy_to_stream($sourceStream, $targetStream);
-                        fclose($sourceStream);
-                        fclose($targetStream);
+                    $originalFileTimestamp = $fs->lastModified($originalFilename);
+                    $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
+                    $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
+                    if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
+                        $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
+                        if (is_dir($targetCachePath) === false) {
+                            mkdir($targetCachePath, 0777, true);
+                        }
+                        if ($width !== null || $height !== null) {
+                            $sourceStream = $fs->readStream($originalFilename);
+                            $image = Image::thumbnail($sourceStream, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
+                            $image->save($cachedFilePath);
+                            fclose($sourceStream);
+                        } else {
+                            $sourceStream = $fs->readStream($originalFilename);
+                            $targetStream = fopen($cachedFilePath, 'w');
+                            stream_copy_to_stream($sourceStream, $targetStream);
+                            fclose($sourceStream);
+                            fclose($targetStream);
+                        }
                     }
+                    $resultFileUrl = $cachedFileUrl;
+                } elseif (strncmp('image/svg', $mimeType, 9) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::SVG_EXTENSIONS))) {
+                    return self::cacheFile($imageLink);
                 }
-                $resultFileUrl = $cachedFileUrl;
             }
 
         }
@@ -186,13 +200,13 @@ class Html extends YiiHtml
         $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
         $resultFileUrl = $fileLink;
         if (strncmp($prefix, $fileLink, strlen($prefix)) === 0) {
-            $fs = Module::getInstance()->fs;
-            /* @var $fs Filesystem */
+            $fs = Module::getInstance()->get('fs');
+            /* @var $fs Flysystem */
             $originalFilename = str_replace($prefix, '', $fileLink);
-            if ($fs->has($originalFilename) === true) {
+            if ($fs->fileExists($originalFilename) === true) {
                 $fileData = pathinfo($originalFilename);
                 $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
-                $originalFileTimestamp = $fs->getTimestamp($originalFilename);
+                $originalFileTimestamp = $fs->lastModified($originalFilename);
                 $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
                 $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
                 if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
@@ -234,7 +248,7 @@ class Html extends YiiHtml
                 $currentDate = new DateTime($currentValue);
                 $value = $currentDate->format('Y-m-d\TH:i:s');;
             } else {
-                $value;
+                $value = null;
             }
         }
         if (!array_key_exists('id', $options)) {

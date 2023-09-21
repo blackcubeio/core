@@ -2,10 +2,10 @@
 /**
  * BaseCategory.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -25,6 +25,8 @@ use blackcube\core\traits\SlugTrait;
 use blackcube\core\traits\TypeTrait;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -34,7 +36,7 @@ use Yii;
  * This is the model class for table "{{%categories}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -65,20 +67,20 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
 
     public const SCENARIO_TOGGLE_ACTIVE = 'toggle_active';
 
-    const ELEMENT_TYPE  = 'category';
+    public const ELEMENT_TYPE  = 'category';
 
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb() :Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * @return string
      */
-    public function getRoute()
+    public function getRoute() :string
     {
         return RouteEncoder::encode(static::getElementType(), $this->id);
     }
@@ -86,7 +88,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     /**
      * {@inheritDoc}
      */
-    public static function getElementType()
+    public static function getElementType() :string
     {
         return static::ELEMENT_TYPE;
         // return Inflector::camel2id(StringHelper::basename(static::class));
@@ -95,7 +97,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     /**
      * {@inheritDoc}
      */
-    protected function getElementBlocClass()
+    protected function getElementBlocClass() :string
     {
         return CategoryBloc::class;
     }
@@ -103,7 +105,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     /**
      * {@inheritDoc}
      */
-    protected function getElementIdColumn()
+    protected function getElementIdColumn() :string
     {
         return 'categoryId';
     }
@@ -119,7 +121,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors() :array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -144,7 +146,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName() :string
     {
         return '{{%categories}}';
     }
@@ -154,7 +156,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find() :FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -162,11 +164,15 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules() :array
     {
         return [
             [['name', 'slugId', 'typeId'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [['name', 'languageId'], 'required'],
             [['slugId', 'typeId'], 'integer'],
@@ -185,7 +191,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels() :array
     {
         return [
             'id' => Module::t('models/category',  'ID'),
@@ -205,7 +211,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
-    public function getLanguage()
+    public function getLanguage() :ActiveQuery
     {
         return $this
             ->hasOne(Language::class, ['id' => 'languageId']);
@@ -216,7 +222,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getSlug()
+    public function getSlug() :ActiveQuery
     {
         return $this
             ->hasOne(Slug::class, ['id' => 'slugId']);
@@ -227,7 +233,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getType()
+    public function getType() :ActiveQuery
     {
         return $this
             ->hasOne(Type::class, ['id' => 'typeId']);
@@ -239,7 +245,7 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getTags()
+    public function getTags() :ActiveQuery
     {
         return $this
             ->hasMany(Tag::class, ['categoryId' => 'id']);
@@ -250,7 +256,8 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getBlocs() {
+    public function getBlocs() :ActiveQuery
+    {
         return $this
             ->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(CategoryBloc::tableName(), ['categoryId' => 'id'])

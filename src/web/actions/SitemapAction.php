@@ -2,10 +2,10 @@
 /**
  * SitemapAction.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -28,7 +28,7 @@ use Yii;
  * Generate Sitemap
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -40,12 +40,14 @@ class SitemapAction extends ViewAction
     /**
      * @var DOMDocument
      */
-    private $dom;
+    private $dom = null;
 
     /**
      * @var string alias to additional sitemap file
      */
-    public $additionalSitemap;
+    public $additionalSitemap = null;
+
+    public $addHeaderXRobotsTag = true;
 
     /**
      * {@inheritdoc}
@@ -62,10 +64,14 @@ class SitemapAction extends ViewAction
         $timeZone = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
         foreach($sitemaps->each() as $sitemap) {
             /* @var $sitemap \blackcube\core\models\Sitemap */
-            $currentSlug = Slug::findByPathinfoAndHostname($sitemap->slug->path, $hostname)->active()->one();
+            $currentSlug = Slug::findByPathinfoAndHostname($sitemap->slug->path, $hostname)->active()->with('seo')->one();
             if ($currentSlug !== null && $currentSlug->active) {
+                $noIndex = false;
+                if ($currentSlug->seo !== null && $currentSlug->seo->active === true) {
+                    $noIndex = (bool)$currentSlug->seo->noindex;
+                }
                 $element = $currentSlug->getElement()->active()->one();
-                if ($element !== null) {
+                if ($element !== null && $noIndex === false) {
                     $url = $this->dom->createElement('url');
                     $currentHost = $sitemap->slug->host;
                     if ($currentHost === null) {
@@ -111,6 +117,9 @@ class SitemapAction extends ViewAction
             }
         }
         $this->dom->appendChild($urlSet);
+        if ($this->addHeaderXRobotsTag === true) {
+            Yii::$app->response->headers->add('X-Robots-Tag', 'noindex');
+        }
 
         Yii::$app->response->format = Response::FORMAT_XML;
         Yii::$app->response->content = $this->dom->saveXML();
@@ -128,7 +137,13 @@ class SitemapAction extends ViewAction
             $sitemapPath = Yii::getAlias($this->additionalSitemap);
             if (file_exists($sitemapPath) && is_file($sitemapPath)) {
                 try {
-                    $sitemapReader = XMLReader::open($sitemapPath);
+                    if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+                        $sitemapReader = new XMLReader();
+                        $sitemapReader->open($sitemapPath);
+                    } else {
+                        $sitemapReader = XMLReader::open($sitemapPath);
+                    }
+
                     /* @var $sitemapReader XMLReader */
                     $url = [];
                     while($sitemapReader->read()) {

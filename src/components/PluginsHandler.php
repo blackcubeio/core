@@ -2,10 +2,10 @@
 /**
  * PluginsHandler.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -16,6 +16,8 @@ namespace blackcube\core\components;
 
 use blackcube\core\helpers\PluginHelper;
 use blackcube\core\interfaces\ElementInterface;
+use blackcube\core\interfaces\PluginManagerHookInterface;
+use blackcube\core\interfaces\PluginManagerHookWidgetInterface;
 use blackcube\core\interfaces\PluginManagerInterface;
 use blackcube\core\interfaces\PluginManagerRoutableInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
@@ -24,13 +26,14 @@ use blackcube\core\Module as CoreModule;
 use Yii;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
+use yii\helpers\ArrayHelper;
 use yii\web\UrlRuleInterface;
 
 /**
  * Class to build a PluginsHandler
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -45,12 +48,13 @@ class PluginsHandler implements PluginsHandlerInterface {
     private $activePlugins;
 
     /**
+     * Check if plugin system is ready
      * @return bool
      */
-    public function checkPluginsAvailable()
+    public function checkPluginsAvailable() :bool
     {
         if ($this->pluginsAvailable === null) {
-            $db = CoreModule::getInstance()->db;
+            $db = CoreModule::getInstance()->get('db');
             $pluginTable = $db->schema->getRawTableName(Plugin::tableName());
             $this->pluginsAvailable = ($db->getTableSchema($pluginTable) !== null);
         }
@@ -60,7 +64,7 @@ class PluginsHandler implements PluginsHandlerInterface {
     /**
      * @return array|null
      */
-    public function getPluginManagersConfig()
+    public function getPluginManagersConfig() :?array
     {
         if ($this->checkPluginsAvailable() && $this->pluginManagers === null) {
             $definedPlugins = CoreModule::getInstance()->plugins;
@@ -77,68 +81,62 @@ class PluginsHandler implements PluginsHandlerInterface {
         return $this->pluginManagersConfig;
     }
 
-    public function getPluginManagers()
+    public function getPluginManagers() :?array
     {
-        if ($this->checkPluginsAvailable()) {
-            $pluginManagersConfig = $this->getPluginManagersConfig();
-            if($this->pluginManagers === null) {
-                $this->pluginManagers = [];
-            }
-            if ($pluginManagersConfig === null) {
-                $pluginManagersConfig = [];
-            }
-            foreach($pluginManagersConfig as $id => $config) {
-                if (isset($this->pluginManagers[$id]) === false) {
-                    $this->pluginManagers[$id] = Yii::createObject($config, [$id]);
+        if ($this->pluginManagers === null) {
+            $this->pluginManagers = [];
+            //$pluginManagersConfig = $this->getPluginManagersConfig();
+            $dbPlugins = Plugin::find()->all();
+            // $dbPlugins = ArrayHelper::index($dbPlugins, 'id');
+
+            foreach($dbPlugins as $dbPlugin) {
+                if (isset($this->pluginManagers[$dbPlugin->id]) === false) {
+                    $pluginManager = $dbPlugin->getPlugin();
+                    if ($pluginManager !== null) {
+                        $this->pluginManagers[$dbPlugin->id] = $pluginManager;
+                    }
                 }
             }
-            return $this->pluginManagers;
-        }
-        return null;
 
+        }
+        return $this->pluginManagers;
     }
 
     /**
-     * @param $id
+     * @param string $id
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getPluginManager($id)
+    public function getPluginManager($id) :?PluginManagerInterface
     {
-        if ($this->checkPluginsAvailable()) {
-            $pluginManagersConfig = $this->getPluginManagersConfig();
-            if ($pluginManagersConfig === null) {
-                $pluginManagersConfig = [];
-            }
-            if($this->pluginManagers === null) {
-                $this->pluginManagers = [];
-            }
-            if (isset($pluginManagersConfig[$id])) {
-                if (isset($this->pluginManagers[$id]) === false) {
-                    $this->pluginManagers[$id] = Yii::createObject($pluginManagersConfig[$id], [$id]);
-                }
-                return $this->pluginManagers[$id];
-            }
-        }
-        return null;
+        $plugins = $this->getPluginManagers();
+        return $plugins[$id]??null;
+
     }
 
     /**
      * @return PluginManagerInterface[]|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getRegisteredPluginManagers()
+    public function getRegisteredPluginManagers() :?array
     {
+
         if ($this->registeredPlugins === null) {
+            // $pluginManagers = $this->getPluginManagers();
             $this->registeredPlugins = [];
-            $pluginsQuery = Plugin::find();
-            foreach ($pluginsQuery->each() as $plugin) {
-                /* @var $plugin \blackcube\core\models\Plugin */
-                $pluginManager = $this->getPluginManager($plugin->id);
-                if ($pluginManager !== null) {
-                    $this->registeredPlugins[$plugin->id] = $pluginManager;
+            //$pluginManagersConfig = $this->getPluginManagersConfig();
+            $dbPlugins = Plugin::find()->registered()->all();
+            // $dbPlugins = ArrayHelper::index($dbPlugins, 'id');
+
+            foreach($dbPlugins as $dbPlugin) {
+                if (isset($this->registeredPlugins[$dbPlugin->id]) === false) {
+                    $pluginManager = $dbPlugin->getPlugin();
+                    if ($pluginManager !== null) {
+                        $this->registeredPlugins[$dbPlugin->id] = $pluginManager;
+                    }
                 }
             }
+
         }
         return $this->registeredPlugins;
     }
@@ -148,13 +146,10 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @return PluginManagerInterface|null
      * @throws \yii\base\InvalidConfigException
      */
-    public function getRegisteredPluginManager($id)
+    public function getRegisteredPluginManager($id): ?PluginManagerInterface
     {
         $registeredPlugins = $this->getRegisteredPluginManagers();
-        if (isset($registeredPlugins[$id])) {
-            return $registeredPlugins[$id];
-        }
-        return null;
+        return $registeredPlugins[$id] ?? null;
     }
 
     /**
@@ -162,16 +157,21 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @throws \yii\base\InvalidConfigException
      * @todo instanciate plugins from DB
      */
-    public function getActivePluginManagers()
+    public function getActivePluginManagers(): ?array
     {
         if ($this->activePlugins === null) {
             $this->activePlugins = [];
-            $pluginsQuery = Plugin::find()->active();
-            foreach ($pluginsQuery->each() as $plugin) {
-                /* @var $plugin \blackcube\core\models\Plugin */
-                $pluginManager = $this->getPluginManager($plugin->id);
-                if ($pluginManager !== null) {
-                    $this->activePlugins[$plugin->id] = $pluginManager;
+
+            //$pluginManagersConfig = $this->getPluginManagersConfig();
+            $dbPlugins = Plugin::find()->active()->all();
+            // $dbPlugins = ArrayHelper::index($dbPlugins, 'id');
+
+            foreach($dbPlugins as $dbPlugin) {
+                if (isset($this->activePlugins[$dbPlugin->id]) === false) {
+                    $pluginManager = $dbPlugin->getPlugin();
+                    if ($pluginManager !== null) {
+                        $this->activePlugins[$dbPlugin->id] = $pluginManager;
+                    }
                 }
             }
         }
@@ -184,13 +184,10 @@ class PluginsHandler implements PluginsHandlerInterface {
      * @throws \yii\base\InvalidConfigException
      * @todo instanciate plugin from DB
      */
-    public function getActivePluginManager($id)
+    public function getActivePluginManager($id): ?PluginManagerInterface
     {
         $activePlugins = $this->getActivePluginManagers();
-        if (isset($activePlugins[$id])) {
-            return $activePlugins[$id];
-        }
-        return null;
+        return $activePlugins[$id]??null;
     }
 
     /**
@@ -216,7 +213,9 @@ class PluginsHandler implements PluginsHandlerInterface {
     public function runHook($hook, ElementInterface $element = null, $additionalParams = []) {
         $hooksResults = [];
         foreach ($this->getActivePluginManagers() as $id => $plugin) {
-            $hooksResults[$id] = $plugin->hook($hook, $element, $additionalParams);
+            if($plugin instanceof PluginManagerHookInterface) {
+                $hooksResults[$id] = $plugin->hook($hook, $element, $additionalParams);
+            }
         }
         return $hooksResults;
     }
@@ -231,7 +230,9 @@ class PluginsHandler implements PluginsHandlerInterface {
     public function runWidgetHook($hook, ElementInterface $element = null, $additionalParams = []) {
         $hooksResults = [];
         foreach ($this->getActivePluginManagers() as $id => $plugin) {
-            $hooksResults[$id] = $plugin->hookWidget($hook, $element, $additionalParams);
+            if($plugin instanceof PluginManagerHookWidgetInterface) {
+                $hooksResults[$id] = $plugin->hookWidget($hook, $element, $additionalParams);
+            }
         }
         return $hooksResults;
     }

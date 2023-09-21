@@ -2,10 +2,10 @@
 /**
  * BlocTrait.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -21,12 +21,13 @@ use blackcube\core\models\FilterActiveQuery;
 use blackcube\core\models\NodeBloc;
 use blackcube\core\models\TagBloc;
 use Yii;
+use yii\db\Expression;
 
 /**
  * Bloc trait
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -49,7 +50,7 @@ trait BlocTrait
     /**
      * @return string name of the column used to link element with blocs (blocId)
      */
-    protected function getBlocIdColumn()
+    protected function getBlocIdColumn() :string
     {
         return 'blocId';
     }
@@ -60,7 +61,7 @@ trait BlocTrait
      * @param int $position if position < 1, bloc will be appended at the end of the list
      * @return bool
      */
-    public function attachBloc(Bloc $bloc, $position = 1)
+    public function attachBloc(Bloc $bloc, int $position = 1) :bool
     {
         $status = true;
         $elementBlocClass = $this->getElementBlocClass();
@@ -73,14 +74,12 @@ trait BlocTrait
         try {
             // open space to add bloc
             if ($position <= $blocCount) {
-                $elementBlocs = $elementBlocClass::find()
-                    ->andWhere([$this->getElementIdColumn() => $this->id])
-                    ->andWhere(['>=', 'order', $position])
-                    ->orderBy(['order' => SORT_DESC])->all();
-                foreach($elementBlocs as $elementBloc) {
-                    $elementBloc->order++;
-                    $elementBloc->save(['order']);
-                }
+                $elementBlocClass::updateAll([
+                    'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
+                ], ['and',
+                    [$this->getElementIdColumn() => $this->id],
+                    ['>=', 'order', $position]
+                ]);
             } else {
                 $position = $blocCount + 1;
             }
@@ -104,7 +103,7 @@ trait BlocTrait
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function detachBloc(Bloc $bloc)
+    public function detachBloc(Bloc $bloc) :bool
     {
         $bloc->delete();
         $this->reorderBlocs();
@@ -117,7 +116,7 @@ trait BlocTrait
      * @param int $position if position < 1, bloc will be appended at the end of the list
      * @return bool
      */
-    public function moveBloc(Bloc $bloc, $position = 1)
+    public function moveBloc(Bloc $bloc, int $position = 1) :bool
     {
         $status = true;
         $elementBlocClass = $this->getElementBlocClass();
@@ -139,26 +138,21 @@ trait BlocTrait
                 $currentPosition = $currentElementBloc->order;
                 $currentAttributes = $currentElementBloc->attributes;
                 $currentElementBloc->delete();
-                $elementBlocs = $elementBlocClass::find()
-                    ->andWhere([$this->getElementIdColumn() => $this->id])
-                    ->andWhere(['>=', 'order', $currentPosition])
-                    ->orderBy(['order' => SORT_ASC])->all();
-                foreach($elementBlocs as $elementBloc) {
-                    $elementBloc->order--;
-                    $elementBloc->save(['order']);
-                }
-
+                $elementBlocClass::updateAll([
+                    'order' => Yii::createObject(Expression::class, ['[[order]]-1'])
+                ], ['and',
+                    [$this->getElementIdColumn() => $this->id],
+                    ['>=', 'order', $currentPosition]
+                ]);
                 $blocCount = $this->getBlocs()->count();
                 // open space to add bloc
                 if ($position <= $blocCount) {
-                    $elementBlocs = $elementBlocClass::find()
-                        ->andWhere([$this->getElementIdColumn() => $this->id])
-                        ->andWhere(['>=', 'order', $position])
-                        ->orderBy(['order' => SORT_DESC])->all();
-                    foreach($elementBlocs as $elementBloc) {
-                        $elementBloc->order++;
-                        $elementBloc->save(['order']);
-                    }
+                    $elementBlocClass::updateAll([
+                        'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
+                    ], ['and',
+                        [$this->getElementIdColumn() => $this->id],
+                        ['>=', 'order', $position]
+                    ]);
                 } else {
                     $position = $blocCount + 1;
                 }
@@ -166,7 +160,7 @@ trait BlocTrait
                 $elementBloc->attributes = $currentAttributes;
                 $elementBloc->order = $position;
                 $elementBloc->save();
-                $this->reorderBlocs();
+                // $this->reorderBlocs();
                 $transaction->commit();
             } catch(\Exception $e) {
                 $transaction->rollBack();
@@ -181,7 +175,7 @@ trait BlocTrait
      * @param Bloc $bloc
      * @return bool
      */
-    public function moveBlocUp(Bloc $bloc)
+    public function moveBlocUp(Bloc $bloc) :bool
     {
         $elementBlocClass = $this->getElementBlocClass();
         $blocCount = $this->getBlocs()->count();
@@ -204,7 +198,7 @@ trait BlocTrait
      * @param Bloc $bloc
      * @return bool
      */
-    public function moveBlocDown(Bloc $bloc)
+    public function moveBlocDown(Bloc $bloc) :bool
     {
         $elementBlocClass = $this->getElementBlocClass();
         $blocCount = $this->getBlocs()->count();
@@ -227,7 +221,7 @@ trait BlocTrait
      * Reset blocs order value to have the list 1 indexed
      * @return bool
      */
-    protected function reorderBlocs()
+    protected function reorderBlocs() :bool
     {
         $status = true;
         $elementBlocClass = $this->getElementBlocClass();
@@ -253,7 +247,7 @@ trait BlocTrait
     /**
      * @return CategoryBloc[]|TagBloc[]|CompositeBloc[]|NodeBloc[]
      */
-    public function getElementBlocs()
+    public function getElementBlocs() :array
     {
         $elementBlocs = [];
         if ($this->getIsNewRecord() === false) {

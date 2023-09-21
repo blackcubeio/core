@@ -2,10 +2,10 @@
 /**
  * BaseNode.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -30,6 +30,8 @@ use blackcube\core\traits\TagTrait;
 use blackcube\core\traits\TypeTrait;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -41,7 +43,7 @@ use Yii;
  * This is the model class for table "{{%nodes}}".
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
@@ -86,15 +88,15 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
-    public static function getDb()
+    public static function getDb() :Connection
     {
-        return Module::getInstance()->db;
+        return Module::getInstance()->get('db');
     }
 
     /**
      * @return string
      */
-    public function getRoute()
+    public function getRoute(): string
     {
         return RouteEncoder::encode(static::getElementType(), $this->id);
     }
@@ -102,7 +104,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
-    public static function getElementType()
+    public static function getElementType(): string
     {
         return static::ELEMENT_TYPE;
         // return Inflector::camel2id(StringHelper::basename(static::class));
@@ -111,12 +113,12 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * @var MatrixHelper node path in matrix notation
      */
-    private $nodeMatrix;
+    private MatrixHelper $nodeMatrix;
 
     /**
      * {@inheritDoc}
      */
-    protected function getElementBlocClass()
+    protected function getElementBlocClass(): string
     {
         return NodeBloc::class;
     }
@@ -124,7 +126,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
-    protected function getElementTagClass()
+    protected function getElementTagClass(): string
     {
         return NodeTag::class;
     }
@@ -132,7 +134,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
-    protected function getElementIdColumn()
+    protected function getElementIdColumn(): string
     {
         return 'nodeId';
     }
@@ -140,7 +142,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritDoc}
      */
-    protected function getElementCompositeClass()
+    protected function getElementCompositeClass(): string
     {
         return NodeComposite::class;
     }
@@ -156,7 +158,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
@@ -182,7 +184,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%nodes}}';
     }
@@ -192,7 +194,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * Add FilterActiveQuery
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public static function find()
+    public static function find(): FilterActiveQuery
     {
         return Yii::createObject(FilterActiveQuery::class, [static::class]);
     }
@@ -200,11 +202,15 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'slugId', 'typeId', 'dateStart', 'dateEnd'], 'filter', 'filter' => function($value) {
-                return empty(trim($value)) ? null : trim($value);
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
             }],
             [[/*/'path', 'left', 'right', 'level',/*/ 'languageId'], 'required'],
             [['left', 'right'], 'number'],
@@ -225,7 +231,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Module::t('models/node', 'ID'),
@@ -251,7 +257,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
-    public function getLanguage()
+    public function getLanguage(): ActiveQuery
     {
         return $this
             ->hasOne(Language::class, ['id' => 'languageId']);
@@ -271,7 +277,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getSlug()
+    public function getSlug(): ActiveQuery
     {
         return $this->hasOne(Slug::class, ['id' => 'slugId']);
     }
@@ -281,7 +287,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getType()
+    public function getType(): ActiveQuery
     {
         return $this
             ->hasOne(Type::class, ['id' => 'typeId']);
@@ -292,13 +298,13 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getComposites()
+    public function getComposites(): ActiveQuery
     {
         return $this
             ->hasMany(Composite::class, ['id' => 'compositeId'])
             ->viaTable(NodeComposite::tableName(), ['nodeId' => 'id'])
             ->innerJoin(NodeComposite::tableName().' s', 's.[[compositeId]] = '.Composite::tableName().'.[[id]]')
-            ->orderBy(['s.order' => SORT_ASC]);;
+            ->orderBy(['s.order' => SORT_ASC]);
     }
 
     /**
@@ -307,7 +313,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @todo: inherit category status
      */
-    public function getTags()
+    public function getTags(): ActiveQuery
     {
         return $this
             ->hasMany(Tag::class, ['id' => 'tagId'])
@@ -320,7 +326,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getCategories()
+    public function getCategories(): ActiveQuery
     {
         $tagActiveQuery = $this
             ->getTags()
@@ -337,7 +343,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return bool
      * @since XXX
      */
-    public function getIsRoot()
+    public function getIsRoot(): bool
     {
         return ($this->level === 1);
     }
@@ -346,7 +352,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getChildren()
+    public function getChildren(): ActiveQuery
     {
         $activeQuery = static::find()
             ->andWhere(['>', 'left', $this->left])
@@ -360,7 +366,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getTree()
+    public function getTree(): ActiveQuery
     {
         $activeQuery = static::find()
             ->andWhere(['>=', 'left', $this->left])
@@ -374,7 +380,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getParent()
+    public function getParent(): ActiveQuery
     {
         $activeQuery = $this
             ->getParents()
@@ -387,7 +393,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getParents()
+    public function getParents(): ActiveQuery
     {
         $activeQuery = static::find()
             ->andWhere(['<', 'left', $this->left])
@@ -401,7 +407,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getSiblings()
+    public function getSiblings(): ActiveQuery
     {
         $activeQuery = $this
             ->getSiblingsTrees()
@@ -413,13 +419,14 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getSiblingsTrees()
+    public function getSiblingsTrees(): ActiveQuery
     {
         if ($this->isRoot === true) {
             $activeQuery = static::find()
                 ->andWhere(['<=', 'right', $this->left])
                 ->andWhere(['>=', 'left', $this->right])
-                ->orderBy(['left' => SORT_ASC]);
+                ->orderBy(['left' => SORT_ASC])
+                ->cache(true, QueryCache::getCmsDependencies());
         } else {
             $parent = $this->parent;
             $activeQuery = static::find()
@@ -429,7 +436,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                     ['<', 'left', $this->left],
                     ['>', 'right', $this->right]
                 ])
-                ->orderBy(['left' => SORT_ASC]);
+                ->orderBy(['left' => SORT_ASC])
+                ->cache(true, QueryCache::getCmsDependencies());
         }
         $activeQuery->multiple = true;
         return $activeQuery;
@@ -439,19 +447,21 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getPreviousSiblingsTrees()
+    public function getPreviousSiblingsTrees(): ActiveQuery
     {
         if ($this->isRoot === true) {
             $activeQuery = static::find()
                 ->andWhere(['<=', 'right', $this->left])
-                ->orderBy(['left' => SORT_ASC]);
+                ->orderBy(['left' => SORT_ASC])
+                ->cache(true, QueryCache::getCmsDependencies());
         } else {
             $parent = $this->parent;
             $activeQuery = static::find()
                 ->andWhere(['>', 'left', $parent->left])
                 ->andWhere(['<', 'right', $parent->right])
                 ->andWhere(['<=', 'right', $this->left])
-                ->orderBy(['left' => SORT_ASC]);
+                ->orderBy(['left' => SORT_ASC])
+                ->cache(true, QueryCache::getCmsDependencies());
         }
         $activeQuery->multiple = true;
         return $activeQuery;
@@ -461,7 +471,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getPreviousSiblings()
+    public function getPreviousSiblings(): ActiveQuery
     {
         $activeQuery = $this->getPreviousSiblingsTrees();
         $activeQuery
@@ -473,7 +483,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getPreviousSibling()
+    public function getPreviousSibling(): ActiveQuery
     {
         $activeQuery = $this
             ->getPreviousSiblings()
@@ -487,19 +497,21 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getNextSiblingsTrees()
+    public function getNextSiblingsTrees(): ActiveQuery
     {
         if ($this->isRoot === true) {
             $activeQuery = static::find()
                 ->andWhere(['>=', 'left', $this->right])
-                ->orderBy(['left' => SORT_ASC]);
+                ->orderBy(['left' => SORT_ASC])
+                ->cache(true, QueryCache::getCmsDependencies());
         } else {
             $parent = $this->parent;
             $activeQuery = static::find()
                 ->andWhere(['>', 'left', $parent->left])
                 ->andWhere(['<', 'right', $parent->right])
                 ->andWhere(['>=', 'left', $this->right])
-                ->orderBy(['left' => SORT_ASC]);
+                ->orderBy(['left' => SORT_ASC])
+                ->cache(true, QueryCache::getCmsDependencies());
         }
         $activeQuery->multiple = true;
         return $activeQuery;
@@ -509,7 +521,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getNextSiblings()
+    public function getNextSiblings(): ActiveQuery
     {
         $activeQuery = $this
             ->getNextSiblingsTrees();
@@ -522,7 +534,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      * @since XXX
      */
-    public function getNextSibling()
+    public function getNextSibling(): ActiveQuery
     {
         $activeQuery = $this
             ->getNextSiblings();
@@ -535,7 +547,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param string $nodePath
      * @since XXX
      */
-    public function setNodePath($nodePath)
+    public function setNodePath(string $nodePath)
     {
         $this->nodeMatrix = TreeHelper::convertPathToMatrix($nodePath);
         $this->path = $nodePath;
@@ -562,7 +574,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return MatrixHelper
      * @since XXX
      */
-    public function getNodeMatrix()
+    public function getNodeMatrix(): MatrixHelper
     {
         return TreeHelper::convertPathToMatrix($this->path);
     }
@@ -571,7 +583,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param string $targetPath
      * @return bool
      */
-    public function canMove($targetPath)
+    public function canMove(string $targetPath): bool
     {
         return (strncmp($this->path, $targetPath, strlen($this->path)) !== 0);
     }
@@ -580,12 +592,12 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * Insert or save current node into target node at last position
      * @param Node $targetNode
      * @param bool $runValidation
-     * @param null|array $attributeNames
+     * @param array|null $attributeNames
      * @return boolean
      * @throws InvalidNodeConfigurationException
      * @since XXX
      */
-    public function saveInto(Node $targetNode, $runValidation = true, $attributeNames = null)
+    public function saveInto(Node $targetNode, bool $runValidation = true, ?array $attributeNames = null): bool
     {
         if ($this->isNewRecord === false) {
             $transaction = static::getDb()->beginTransaction();
@@ -629,12 +641,12 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * Insert or save current node before target node
      * @param Node $targetNode
      * @param bool $runValidation
-     * @param null|array $attributeNames
+     * @param array|null $attributeNames
      * @return boolean
      * @throws InvalidNodeConfigurationException
      * @since XXX
      */
-    public function saveBefore(Node $targetNode, $runValidation = true, $attributeNames = null)
+    public function saveBefore(Node $targetNode, bool $runValidation = true, ?array $attributeNames = null): bool
     {
         if ($this->isNewRecord === false) {
             $transaction = static::getDb()->beginTransaction();
@@ -675,12 +687,12 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * Insert or save current node after target node
      * @param Node $targetNode
      * @param bool $runValidation
-     * @param null|array $attributeNames
+     * @param array|null $attributeNames
      * @return boolean
      * @throws InvalidNodeConfigurationException
      * @since XXX
      */
-    public function saveAfter(Node $targetNode, $runValidation = true, $attributeNames = null)
+    public function saveAfter(Node $targetNode, bool $runValidation = true, ?array $attributeNames = null): bool
     {
         if ($this->isNewRecord === false) {
             $transaction = static::getDb()->beginTransaction();
@@ -845,7 +857,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param boolean $moveBefore
      * @since XXX
      */
-    private function moveThisNodeTree(Node $targetNode, $moveBefore)
+    private function moveThisNodeTree(Node $targetNode, bool $moveBefore)
     {
         // BEGIN PREPARE THE MOVE OF THIS_NODE + THIS_NODE_CHILDREN
         $nodeLastSegment = TreeHelper::getLastSegment($this->getNodeMatrix());
@@ -877,10 +889,10 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     }
 
     /**
-     * @param integer $nodeId
+     * @param integer|null $nodeId
      * @since XXX
      */
-    private function moveBackNodes($nodeId = null)
+    private function moveBackNodes(?int $nodeId = null)
     {
         if ($nodeId !== null) {
             $nextSibling = static::findOne(['id' => $nodeId]);
@@ -900,7 +912,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
-    private function getNodeAndSiblings(Node $node)
+    private function getNodeAndSiblings(Node $node): ActiveQuery
     {
         $treeQuery = $node->getTree()->select(['id']);
         $siblingsTreeQuery = $node->getNextSiblingsTrees()->select(['id']);
@@ -914,7 +926,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @param MatrixHelper $moveMatrix
      * @since XXX
      */
-    private function moveAndSaveNodes(\yii\db\ActiveQuery $nodesToMove, MatrixHelper $moveMatrix)
+    private function moveAndSaveNodes(ActiveQuery $nodesToMove, MatrixHelper $moveMatrix)
     {
         foreach($nodesToMove->each() as $nodeToMove) {
             $childMatrix = $nodeToMove->getNodeMatrix();
@@ -933,7 +945,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @return MatrixHelper
      * @since XXX
      */
-    private function prepareMoveMatrix(Node $fromNode, Node $toNode, $bump, $inside = false)
+    private function prepareMoveMatrix(Node $fromNode, Node $toNode, int $bump, bool $inside = false): MatrixHelper
     {
         $fromMatrix = TreeHelper::extractParentMatrixFromMatrix($fromNode->getNodeMatrix());
         if ($inside === true) {
@@ -949,7 +961,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @throws \Exception
      * @since XXX
      */
-    public function setActiveDateStart($date)
+    public function setActiveDateStart(string $date)
     {
         if (empty($date) === false) {
             $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
@@ -965,7 +977,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @throws \yii\base\InvalidConfigException
      * @since XXX
      */
-    public function getActiveDateStart()
+    public function getActiveDateStart(): ?DateTime
     {
         if (empty($this->dateStart) === false) {
             $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
@@ -980,7 +992,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @throws \yii\base\InvalidConfigException
      * @since XXX
      */
-    public function setActiveDateEnd($date)
+    public function setActiveDateEnd(string $date)
     {
         if (empty($date) === false) {
             $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
@@ -999,7 +1011,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      * @throws \yii\base\InvalidConfigException
      * @since XXX
      */
-    public function getActiveDateEnd()
+    public function getActiveDateEnd(): ?DateTime
     {
         if (empty($this->dateEnd) === false) {
             $tz = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
@@ -1014,7 +1026,8 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
      *
      * @return FilterActiveQuery|\yii\db\ActiveQuery
      */
-    public function getBlocs() {
+    public function getBlocs(): ActiveQuery
+    {
         return $this->hasMany(Bloc::class, ['id' => 'blocId'])
             ->viaTable(NodeBloc::tableName(), ['nodeId' => 'id'])
             ->innerJoin(NodeBloc::tableName().' s', 's.[[blocId]] = '.Bloc::tableName().'.[[id]]')

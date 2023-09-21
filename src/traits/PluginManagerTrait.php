@@ -1,39 +1,37 @@
 <?php
 /**
- * PluginManager.php
+ * PluginManagerTrait.php
  *
- * PHP version 7.2+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\components
+ * @package blackcube\core\traits
  */
 
-namespace blackcube\core\components;
+namespace blackcube\core\traits;
 
-use blackcube\core\interfaces\PluginManagerInterface;
 use blackcube\core\models\Plugin;
 use Yii;
 use yii\base\BootstrapInterface;
 
 /**
- * Abstract class to build a PluginManager
+ * PluginManager trait
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Redcat
+ * @copyright 2010-2022 Redcat
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\components
+ * @package blackcube\core\traits
+ * @since XXX
+ *
  */
-abstract class PluginManager implements PluginManagerInterface {
-    /**
-     * @var string id of the plugin
-     */
-    protected $id;
+trait PluginManagerTrait
+{
 
     /**
      * @var Plugin current plugin id db
@@ -43,24 +41,22 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function __construct($id)
-    {
-        $this->id = $id;
-        $this->setAlias();
-    }
+    abstract public function getId();
 
     /**
      * {@inheritDoc }
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    abstract public function getName();
 
     /**
      * {@inheritDoc }
      */
-    public function getIsActive()
+    abstract public function getVersion();
+
+    /**
+     * {@inheritDoc }
+     */
+    public function getIsActive() :bool
     {
         $plugin = $this->getDbPlugin();
         if ($plugin !== false) {
@@ -72,16 +68,19 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function getIsRegistered()
+    public function getIsRegistered() :bool
     {
         $plugin = $this->getDbPlugin();
-        return ($plugin !== false);
+        if ($plugin !== false) {
+            return (bool)$plugin->registered;
+        }
+        return false;
     }
 
     /**
      * {@inheritDoc }
      */
-    public function activate()
+    public function activate() :bool
     {
         $plugin = $this->getDbPlugin();
         if ($plugin !== false) {
@@ -94,7 +93,7 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * {@inheritDoc }
      */
-    public function deactivate()
+    public function deactivate() :bool
     {
         $plugin = $this->getDbPlugin();
         if ($plugin !== false) {
@@ -124,20 +123,15 @@ abstract class PluginManager implements PluginManagerInterface {
      * Helper function to register plugin id DB
      * @return bool
      */
-    protected function registerDbPlugin()
+    protected function registerDbPlugin() :bool
     {
         if ($this->getIsRegistered() === false) {
-            $plugin = new Plugin();
-            $plugin->name = $this->getName();
-            $plugin->className = get_class($this);
-            $plugin->bootstrap = ($this instanceof BootstrapInterface);
-            $plugin->id = $this->getId();
-            $plugin->version = $this->getVersion();
-            $plugin->active = false;
-            if ($plugin->save() === true) {
-                $this->dbPlugin = $plugin;
-                return true;
+            $plugin = $this->getDbPlugin();
+            if ($plugin !== false) {
+                $plugin->registered = true;
+                return $plugin->save(true, ['registered', 'dateUpdate']);
             }
+            return false;
         }
         return false;
     }
@@ -145,23 +139,27 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * @return bool Register plugin
      */
-    public function register()
+    public function register() :bool
     {
-        return $this->registerDbPlugin();
+        if ($this->getIsRegistered() === false) {
+            return $this->registerDbPlugin();
+        }
+        return false;
     }
 
     /**
      * Helper function to unregister plugin id DB
      * @return bool
      */
-    protected function unregisterDbPlugin()
+    protected function unregisterDbPlugin() :bool
     {
         if ($this->getIsRegistered() === true) {
-            $status = $this->getDbPlugin()->delete();
-            if ($status !== false) {
-                $this->dbPlugin = null;
-                return true;
+            $plugin = $this->getDbPlugin();
+            if ($plugin !== false) {
+                $plugin->registered = false;
+                return $plugin->save(true, ['registered', 'dateUpdate']);
             }
+            return false;
         }
         return false;
     }
@@ -169,9 +167,12 @@ abstract class PluginManager implements PluginManagerInterface {
     /**
      * @return bool Unregister plugin
      */
-    public function unregister()
+    public function unregister() :bool
     {
-        return $this->unregisterDbPlugin();
+        if ($this->getIsRegistered() === true) {
+            return $this->unregisterDbPlugin();
+        }
+        return false;
     }
 
 }
