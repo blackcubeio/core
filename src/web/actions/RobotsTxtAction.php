@@ -12,7 +12,7 @@
  * @package webapp\actions
  */
 
-namespace webapp\actions;
+namespace blackcube\core\web\actions;
 
 use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Sitemap;
