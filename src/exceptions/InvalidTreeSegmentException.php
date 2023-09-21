@@ -2,7 +2,7 @@
 /**
  * InvalidTreeSegmentException.php
  *
- * PHP version 7.4+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2022 Redcat
@@ -19,7 +19,7 @@ use Exception;
 /**
  * Exception raised on path segment is invalid
  *
- * PHP version 7.4+
+ * PHP version 8.0+
  *
  * @author Philippe Gaultier <pgaultier@redcat.io>
  * @copyright 2010-2022 Redcat
