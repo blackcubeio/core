@@ -1,6 +1,13 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.0.0 September, 21st 2023 <pgaultier@redcat.io>
+----------------------------------------------------
+
+ * Add: Adding `Quill` helper to clean generated html
+ * Add: Adding Element helper to compute `dateCreate` and `dateUpdate`
+ * Add: Adding `RobotsTxtAction` to generate `robots.txt`
+ * Upd: Update `SitemapAction` to generate `sitemap.xml`
  * Upd: set minimal requirements to PHP 8.0
  * Upd: add password strength validator
  * Fix: Element instanciate for controller routing
