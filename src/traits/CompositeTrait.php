@@ -68,35 +68,52 @@ trait CompositeTrait
     {
         $status = true;
         $elementCompositeClass = $this->getElementCompositeClass();
-        if ($elementCompositeClass === CompositeTag::class)
-        $compositeCount = $this->getComposites()->count();
-        if ($position < 1) {
-            $position = $compositeCount + 1;
-        }
+        if ($elementCompositeClass === CompositeTag::class) {
 
-        $transaction = static::getDb()->beginTransaction();
-        try {
-            // open space to add composite
-            if ($position <= $compositeCount) {
-                $elementCompositeClass::updateAll([
-                    'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
-                ], ['and',
-                    [$this->getElementIdColumn() => $this->id],
-                    ['>=', 'order', $position]
-                ]);
-            } else {
+
+            $transaction = static::getDb()->beginTransaction();
+            try {
+                // open space to add composite
+                $elementComposite = Yii::createObject($elementCompositeClass);
+                $elementComposite->{$this->getElementIdColumn()} = $this->id;
+                $elementComposite->{$this->getCompositeIdColumn()} = $composite->id;
+                $elementComposite->save();
+                $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                $status = false;
+            }
+        } else {
+            $compositeCount = $this->getComposites()->count();
+            if ($position < 1) {
                 $position = $compositeCount + 1;
             }
-            $elementComposite = Yii::createObject($elementCompositeClass);
-            $elementComposite->{$this->getElementIdColumn()} = $this->id;
-            $elementComposite->{$this->getCompositeIdColumn()} = $composite->id;
-            $elementComposite->order = $position;
-            $elementComposite->save();
-            $transaction->commit();
-        } catch(\Exception $e) {
-            $transaction->rollBack();
-            $status = false;
+
+            $transaction = static::getDb()->beginTransaction();
+            try {
+                // open space to add composite
+                if ($position <= $compositeCount) {
+                    $elementCompositeClass::updateAll([
+                        'order' => Yii::createObject(Expression::class, ['[[order]]+1'])
+                    ], ['and',
+                        [$this->getElementIdColumn() => $this->id],
+                        ['>=', 'order', $position]
+                    ]);
+                } else {
+                    $position = $compositeCount + 1;
+                }
+                $elementComposite = Yii::createObject($elementCompositeClass);
+                $elementComposite->{$this->getElementIdColumn()} = $this->id;
+                $elementComposite->{$this->getCompositeIdColumn()} = $composite->id;
+                $elementComposite->order = $position;
+                $elementComposite->save();
+                $transaction->commit();
+            } catch(\Exception $e) {
+                $transaction->rollBack();
+                $status = false;
+            }
         }
+
         return $status;
     }
 
