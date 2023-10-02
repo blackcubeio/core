@@ -60,7 +60,7 @@ class Quill
                 $cleanHtml = preg_replace('/style="([^"])*"/', '', $cleanHtml);
             }
             if ($removeEmptyTags === true) {
-                $cleanHtml = preg_replace('/<([\S]+)([^>]*)>[\s|&nbsp;]*<\/\1>/', '', $cleanHtml);
+                $cleanHtml = preg_replace('/<([\S]+)([^>]*)>[\s|&nbsp;|<br(\s|\/)*>]*<\/\1>/', '', $cleanHtml);
             }
             if ($removeSpan === true) {
                 $cleanHtml = preg_replace('/<span[^>]*>([^<]*)<\/span>/', '${1}', $cleanHtml);
