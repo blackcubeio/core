@@ -2,6 +2,7 @@ Blackcube Core - CHANGELOG
 ==========================
 
  * Upd: update quill cleanup regex
+ * Fix: Fix elastic model for checkbox and radio
 
 Release 3.0.2 October, 1st 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
