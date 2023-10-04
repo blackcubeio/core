@@ -547,7 +547,7 @@ abstract class BaseElastic extends Model {
             if (empty($property->imageHeight) !== true) {
                 $fieldData['imageHeight'] = $property->imageHeight;
             }
-        } elseif ($property->type === 'string' && (in_array($property->format, ['wysiwyg', 'textarea', 'email', 'date']))) {
+        } elseif ($property->type === 'string' && (in_array($property->format, ['wysiwyg', 'textarea', 'email', 'date', 'checkbox', 'radio']))) {
             $fieldData['field'] = $property->format;
             if ($property->options instanceof \StdClass) {
                 $options = Json::encode($property->options);
