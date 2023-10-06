@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Handle canonical URL in `SeoBehavior`
+
 Release 3.0.3 October, 4th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
 
