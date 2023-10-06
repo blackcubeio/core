@@ -40,7 +40,8 @@ class Element {
     public static function getDateCreate(ElementInterface $element): DateTime {
         $dates = [];
         $dates[] = new DateTime($element->dateCreate);
-        $minDate = $element->getBlocs()->min(Bloc::tableName().'.[[dateCreate]]');
+        $minDate = $element->getBlocs()
+            ->min(Bloc::tableName().'.[[dateCreate]]');
         if ($minDate !== null) {
             $dates[] = new DateTime($minDate);
         }
@@ -58,11 +59,59 @@ class Element {
     public static function getDateUpdate(ElementInterface $element): DateTime {
         $dates = [];
         $dates[] = new DateTime($element->dateUpdate);
-        $maxDate = $element->getBlocs()->max(Bloc::tableName().'.[[dateUpdate]]');
+        $maxDate = $element->getBlocs()
+            ->max(Bloc::tableName().'.[[dateUpdate]]');
         if ($maxDate !== null) {
             $dates[] = new DateTime($maxDate);
         }
         $dateUpdate = max($dates);
         return $dateUpdate;
     }
+
+    /**
+     * Get all blocs of an element with specific types
+     *
+     * @param ElementInterface $element
+     * @return Bloc[]
+     * @throws \Exception
+     */
+    public static function getWithTypes(ElementInterface $element, $selectedBlocTypeIds = [])
+    {
+        return $element->getBlocs()
+            ->active()
+            ->andWhere(['in', 'blocTypeId', $selectedBlocTypeIds])
+            ->all();
+    }
+
+    /**
+     * Get all blocs of an element except specific types
+     *
+     * @param ElementInterface $element
+     * @return Bloc[]
+     * @throws \Exception
+     */
+    public static function getExceptTypes(ElementInterface $element, $exceptBlocTypeIds = [])
+    {
+        return $element->getBlocs()
+            ->active()
+            ->andWhere(['not in', 'blocTypeId', $exceptBlocTypeIds])
+            ->all();
+    }
+
+    /**
+     * Get first bloc of an element with specific type
+     *
+     * @param ElementInterface $element
+     * @return Bloc
+     * @throws \Exception
+     */
+    public static function getFirstWithType(ElementInterface $element, $blocTypeId)
+    {
+        return $element->getBlocs()
+            ->active()
+            ->andWhere(['blocTypeId' => $blocTypeId])
+            ->one();
+    }
+
+
 }
