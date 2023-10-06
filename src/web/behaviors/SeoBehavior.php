@@ -63,7 +63,7 @@ class SeoBehavior extends Behavior
     {
         $slugId = $event->element->slugId;
         $seo = Seo::find()->active()
-            ->with('slug.canonicalSlug')
+            ->with('slug', 'canonicalSlug')
             ->andWhere(['slugId' => $slugId])
             ->one();
         if ($seo !== null) {
