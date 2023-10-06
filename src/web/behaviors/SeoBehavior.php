@@ -63,6 +63,7 @@ class SeoBehavior extends Behavior
     {
         $slugId = $event->element->slugId;
         $seo = Seo::find()->active()
+            ->with('slug', 'canonicalSlug')
             ->andWhere(['slugId' => $slugId])
             ->one();
         if ($seo !== null) {
@@ -74,12 +75,19 @@ class SeoBehavior extends Behavior
             if ($seo->nofollow) {
                 $metaRobots[] = 'nofollow';
             }
+            if ($seo->canonicalSlug !== null) {
+                $event->controller->view->registerLinkTag([
+                    'rel' => 'canonical',
+                    'href' => Yii::$app->request->hostInfo . '/' . ltrim($seo->canonicalSlug->path, '/')
+                ], 'canonical');
+            }
             if (count($metaRobots) > 0) {
                 $event->controller->view->registerMetaTag([
                     'name' => 'robots',
                     'content' => implode(',', $metaRobots)
                 ], 'robots');
             }
+
             if (empty($seo->title) === false) {
                 $event->controller->view->registerMetaTag([
                     'name' => 'title',
@@ -106,10 +114,9 @@ class SeoBehavior extends Behavior
                 if (empty($seo->image) === false) {
                     $event->controller->view->registerMetaTag([
                         'property' => 'og:image',
-                        'content' => Yii::$app->request->hostInfo.Html::cacheImage($seo->image)
+                        'content' => Yii::$app->request->hostInfo. '/' . ltrim(Html::cacheImage($seo->image),'/')
                     ], 'og:image');
                 }
-                //TODO: canonical id
                 $event->controller->view->registerMetaTag([
                     'property' => 'og:url',
                     'content' => Yii::$app->request->absoluteUrl
@@ -129,7 +136,7 @@ class SeoBehavior extends Behavior
                 if (empty($seo->image) === false) {
                     $event->controller->view->registerMetaTag([
                         'name' => 'twitter:image',
-                        'content' => Yii::$app->request->hostInfo.Html::cacheImage($seo->image)
+                        'content' => Yii::$app->request->hostInfo. '/' . ltrim(Html::cacheImage($seo->image), '/')
                     ], 'twitter:image');
                 }
                 if (empty($seo->title) === false) {
