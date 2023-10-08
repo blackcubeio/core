@@ -96,7 +96,7 @@ class RobotsTxtAction extends ViewAction
                 }
             }
             $sitemaps = Sitemap::find()
-                ->cache(true, QueryCache::getCmsDependencies())
+                ->cache(3600, QueryCache::getCmsDependencies())
                 ->active()
                 ->with(['slug', 'slug.seo']);
 
@@ -108,7 +108,7 @@ class RobotsTxtAction extends ViewAction
                         $noIndex = (bool)$currentSlug->seo->noindex;
                     }
                     $element = $currentSlug->getElement()
-                        ->cache(true, QueryCache::getCmsDependencies())
+                        ->cache(3600, QueryCache::getCmsDependencies())
                         ->active()
                         ->one();
                     if ($element !== null && $noIndex === true) {
