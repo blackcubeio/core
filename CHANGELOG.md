@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Fix: fix image resize
+
 Release 3.0.5 October, 8th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
 

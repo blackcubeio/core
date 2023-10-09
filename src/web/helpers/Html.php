@@ -122,11 +122,9 @@ class Html extends YiiHtml
     public static function img($src, $options = [])
     {
         if (is_string($src) === true) {
-            if (isset($options['width'], $options['height']) === true) {
-                $src = static::cacheImage($src, $options['width'], $options['height']);
-            } else {
-                $src = static::cacheImage($src);
-            }
+            $width = $options['width'] ?? null;
+            $height = $options['height'] ?? null;
+            $src = static::cacheImage($src, $width, $height);
         }
         return parent::img($src, $options);
     }
@@ -156,6 +154,10 @@ class Html extends YiiHtml
                     $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
                     if ($width !== null && $height !== null) {
                         $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-'.$width.'-'.$height.'.'.$fileData['extension'];
+                    } elseif ($width !== null) {
+                        $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-w'.$width.'.'.$fileData['extension'];
+                    } elseif ($height !== null) {
+                        $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-h'.$height.'.'.$fileData['extension'];
                     }
                     $originalFileTimestamp = $fs->lastModified($originalFilename);
                     $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
