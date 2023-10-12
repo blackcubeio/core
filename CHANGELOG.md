@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Add virtual columns for filtering in BLoc
+
 Release 3.0.6 October, 9th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
 
