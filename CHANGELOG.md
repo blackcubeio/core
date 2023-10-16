@@ -1,7 +1,10 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.0.7 October, 16th 2023 <pgaultier@redcat.io>
+----------------------------------------------------
 
+ * Upd: Update dependencies
  * Upd: Add virtual columns for filtering in BLoc
  * Upd: Adding nofollow to external links with Quill helper
  * Fix: Fix `radiolist` and `dropdownlist` typo `radioList` and `dropdownList`
