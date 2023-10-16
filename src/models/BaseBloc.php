@@ -111,11 +111,11 @@ abstract class BaseBloc extends \yii\db\ActiveRecord implements ElasticInterface
     /**
      * {@inheritdoc}
      * Add FilterActiveQuery
-     * @return FilterActiveQuery|\yii\db\ActiveQuery
+     * @return ElasticActiveQuery
      */
-    public static function find() :FilterActiveQuery
+    public static function find() :ElasticActiveQuery
     {
-        return Yii::createObject(FilterActiveQuery::class, [static::class]);
+        return Yii::createObject(ElasticActiveQuery::class, [static::class]);
     }
     /**
      * {@inheritdoc}
