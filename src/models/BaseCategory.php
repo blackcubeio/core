@@ -180,7 +180,6 @@ abstract class BaseCategory extends \yii\db\ActiveRecord implements ElementInter
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['name'], 'string', 'max' => 190],
             [['languageId'], 'string', 'max' => 6],
-            [['name'], 'unique'],
             [['slugId'], 'unique'],
             [['languageId'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['languageId' => 'id']],
             [['slugId'], 'exist', 'skipOnError' => true, 'targetClass' => Slug::class, 'targetAttribute' => ['slugId' => 'id']],
