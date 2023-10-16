@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.0.9 October, 16th 2023 <pgaultier@redcat.io>
+----------------------------------------------------
+
  * Fix: Fix category unique
  * Upd: Update dependencies
 
