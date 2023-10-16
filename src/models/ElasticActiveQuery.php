@@ -35,6 +35,25 @@ class ElasticActiveQuery extends FilterActiveQuery
     private static $blocRealAttributes = null;
 
     /**
+     * @var array list of know conditions @see https://www.yiiframework.com/doc/api/2.0/yii-db-queryinterface#where()-detail
+     */
+    private $conditionClasses = [
+        'NOT' => 'yii\db\conditions\NotCondition',
+        'AND' => 'yii\db\conditions\AndCondition',
+        'OR' => 'yii\db\conditions\OrCondition',
+        'BETWEEN' => 'yii\db\conditions\BetweenCondition',
+        'NOT BETWEEN' => 'yii\db\conditions\BetweenCondition',
+        'IN' => 'yii\db\conditions\InCondition',
+        'NOT IN' => 'yii\db\conditions\InCondition',
+        'LIKE' => 'yii\db\conditions\LikeCondition',
+        'NOT LIKE' => 'yii\db\conditions\LikeCondition',
+        'OR LIKE' => 'yii\db\conditions\LikeCondition',
+        'OR NOT LIKE' => 'yii\db\conditions\LikeCondition',
+        'EXISTS' => 'yii\db\conditions\ExistsCondition',
+        'NOT EXISTS' => 'yii\db\conditions\ExistsCondition',
+    ];
+
+    /**
      * Find real DB attributes for blocs
      * @return array|null
      */
@@ -48,6 +67,7 @@ class ElasticActiveQuery extends FilterActiveQuery
 
     /**
      * {@inheritDoc}
+     * Added virtual columns support
      */
     public function orderBy($columns)
     {
@@ -59,6 +79,7 @@ class ElasticActiveQuery extends FilterActiveQuery
 
     /**
      * {@inheritDoc}
+     * Added virtual columns support
      */
     public function addOrderBy($columns)
     {
@@ -71,8 +92,8 @@ class ElasticActiveQuery extends FilterActiveQuery
     }
 
     /**
-     * Set where condition for virtual Bloc columns
-     * @see where()
+     * {inheritDoc}
+     * Added virtual columns support
      */
     public function where($condition, $params = [])
     {
@@ -82,8 +103,8 @@ class ElasticActiveQuery extends FilterActiveQuery
     }
 
     /**
-     * Add where condition for virtual Bloc columns
-     * @see andWhere()
+     * {inheritDoc}
+     * Added virtual columns support
      */
     public function andWhere($condition, $params = [])
     {
@@ -94,8 +115,8 @@ class ElasticActiveQuery extends FilterActiveQuery
     }
 
     /**
-     * Add where condition for virtual Bloc columns
-     * @see orWhere()
+     * {inheritDoc}
+     * Added virtual columns support
      */
     public function orWhere($condition, $params = [])
     {
@@ -106,7 +127,7 @@ class ElasticActiveQuery extends FilterActiveQuery
     }
 
     /**
-     * Build virtual columns for orderBy
+     * Build virtual columns for orderBy if needed
      *
      * @param array $columns
      * @return array|null
@@ -123,6 +144,7 @@ class ElasticActiveQuery extends FilterActiveQuery
 
     /**
      * Check if column is virtual
+     *
      * @param $column
      * @return bool
      */
@@ -151,6 +173,7 @@ class ElasticActiveQuery extends FilterActiveQuery
 
     /**
      * Extract virtual column name
+     *
      * @param $column
      * @return string|null
      */
@@ -176,6 +199,7 @@ class ElasticActiveQuery extends FilterActiveQuery
 
     /**
      * Build JSON_VALUE for $column
+     *
      * @param $column
      * @return string
      */
@@ -191,22 +215,12 @@ class ElasticActiveQuery extends FilterActiveQuery
         return (string)(new Expression('JSON_VALUE('.Bloc::tableName().'.[[data]], \'$.'.$virtualColumn.'\')'));
     }
 
-    private $conditionClasses = [
-            'NOT' => 'yii\db\conditions\NotCondition',
-            'AND' => 'yii\db\conditions\AndCondition',
-            'OR' => 'yii\db\conditions\OrCondition',
-            'BETWEEN' => 'yii\db\conditions\BetweenCondition',
-            'NOT BETWEEN' => 'yii\db\conditions\BetweenCondition',
-            'IN' => 'yii\db\conditions\InCondition',
-            'NOT IN' => 'yii\db\conditions\InCondition',
-            'LIKE' => 'yii\db\conditions\LikeCondition',
-            'NOT LIKE' => 'yii\db\conditions\LikeCondition',
-            'OR LIKE' => 'yii\db\conditions\LikeCondition',
-            'OR NOT LIKE' => 'yii\db\conditions\LikeCondition',
-            'EXISTS' => 'yii\db\conditions\ExistsCondition',
-            'NOT EXISTS' => 'yii\db\conditions\ExistsCondition',
-        ];
-
+    /**
+     * Check if condition is virtual
+     *
+     * @param $condition
+     * @return bool
+     */
     private function isVirtualCondition($condition)
     {
         $vitualCondition = false;
@@ -238,6 +252,13 @@ class ElasticActiveQuery extends FilterActiveQuery
         }
         return $vitualCondition;
     }
+
+    /**
+     * Build virtual conditions
+     *
+     * @param $condition
+     * @return array|string[]
+     */
     private function buildVirtualCondition($condition)
     {
         if ($this->isVirtualCondition($condition) === false) {
@@ -273,8 +294,6 @@ class ElasticActiveQuery extends FilterActiveQuery
             $newColumnName = $this->buildVirtualColumn($column);
             $finalConditions[$newColumnName] = $value;
         }
-        // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
         return $finalConditions;
-
     }
 }
