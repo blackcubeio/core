@@ -52,7 +52,7 @@ class Quill
      * @param bool $removeSpan remove spans but keep content
      * @return string|null
      */
-    public static function cleanHtml($htmlContent, $removeStyles = true, $removeEmptyTags = true, $removeSpan = true)
+    public static function cleanHtml($htmlContent, $removeStyles = true, $removeEmptyTags = true, $removeSpan = true, $addNoFollow = true)
     {
         if ($htmlContent !== null) {
             $cleanHtml = $htmlContent;
@@ -64,6 +64,22 @@ class Quill
             }
             if ($removeSpan === true) {
                 $cleanHtml = preg_replace('/<span[^>]*>([^<]*)<\/span>/', '${1}', $cleanHtml);
+            }
+            if ($addNoFollow === true) {
+                $selfBaseUrl = \Yii::$app->request->getHostInfo();
+                $cleanHtml = preg_replace_callback('/<a([^>]*)href="(https?:\/\/[^"]+)"([^>]*)>([^<]*)<\/a>/', function ($matches) use ($selfBaseUrl) {
+                    if (strncmp($matches[2], $selfBaseUrl, strlen($selfBaseUrl)) === 0) {
+                        return $matches[0];
+                    } else {
+                        $link = $matches[0];
+                        if (preg_match('/rel="([^"]*)"/', $link, $relMatches)) {
+                            $link = preg_replace('/rel="([^"]*)"/', 'rel="nofollow '.$relMatches[1].'"', $link);
+                        } else {
+                            $link = preg_replace('/<a([^<]*)>([^<]*)<\/a>/', '<a$1 rel="nofollow">$2</a>', $link);
+                        }
+                        return $link;
+                    }
+                }, $cleanHtml);
             }
             return $cleanHtml;
         } else {
