@@ -555,7 +555,7 @@ abstract class BaseElastic extends Model {
             }
         } elseif ($property->type === 'string' && ($property->format === 'date-time')) {
             $fieldData['field'] = 'datetime-local';
-        } elseif ($property->type === 'string' && (in_array($property->format, ['radiolist', 'dropdownlist']))) {
+        } elseif ($property->type === 'string' && (in_array($property->format, ['radiolist', 'radioList', 'dropdownlist', 'dropdownList']))) {
             $fieldData['field'] = $property->format;
             $fieldData['items'] = [];
             foreach($property->items as $item) {
