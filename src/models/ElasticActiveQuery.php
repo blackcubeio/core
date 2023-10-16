@@ -243,7 +243,6 @@ class ElasticActiveQuery extends FilterActiveQuery
         if ($this->isVirtualCondition($condition) === false) {
             return $condition;
         }
-        $originalCondition = $condition;
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
             $operator = strtoupper(array_shift($condition));
             if (isset($this->conditionClasses[$operator])) {
