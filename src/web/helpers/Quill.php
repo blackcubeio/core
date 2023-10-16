@@ -50,6 +50,7 @@ class Quill
      * @param bool $removeStyles remove styling
      * @param bool $removeEmptyTags remove empty tags
      * @param bool $removeSpan remove spans but keep content
+     * @param bool $addNoFollow add nofollow to external links
      * @return string|null
      */
     public static function cleanHtml($htmlContent, $removeStyles = true, $removeEmptyTags = true, $removeSpan = true, $addNoFollow = true)
