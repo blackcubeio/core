@@ -2,6 +2,7 @@ Blackcube Core - CHANGELOG
 ==========================
 
  * Upd: Adding nofollow to external links with Quill helper
+ * Fix: Fix `radiolist` and `dropdownlist` typo `radioList` and `dropdownList`
 
 Release 3.0.6 October, 9th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
