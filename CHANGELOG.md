@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Fix: Fix doc
+
 Release 3.0.7 October, 16th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
 
