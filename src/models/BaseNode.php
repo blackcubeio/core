@@ -426,7 +426,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                 ->andWhere(['<=', 'right', $this->left])
                 ->andWhere(['>=', 'left', $this->right])
                 ->orderBy(['left' => SORT_ASC])
-                ->cache(true, QueryCache::getCmsDependencies());
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies());
         } else {
             $parent = $this->parent;
             $activeQuery = static::find()
@@ -437,7 +437,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                     ['>', 'right', $this->right]
                 ])
                 ->orderBy(['left' => SORT_ASC])
-                ->cache(true, QueryCache::getCmsDependencies());
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies());
         }
         $activeQuery->multiple = true;
         return $activeQuery;
@@ -453,7 +453,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
             $activeQuery = static::find()
                 ->andWhere(['<=', 'right', $this->left])
                 ->orderBy(['left' => SORT_ASC])
-                ->cache(true, QueryCache::getCmsDependencies());
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies());
         } else {
             $parent = $this->parent;
             $activeQuery = static::find()
@@ -461,7 +461,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                 ->andWhere(['<', 'right', $parent->right])
                 ->andWhere(['<=', 'right', $this->left])
                 ->orderBy(['left' => SORT_ASC])
-                ->cache(true, QueryCache::getCmsDependencies());
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies());
         }
         $activeQuery->multiple = true;
         return $activeQuery;
@@ -503,7 +503,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
             $activeQuery = static::find()
                 ->andWhere(['>=', 'left', $this->right])
                 ->orderBy(['left' => SORT_ASC])
-                ->cache(true, QueryCache::getCmsDependencies());
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies());
         } else {
             $parent = $this->parent;
             $activeQuery = static::find()
@@ -511,7 +511,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                 ->andWhere(['<', 'right', $parent->right])
                 ->andWhere(['>=', 'left', $this->right])
                 ->orderBy(['left' => SORT_ASC])
-                ->cache(true, QueryCache::getCmsDependencies());
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies());
         }
         $activeQuery->multiple = true;
         return $activeQuery;
