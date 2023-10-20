@@ -100,6 +100,11 @@ class Module extends BaseModule implements BootstrapInterface
     public $fileCacheUrlAlias = '@web/cache';
 
     /**
+     * @var int cache duration in seconds for all cached data
+     */
+    public $cacheDuration = 3600;
+
+    /**
      * @var mixed cms url rules. Set it to false to disable cms url rule management
      */
     public $cmsUrlRule = [

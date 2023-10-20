@@ -65,11 +65,6 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
     public const ELEMENT_TYPE  = 'slug';
 
     /**
-     * @var int
-     */
-    public static $CACHE_EXPIRE = 3600;
-
-    /**
      * {@inheritDoc}
      */
     public static function getDb(): Connection
@@ -169,11 +164,16 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
                 }
             }],
             [['path'], 'filter', 'filter' => function($value) {
-                return ($value === null) ? null : ltrim($value, '/');
+                // if scenario redirect path cannot be empty
+                if ($this->scenario === static::SCENARIO_REDIRECT) {
+                    return null;
+                }
+                // on default scenario path can be empty (home page)
+                return ($value === null) ? '' : ltrim($value, '/');
             }],
             [['httpCode'], 'integer'],
             [['active'], 'boolean'],
-            [['path'], 'required'],
+            [['path'], 'string'],
             [['targetUrl'], 'url'],
             [['httpCode', 'targetUrl'], 'required', 'on' => [static::SCENARIO_REDIRECT]],
             [['dateCreate', 'dateUpdate'], 'safe'],
@@ -391,23 +391,18 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
                 $query = Slug::find();
                 break;
         }
-        // if ($query !== null) {
-            $query->where(['id' => $id]);
-            // $query->active();
-        // }
-        /*/
-        if (Module::getInstance()->cache !== null) {
-            $cacheDependency = QueryCache::getCmsDependencies();
-            $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
-        }
-        /**/
+        $query->where(['id' => $id]);
+        // $query->active();
+
 
         $element = $query
-            ->cache(true, QueryCache::getCmsDependencies())
+            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
             ->one();
         if ($element !== null && !$element instanceof Slug) {
             // $slug = $element->getSlug()->active()->one();
-            $slug = $element->getSlug()->one();
+            $slug = $element->getSlug()
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
+                ->one();
         } elseif($element instanceof Slug) {
             $slug = $element;
         }
@@ -425,6 +420,7 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
         $slugQuery = static::find()->where([
             'path' => $pathInfo,
         ])
+            ->cache(Module::getInstance()->cacheDuration, QueryCache::getSlugDependencies())
             ->andWhere(['OR',
                 ['host' => $hostname],
                 ['IS', 'host', null]
@@ -432,12 +428,6 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
             ->orderBy(['host' => SORT_DESC])
             ->limit(1);
         $slugQuery->multiple = false;
-        /*/
-        if (Module::getInstance()->cache !== null) {
-            $cacheDependency = QueryCache::getSlugDependencies();
-            $slugQuery->cache(static::$CACHE_EXPIRE, $cacheDependency);
-        }
-        /**/
         return $slugQuery;
     }
 }

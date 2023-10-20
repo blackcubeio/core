@@ -16,6 +16,7 @@ namespace blackcube\core\web\helpers;
 use blackcube\core\helpers\QueryCache;
 use blackcube\core\interfaces\ElementInterface;
 use blackcube\core\models\Bloc;
+use blackcube\core\Module;
 use DateTime;
 
 /**
@@ -79,7 +80,7 @@ class Element {
     public static function getWithTypes(ElementInterface $element, $selectedBlocTypeIds = [])
     {
         return $element->getBlocs()
-            ->cache(3600, QueryCache::getCmsDependencies())
+            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
             ->active()
             ->andWhere(['in', 'blocTypeId', $selectedBlocTypeIds])
             ->all();
@@ -95,7 +96,7 @@ class Element {
     public static function getExceptTypes(ElementInterface $element, $exceptBlocTypeIds = [])
     {
         return $element->getBlocs()
-            ->cache(3600, QueryCache::getCmsDependencies())
+            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
             ->active()
             ->andWhere(['not in', 'blocTypeId', $exceptBlocTypeIds])
             ->all();
@@ -111,7 +112,7 @@ class Element {
     public static function getFirstWithType(ElementInterface $element, $blocTypeId)
     {
         return $element->getBlocs()
-            ->cache(3600, QueryCache::getCmsDependencies())
+            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
             ->active()
             ->andWhere(['blocTypeId' => $blocTypeId])
             ->one();
