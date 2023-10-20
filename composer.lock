@@ -488,16 +488,16 @@
         },
         {
             "name": "league/mime-type-detection",
-            "version": "1.13.0",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/mime-type-detection.git",
-                "reference": "a6dfb1194a2946fcdc1f38219445234f65b35c96"
+                "reference": "b6a5854368533df0295c5761a0253656a2e52d9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/a6dfb1194a2946fcdc1f38219445234f65b35c96",
-                "reference": "a6dfb1194a2946fcdc1f38219445234f65b35c96",
+                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/b6a5854368533df0295c5761a0253656a2e52d9e",
+                "reference": "b6a5854368533df0295c5761a0253656a2e52d9e",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +528,7 @@
             "description": "Mime-type detection for Flysystem",
             "support": {
                 "issues": "https://github.com/thephpleague/mime-type-detection/issues",
-                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.13.0"
+                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.14.0"
             },
             "funding": [
                 {
@@ -540,7 +540,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-05T12:09:49+00:00"
+            "time": "2023-10-17T14:13:20+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1608,16 +1608,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.283.4",
+            "version": "3.283.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "a0877cbbf6062cef363145b1bd0cb1d1f6654e04"
+                "reference": "0f73ec85852312a6e971cfe2eebfd7c8091cca34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a0877cbbf6062cef363145b1bd0cb1d1f6654e04",
-                "reference": "a0877cbbf6062cef363145b1bd0cb1d1f6654e04",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0f73ec85852312a6e971cfe2eebfd7c8091cca34",
+                "reference": "0f73ec85852312a6e971cfe2eebfd7c8091cca34",
                 "shasum": ""
             },
             "require": {
@@ -1697,9 +1697,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.283.4"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.283.8"
             },
-            "time": "2023-10-16T18:08:25+00:00"
+            "time": "2023-10-19T19:26:52+00:00"
         },
         {
             "name": "behat/gherkin",
@@ -2324,16 +2324,16 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.32.0",
+            "version": "v1.32.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "b88250090d834add55e4ad31f84190d51f617fca"
+                "reference": "999e9ce8b9d17914f04e1718271a0a46da4de2f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/b88250090d834add55e4ad31f84190d51f617fca",
-                "reference": "b88250090d834add55e4ad31f84190d51f617fca",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/999e9ce8b9d17914f04e1718271a0a46da4de2f3",
+                "reference": "999e9ce8b9d17914f04e1718271a0a46da4de2f3",
                 "shasum": ""
             },
             "require": {
@@ -2376,22 +2376,22 @@
             "support": {
                 "docs": "https://googleapis.github.io/google-auth-library-php/main/",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.32.0"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.32.1"
             },
-            "time": "2023-10-16T18:38:15+00:00"
+            "time": "2023-10-17T21:13:22+00:00"
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.52.6",
+            "version": "v1.52.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "71f092f4dab880515917da64423656ed3d6aefc2"
+                "reference": "f79480d1e2b31a695ae98b42ca10b67b41da9fb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/71f092f4dab880515917da64423656ed3d6aefc2",
-                "reference": "71f092f4dab880515917da64423656ed3d6aefc2",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/f79480d1e2b31a695ae98b42ca10b67b41da9fb1",
+                "reference": "f79480d1e2b31a695ae98b42ca10b67b41da9fb1",
                 "shasum": ""
             },
             "require": {
@@ -2407,7 +2407,7 @@
             "require-dev": {
                 "erusev/parsedown": "^1.6",
                 "google/cloud-common-protos": "^0.4",
-                "google/gax": "^1.19.1",
+                "google/gax": "^1.24.0",
                 "opis/closure": "^3",
                 "phpdocumentor/reflection": "^5.0",
                 "phpspec/prophecy-phpunit": "^2.0",
@@ -2441,26 +2441,26 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.6"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.7"
             },
-            "time": "2023-10-06T21:49:26+00:00"
+            "time": "2023-10-16T22:54:31+00:00"
         },
         {
             "name": "google/cloud-storage",
-            "version": "v1.33.3",
+            "version": "v1.33.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-storage.git",
-                "reference": "e22877e96c3f5c4f53b0fb2077834fb6d64d0fca"
+                "reference": "02f53c6cbbc18c4ee8f5d12cbd7887ceec575724"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/e22877e96c3f5c4f53b0fb2077834fb6d64d0fca",
-                "reference": "e22877e96c3f5c4f53b0fb2077834fb6d64d0fca",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/02f53c6cbbc18c4ee8f5d12cbd7887ceec575724",
+                "reference": "02f53c6cbbc18c4ee8f5d12cbd7887ceec575724",
                 "shasum": ""
             },
             "require": {
-                "google/cloud-core": "^1.51.3",
+                "google/cloud-core": "^1.52.7",
                 "php": ">=7.4",
                 "ramsey/uuid": "^4.2.3"
             },
@@ -2497,9 +2497,9 @@
             ],
             "description": "Cloud Storage Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.33.3"
+                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.33.4"
             },
-            "time": "2023-09-30T16:50:41+00:00"
+            "time": "2023-10-16T22:54:31+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
