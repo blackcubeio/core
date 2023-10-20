@@ -52,11 +52,6 @@ class UrlMapper extends BaseObject implements ArrayAccess
     const CACHE_PREFIX = 'blackcube:web:urlmapper';
 
     /**
-     * @var int
-     */
-    public static $CACHE_EXPIRE = 3600;
-
-    /**
      * Check if current route is handled by the mapper
      * {@inheritDoc}
      */
@@ -134,14 +129,9 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 throw new NotFoundHttpException();
                 break;
         }
-        /*/
-        if (Module::getInstance()->cache !== null) {
-            $cacheDependency = QueryCache::getCmsDependencies();
-            $query->cache(static::$CACHE_EXPIRE, $cacheDependency);
-        }
-        /**/
         $element = $query
             ->andWhere(['id' => $id])
+            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
             ->active()
             ->one();
         /* @var $element \blackcube\core\models\Node|\blackcube\core\models\Composite|\blackcube\core\models\Category|\blackcube\core\models\Tag */

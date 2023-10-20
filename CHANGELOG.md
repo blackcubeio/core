@@ -1,6 +1,10 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+
+ * Upd: Allow empty path for home page management
+ * Upd: Move `cacheDuration` to `Module` config
+
 Release 3.0.9 October, 16th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
 

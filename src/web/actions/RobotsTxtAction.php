@@ -17,6 +17,7 @@ namespace blackcube\core\web\actions;
 use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Sitemap;
 use blackcube\core\models\Slug;
+use blackcube\core\Module;
 use yii\web\Response;
 use yii\web\ViewAction;
 use yii\helpers\Url;
@@ -96,7 +97,7 @@ class RobotsTxtAction extends ViewAction
                 }
             }
             $sitemaps = Sitemap::find()
-                ->cache(3600, QueryCache::getCmsDependencies())
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
                 ->active()
                 ->with(['slug', 'slug.seo']);
 
@@ -108,7 +109,7 @@ class RobotsTxtAction extends ViewAction
                         $noIndex = (bool)$currentSlug->seo->noindex;
                     }
                     $element = $currentSlug->getElement()
-                        ->cache(3600, QueryCache::getCmsDependencies())
+                        ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
                         ->active()
                         ->one();
                     if ($element !== null && $noIndex === true) {
@@ -120,7 +121,7 @@ class RobotsTxtAction extends ViewAction
                 $robotsTxtContent[] = $additionalLine;
             }
             $content = implode("\n", $robotsTxtContent);
-            Yii::$app->cache->set('robots.txt', $content, 3600, QueryCache::getCmsDependencies());
+            Yii::$app->cache->set('robots.txt', $content, Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies());
         }
 
 

@@ -23,6 +23,7 @@ use blackcube\core\models\Slug;
 use blackcube\core\models\Tag;
 use blackcube\core\Module;
 use yii\base\BaseObject;
+use yii\caching\CacheInterface;
 use yii\web\UrlRuleInterface;
 use Yii;
 
@@ -90,7 +91,8 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 if (empty($params) === false) {
                     $cacheId .= '?'.http_build_query($params);
                 }
-                $cache->set($cacheId, $prettyUrl, 3600, QueryCache::getSlugDependencies());
+                /** @var CacheInterface $cache */
+                $cache->set($cacheId, $prettyUrl, Module::getInstance()->cacheDuration, QueryCache::getSlugDependencies());
             }
         }
         return $prettyUrl;
@@ -103,9 +105,9 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     {
         $pathInfo = $request->getPathInfo();
         $hostname = $request->getHostName();
-        if (empty($pathInfo) === true) {
-            return false;
-        }
+        // if (empty($pathInfo) === true) {
+        //     return false;
+        // }
         if ($this->suffix === null) {
             $this->suffix = $manager->suffix;
         }
@@ -121,7 +123,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             static::$slugs[$key] = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
                 ->active()
                 ->with(['element' => function($query) { $query->active(); }])
-                ->cache(3600, QueryCache::getSlugDependencies())
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getSlugDependencies())
                 ->one();
         }
         $slug = static::$slugs[$key];
