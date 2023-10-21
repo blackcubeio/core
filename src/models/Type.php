@@ -16,6 +16,7 @@ namespace blackcube\core\models;
 
 use blackcube\core\helpers\QueryCache;
 use blackcube\core\Module;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\Connection;
@@ -36,6 +37,10 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property string $route
+ * @property boolean $nodeAllowed
+ * @property boolean $compositeAllowed
+ * @property boolean $categoryAllowed
+ * @property boolean $tagAllowed
  * @property int|null $minBlocs
  * @property int|null $maxBlocs
  * @property string $dateCreate
@@ -43,7 +48,7 @@ use Yii;
  *
  * @property Category[] $categories
  * @property Composite[] $composites
- * @property Node $node
+ * @property Node[] $nodes
  * @property Tag[] $tags
  * @property BlocType[] $blocTypes
  */
@@ -68,6 +73,19 @@ class Type extends \yii\db\ActiveRecord
             'createdAtAttribute' => 'dateCreate',
             'updatedAtAttribute' => 'dateUpdate',
             'value' => Yii::createObject(Expression::class, ['NOW()']),
+        ];
+        $behaviors['typecast'] = [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'nodeAllowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                'compositeAllowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                'categoryAllowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                'tagAllowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterFind' => true,
+            'typecastAfterSave' => true,
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => true,
         ];
         return $behaviors;
     }
@@ -110,6 +128,7 @@ class Type extends \yii\db\ActiveRecord
 
             }],
             [['name'], 'required'],
+            [['nodeAllowed', 'compositeAllowed', 'categoryAllowed', 'tagAllowed'], 'boolean'],
             [['minBlocs', 'maxBlocs'], 'integer'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['name', 'route'], 'string', 'max' => 190],
@@ -126,6 +145,10 @@ class Type extends \yii\db\ActiveRecord
             'id' => Module::t('models/type', 'ID'),
             'name' => Module::t('models/type', 'Name'),
             'route' => Module::t('models/type', 'Route'),
+            'nodeAllowed' => Module::t('models/type', 'Node Allowed'),
+            'compositeAllowed' => Module::t('models/type', 'Composite Allowed'),
+            'categoryAllowed' => Module::t('models/type', 'Category Allowed'),
+            'tagAllowed' => Module::t('models/type', 'Tag Allowed'),
             'minBlocs' => Module::t('models/type', 'Min Blocs'),
             'maxBlocs' => Module::t('models/type', 'Max Blocs'),
             'dateCreate' => Module::t('models/type', 'Date Create'),
@@ -160,10 +183,10 @@ class Type extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getNode(): ActiveQuery
+    public function getNodes(): ActiveQuery
     {
         return $this
-            ->hasOne(Node::class, ['typeId' => 'id']);
+            ->hasMany(Node::class, ['typeId' => 'id']);
     }
 
     /**
