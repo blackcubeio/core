@@ -1,6 +1,7 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Fix slug generator to be sure generated slug does not exist
 
 Release 3.0.10 October, 20th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
