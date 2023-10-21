@@ -652,6 +652,14 @@ msgid "Tag ID"
 msgstr "ID Tag"
 
 msgctxt "blackcube/core/models/type"
+msgid "Category Allowed"
+msgstr "Catégorie autorisée"
+
+msgctxt "blackcube/core/models/type"
+msgid "Composite Allowed"
+msgstr "Article autorisé"
+
+msgctxt "blackcube/core/models/type"
 msgid "Date Create"
 msgstr "Date de création"
 
@@ -676,8 +684,16 @@ msgid "Name"
 msgstr "Nom"
 
 msgctxt "blackcube/core/models/type"
+msgid "Node Allowed"
+msgstr "Rubrique autorisée"
+
+msgctxt "blackcube/core/models/type"
 msgid "Route"
 msgstr "Route"
+
+msgctxt "blackcube/core/models/type"
+msgid "Tag Allowed"
+msgstr "Tag autorisé"
 
 msgctxt "blackcube/core/models/type-bloc-type"
 msgid "Allowed"
