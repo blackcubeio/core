@@ -57,7 +57,17 @@ class SlugGenerator implements SlugGeneratorInterface
             $baseSlug = $this->generateCategorySlug($parentCatebgory->id, $refresh);
             $baseSlug[] = $this->urlize($element->name);
         }
-        return implode('/', $baseSlug);
+        $slugPath = implode('/', $baseSlug);
+        $newSlugPath = $slugPath;
+        $i = 0;
+        do {
+            if ($i > 0) {
+                $newSlugPath = $slugPath.'-'.str_pad($i, 3, '0', STR_PAD_LEFT);
+            }
+            $existingSlug = Slug::find()->andWhere(['path' => $newSlugPath])->one();
+            $i++;
+        } while ($existingSlug !== null);
+        return $newSlugPath;
     }
 
     /**

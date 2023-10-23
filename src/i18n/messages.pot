@@ -647,6 +647,14 @@ msgid "Tag ID"
 msgstr ""
 
 msgctxt "blackcube/core/models/type"
+msgid "Category Allowed"
+msgstr ""
+
+msgctxt "blackcube/core/models/type"
+msgid "Composite Allowed"
+msgstr ""
+
+msgctxt "blackcube/core/models/type"
 msgid "Date Create"
 msgstr ""
 
@@ -671,7 +679,15 @@ msgid "Name"
 msgstr ""
 
 msgctxt "blackcube/core/models/type"
+msgid "Node Allowed"
+msgstr ""
+
+msgctxt "blackcube/core/models/type"
 msgid "Route"
+msgstr ""
+
+msgctxt "blackcube/core/models/type"
+msgid "Tag Allowed"
 msgstr ""
 
 msgctxt "blackcube/core/models/type-bloc-type"
