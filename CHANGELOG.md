@@ -1,10 +1,13 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.1.0 October, 23th 2023 <pgaultier@redcat.io>
+----------------------------------------------------
 
  * Upd: Add type filtering
  * Upd: Update i18n
  * Upd: Fix slug generator to be sure generated slug does not exist
+* Upd: Update dependencies
 
 Release 3.0.10 October, 20th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
