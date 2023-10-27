@@ -46,7 +46,8 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public $suffix = null;
 
-    private static $slugs = [];
+    private static $parsedSlugs = [];
+    private static $createdSlugs = [];
 
     /**
      * {@inheritDoc}
@@ -72,7 +73,12 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             $prettyUrl = $cache->get($cacheId);
         }
         if ($prettyUrl === false) {
-            $slug = Slug::findOneByTypeAndId($type, $id);
+            $key = sha1($route);
+
+            if (isset(static::$createdSlugs[$key]) === false) {
+                static::$createdSlugs[$key] = Slug::findOneByTypeAndId($type, $id);
+            }
+            $slug = static::$createdSlugs[$key];
             if ($slug !== null) {
                 $prettyUrl = $slug->path;
                 if ($this->suffix === null) {
@@ -119,14 +125,14 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             }
         }
         $key = sha1($hostname.':'.$pathInfo);
-        if (isset(static::$slugs[$key]) === false) {
-            static::$slugs[$key] = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
+        if (isset(static::$parsedSlugs[$key]) === false) {
+            static::$parsedSlugs[$key] = Slug::findByPathinfoAndHostname($pathInfo, $hostname)
                 ->active()
                 ->with(['element' => function($query) { $query->active(); }])
                 ->cache(Module::getInstance()->cacheDuration, QueryCache::getSlugDependencies())
                 ->one();
         }
-        $slug = static::$slugs[$key];
+        $slug = static::$parsedSlugs[$key];
 
         if ($slug === null) {
             return false;
