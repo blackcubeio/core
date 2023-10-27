@@ -32,6 +32,7 @@ use DateTime;
  */
 class Element {
 
+    private static $elementDateCreate = [];
     /**
      * Compute dateCreate of an element using blocs
      *  `min(dateCreate)` from element and blocs
@@ -40,17 +41,23 @@ class Element {
      * @return DateTime
      */
     public static function getDateCreate(ElementInterface $element): DateTime {
-        $dates = [];
-        $dates[] = new DateTime($element->dateCreate);
-        $minDate = $element->getBlocs()
-            ->min(Bloc::tableName().'.[[dateCreate]]');
-        if ($minDate !== null) {
-            $dates[] = new DateTime($minDate);
+        $key = $element->getRoute();
+        $key = sha1($key);
+        if (isset(self::$elementDateCreate[$key]) === false) {
+            $dates = [];
+            $dates[] = new DateTime($element->dateCreate);
+            $minDate = $element->getBlocs()
+                ->min(Bloc::tableName().'.[[dateCreate]]');
+            if ($minDate !== null) {
+                $dates[] = new DateTime($minDate);
+            }
+            $dateCreate = min($dates);
+            self::$elementDateCreate[$key] = $dateCreate;
         }
-        $dateCreate = min($dates);
-        return $dateCreate;
+        return self::$elementDateCreate[$key];
     }
 
+    private static $elementDateUpdate = [];
     /**
      * Compute dateUpdate of an element using blocs
      *  `max(dateUpdate)` from element and blocs
@@ -59,16 +66,23 @@ class Element {
      * @throws \Exception
      */
     public static function getDateUpdate(ElementInterface $element): DateTime {
-        $dates = [];
-        $dates[] = new DateTime($element->dateUpdate);
-        $maxDate = $element->getBlocs()
-            ->max(Bloc::tableName().'.[[dateUpdate]]');
-        if ($maxDate !== null) {
-            $dates[] = new DateTime($maxDate);
+        $key = $element->getRoute();
+        $key = sha1($key);
+        if (isset(self::$elementDateUpdate[$key]) === false) {
+            $dates = [];
+            $dates[] = new DateTime($element->dateUpdate);
+            $maxDate = $element->getBlocs()
+                ->max(Bloc::tableName().'.[[dateUpdate]]');
+            if ($maxDate !== null) {
+                $dates[] = new DateTime($maxDate);
+            }
+            $dateUpdate = max($dates);
+            self::$elementDateUpdate[$key] = $dateUpdate;
         }
-        $dateUpdate = max($dates);
-        return $dateUpdate;
+        return self::$elementDateUpdate[$key];
     }
+
+    private static $blocsElementWithtypes = [];
 
     /**
      * Get all blocs of an element with specific types
@@ -79,13 +93,22 @@ class Element {
      */
     public static function getWithTypes(ElementInterface $element, $selectedBlocTypeIds = [])
     {
-        return $element->getBlocs()
-            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
-            ->active()
-            ->andWhere(['in', 'blocTypeId', $selectedBlocTypeIds])
-            ->all();
+        $key = $element->getRoute();
+        sort($selectedBlocTypeIds);
+        $key .= ':'.implode('-', $selectedBlocTypeIds);
+        $key = sha1($key);
+        if (isset(self::$blocsElementWithtypes[$key]) === false) {
+            $blocs = $element->getBlocs()
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
+                ->active()
+                ->andWhere(['in', 'blocTypeId', $selectedBlocTypeIds])
+                ->all();
+            self::$blocsElementWithtypes[$key] = $blocs;
+        }
+        return self::$blocsElementWithtypes[$key] ?? [];
     }
 
+    private static $blocsElementExceptTypes = [];
     /**
      * Get all blocs of an element except specific types
      *
@@ -95,13 +118,22 @@ class Element {
      */
     public static function getExceptTypes(ElementInterface $element, $exceptBlocTypeIds = [])
     {
-        return $element->getBlocs()
-            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
-            ->active()
-            ->andWhere(['not in', 'blocTypeId', $exceptBlocTypeIds])
-            ->all();
+        $key = $element->getRoute();
+        sort($exceptBlocTypeIds);
+        $key .= ':'.implode('-', $exceptBlocTypeIds);
+        $key = sha1($key);
+        if (isset(self::$blocsElementExceptTypes[$key]) === false) {
+            $blocs = $element->getBlocs()
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
+                ->active()
+                ->andWhere(['not in', 'blocTypeId', $exceptBlocTypeIds])
+                ->all();
+            self::$blocsElementExceptTypes[$key] = $blocs;
+        }
+        return self::$blocsElementExceptTypes[$key] ?? [];
     }
 
+    private static $blocsElementWithType = [];
     /**
      * Get first bloc of an element with specific type
      *
@@ -111,11 +143,18 @@ class Element {
      */
     public static function getFirstWithType(ElementInterface $element, $blocTypeId)
     {
-        return $element->getBlocs()
-            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
-            ->active()
-            ->andWhere(['blocTypeId' => $blocTypeId])
-            ->one();
+        $key = $element->getRoute();
+        $key .= ':'.$blocTypeId;
+        $key = sha1($key);
+        if (isset(self::$blocsElementWithType[$key]) === false) {
+            $bloc = $element->getBlocs()
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
+                ->active()
+                ->andWhere(['blocTypeId' => $blocTypeId])
+                ->one();
+            self::$blocsElementWithType[$key] = $bloc;
+        }
+        return self::$blocsElementWithType[$key] ?? null;
     }
 
 

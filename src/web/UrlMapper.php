@@ -105,6 +105,8 @@ class UrlMapper extends BaseObject implements ArrayAccess
         // unset($this->additionalMap[$offset]);
     }
 
+    private static $fetchedElements = [];
+    private static $fetchedControllers = [];
     protected static function fetchControllerForElement($type, $id)
     {
         $element = null;
@@ -129,11 +131,19 @@ class UrlMapper extends BaseObject implements ArrayAccess
                 throw new NotFoundHttpException();
                 break;
         }
-        $element = $query
-            ->andWhere(['id' => $id])
-            ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
-            ->active()
-            ->one();
+        $key = $type.'-'.$id;
+        $key = sha1($key);
+        if (isset(static::$fetchedElements[$key]) === false) {
+            $element = $query
+                ->andWhere(['id' => $id])
+                ->cache(Module::getInstance()->cacheDuration, QueryCache::getCmsDependencies())
+                ->active()
+                ->one();
+            static::$fetchedElements[$key] = $element;
+        } else {
+            $element = static::$fetchedElements[$key];
+        }
+
         /* @var $element \blackcube\core\models\Node|\blackcube\core\models\Composite|\blackcube\core\models\Category|\blackcube\core\models\Tag */
         if ($element === null) {
             throw new NotFoundHttpException();
@@ -144,15 +154,23 @@ class UrlMapper extends BaseObject implements ArrayAccess
             $controllerClass = RedirectController::class;
             $finalRoutePart = null;
         } elseif ($element->type !== null && empty($element->type->route) === false) {
-            list($controllerRef, ) = Yii::$app->createController($element->type->route);
-            if ($controllerRef === null) {
-                throw new NotSupportedException();
+            $key = sha1($element->type->route);
+            if (isset(static::$fetchedControllers[$key]) === false) {
+                list($controllerRef, ) = Yii::$app->createController($element->type->route);
+                if ($controllerRef === null) {
+                    throw new NotSupportedException();
+                }
+                $controllerId = $controllerRef->id;
+                $moduleUid = $controllerRef->module->uniqueId;
+                $controllerClass = get_class($controllerRef);
+                $prefix = trim($moduleUid.'/'.$controllerId, '/');
+                $finalRoutePart = trim(str_replace($prefix, '', $element->type->route), '/');
+
+                static::$fetchedControllers[$key] = [$controllerClass, $moduleUid, $finalRoutePart];
+            } else {
+                list($controllerClass, $moduleUid, $finalRoutePart) = static::$fetchedControllers[$key];
             }
-            $controllerId = $controllerRef->id;
-            $moduleUid = $controllerRef->module->uniqueId;
-            $controllerClass = get_class($controllerRef);
-            $prefix = trim($moduleUid.'/'.$controllerId, '/');
-            $finalRoutePart = trim(str_replace($prefix, '', $element->type->route), '/');
+
         } elseif ($element->type === null) {
             throw new BadRequestHttpException(Module::t('web', 'Element "{type}-{id}" is not routable', [
                 'type' => $type,
