@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Add caching during request
+ * Upd: Update dependencies
+
 Release 3.1.0 October, 23th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
 
