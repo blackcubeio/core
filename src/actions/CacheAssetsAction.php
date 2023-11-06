@@ -9,16 +9,11 @@
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\web\actions
+ * @package blackcube\core\actions
  */
 
-namespace blackcube\core\web\actions;
+namespace blackcube\core\actions;
 
-use blackcube\admin\assets\FaviconAsset as AdminFaviconAsset;
-use blackcube\admin\assets\StaticAsset as AdminStaticAsset;
-use blackcube\admin\assets\WebpackAsset as AdminWebpackAsset;
-use webapp\assets\StaticAsset;
-use webapp\assets\WebpackAsset;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -33,7 +28,7 @@ use yii\web\NotFoundHttpException;
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\web\actions
+ * @package blackcube\core\actions
  * @since XXX
  */
 class CacheAssetsAction extends \yii\base\Action

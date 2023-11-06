@@ -12,17 +12,17 @@
  * @package blackcube\core\web\actions
  */
 
-namespace blackcube\core\web\actions;
+namespace blackcube\core\actions;
 
 use blackcube\core\models\Sitemap;
 use blackcube\core\models\Slug;
-use yii\web\Response;
-use yii\web\ViewAction;
 use DateTime;
 use DateTimeZone;
 use DOMDocument;
 use XMLReader;
 use Yii;
+use yii\web\Response;
+use yii\web\ViewAction;
 
 /**
  * Generate Sitemap

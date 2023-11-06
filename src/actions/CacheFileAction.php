@@ -9,13 +9,12 @@
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\web\actions
+ * @package blackcube\core\actions
  */
 
-namespace blackcube\core\web\actions;
+namespace blackcube\core\actions;
 
 use blackcube\core\components\Flysystem;
-use blackcube\core\Module;
 use blackcube\core\Module as CoreModule;
 use blackcube\core\web\helpers\Html;
 use Yii;
@@ -28,7 +27,7 @@ use Yii;
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package blackcube\core\web\actions
+ * @package blackcube\core\actions
  * @since XXX
  */
 class CacheFileAction extends \yii\base\Action

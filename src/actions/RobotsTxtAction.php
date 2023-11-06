@@ -9,21 +9,18 @@
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package webapp\actions
+ * @package blackcube\core\controllers
  */
 
-namespace blackcube\core\web\actions;
+namespace blackcube\core\actions;
 
 use blackcube\core\helpers\QueryCache;
 use blackcube\core\models\Sitemap;
-use blackcube\core\models\Slug;
 use blackcube\core\Module;
+use Yii;
+use yii\helpers\Url;
 use yii\web\Response;
 use yii\web\ViewAction;
-use yii\helpers\Url;
-use DateTime;
-use DateTimeZone;
-use Yii;
 
 /**
  * Generate robots.txt
@@ -33,7 +30,7 @@ use Yii;
  * @license https://www.redcat.io/license license
  * @version XXX
  * @link https://www.redcat.io
- * @package webapp\actions
+ * @package blackcube\core\controllers
  * @since XXX
  */
 class RobotsTxtAction extends ViewAction
