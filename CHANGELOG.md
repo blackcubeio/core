@@ -5,6 +5,7 @@ Blackcube Core - CHANGELOG
  * Add: Assets file management
  * Add: sitemap.xml generation
  * Add: robots.txt generation
+ * Upd: Update dependencies
 
 Release 3.1.1 October, 27th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------

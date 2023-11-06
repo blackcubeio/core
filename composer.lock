@@ -29,16 +29,16 @@
         },
         {
             "name": "bower-asset/jquery",
-            "version": "3.7.1",
+            "version": "3.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jquery/jquery-dist.git",
-                "reference": "fde1f76e2799dd877c176abde0ec836553246991"
+                "url": "git@github.com:jquery/jquery-dist.git",
+                "reference": "91ef2d8836342875f2519b5815197ea0f23613cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/fde1f76e2799dd877c176abde0ec836553246991",
-                "reference": "fde1f76e2799dd877c176abde0ec836553246991"
+                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/91ef2d8836342875f2519b5815197ea0f23613cf",
+                "reference": "91ef2d8836342875f2519b5815197ea0f23613cf"
             },
             "type": "bower-asset",
             "license": [
@@ -1608,16 +1608,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.283.13",
+            "version": "3.284.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "853eecfb21e8d623fa1b32e597b0a75912e8a404"
+                "reference": "1b7e926acc990509e3d13fa708cdede686b40d90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/853eecfb21e8d623fa1b32e597b0a75912e8a404",
-                "reference": "853eecfb21e8d623fa1b32e597b0a75912e8a404",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/1b7e926acc990509e3d13fa708cdede686b40d90",
+                "reference": "1b7e926acc990509e3d13fa708cdede686b40d90",
                 "shasum": ""
             },
             "require": {
@@ -1697,9 +1697,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.283.13"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.284.0"
             },
-            "time": "2023-10-26T18:14:40+00:00"
+            "time": "2023-11-03T18:13:48+00:00"
         },
         {
             "name": "behat/gherkin",
@@ -2382,16 +2382,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.52.7",
+            "version": "v1.52.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "f79480d1e2b31a695ae98b42ca10b67b41da9fb1"
+                "reference": "2ebcaa410f7e92dca5677dd9cc4ec1f9f315e83c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/f79480d1e2b31a695ae98b42ca10b67b41da9fb1",
-                "reference": "f79480d1e2b31a695ae98b42ca10b67b41da9fb1",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/2ebcaa410f7e92dca5677dd9cc4ec1f9f315e83c",
+                "reference": "2ebcaa410f7e92dca5677dd9cc4ec1f9f315e83c",
                 "shasum": ""
             },
             "require": {
@@ -2441,22 +2441,22 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.7"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.8"
             },
-            "time": "2023-10-16T22:54:31+00:00"
+            "time": "2023-11-02T19:15:44+00:00"
         },
         {
             "name": "google/cloud-storage",
-            "version": "v1.33.4",
+            "version": "v1.34.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-storage.git",
-                "reference": "02f53c6cbbc18c4ee8f5d12cbd7887ceec575724"
+                "reference": "4589dd3c8f4171db4ce3eb335fc7d894661ca0e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/02f53c6cbbc18c4ee8f5d12cbd7887ceec575724",
-                "reference": "02f53c6cbbc18c4ee8f5d12cbd7887ceec575724",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/4589dd3c8f4171db4ce3eb335fc7d894661ca0e9",
+                "reference": "4589dd3c8f4171db4ce3eb335fc7d894661ca0e9",
                 "shasum": ""
             },
             "require": {
@@ -2497,9 +2497,9 @@
             ],
             "description": "Cloud Storage Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.33.4"
+                "source": "https://github.com/googleapis/google-cloud-php-storage/tree/v1.34.0"
             },
-            "time": "2023-10-16T22:54:31+00:00"
+            "time": "2023-11-02T19:15:44+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3285,16 +3285,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "3.4.0",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "e2392369686d420ca32df3803de28b5d6f76867d"
+                "reference": "c915e2634718dbc8a4a15c61b0e62e7a44e14448"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/e2392369686d420ca32df3803de28b5d6f76867d",
-                "reference": "e2392369686d420ca32df3803de28b5d6f76867d",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c915e2634718dbc8a4a15c61b0e62e7a44e14448",
+                "reference": "c915e2634718dbc8a4a15c61b0e62e7a44e14448",
                 "shasum": ""
             },
             "require": {
@@ -3370,7 +3370,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/3.4.0"
+                "source": "https://github.com/Seldaek/monolog/tree/3.5.0"
             },
             "funding": [
                 {
@@ -3382,7 +3382,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-21T08:46:11+00:00"
+            "time": "2023-10-27T15:32:31+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -6472,16 +6472,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v6.3.6",
+            "version": "v6.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "ab8446f997efb9913627e9da10fa784d2182fe92"
+                "reference": "cd67fcaf4524ec6ae5d9b2d9497682d7ad3ce57d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/ab8446f997efb9913627e9da10fa784d2182fe92",
-                "reference": "ab8446f997efb9913627e9da10fa784d2182fe92",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/cd67fcaf4524ec6ae5d9b2d9497682d7ad3ce57d",
+                "reference": "cd67fcaf4524ec6ae5d9b2d9497682d7ad3ce57d",
                 "shasum": ""
             },
             "require": {
@@ -6544,7 +6544,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v6.3.6"
+                "source": "https://github.com/symfony/http-client/tree/v6.3.7"
             },
             "funding": [
                 {
@@ -6560,7 +6560,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-06T10:08:56+00:00"
+            "time": "2023-10-29T12:41:36+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -7059,16 +7059,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v6.3.3",
+            "version": "v6.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "e23292e8c07c85b971b44c1c4b87af52133e2add"
+                "reference": "9758b6c69d179936435d0ffb577c3708d57e38a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/e23292e8c07c85b971b44c1c4b87af52133e2add",
-                "reference": "e23292e8c07c85b971b44c1c4b87af52133e2add",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/9758b6c69d179936435d0ffb577c3708d57e38a8",
+                "reference": "9758b6c69d179936435d0ffb577c3708d57e38a8",
                 "shasum": ""
             },
             "require": {
@@ -7111,7 +7111,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v6.3.3"
+                "source": "https://github.com/symfony/yaml/tree/v6.3.7"
             },
             "funding": [
                 {
@@ -7127,7 +7127,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-31T07:08:24+00:00"
+            "time": "2023-10-28T23:31:00+00:00"
         },
         {
             "name": "theseer/tokenizer",
