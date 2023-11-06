@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.1.2 November, 6th 2023 <pgaultier@redcat.io>
+----------------------------------------------------
+
  * Add: Cached files management
  * Add: Assets file management
  * Add: sitemap.xml generation
