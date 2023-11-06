@@ -14,8 +14,11 @@
 
 namespace blackcube\core;
 
+use blackcube\core\actions\CacheAssetsAction;
+use blackcube\core\actions\CacheFileAction;
+use blackcube\core\actions\RobotsTxtAction;
+use blackcube\core\actions\SitemapAction;
 use blackcube\core\commands\InitController;
-use blackcube\core\components\Flysystem;
 use blackcube\core\components\PluginsHandler;
 use blackcube\core\components\PreviewManager;
 use blackcube\core\components\SlugGenerator;
@@ -48,18 +51,16 @@ use blackcube\core\models\TagBloc;
 use blackcube\core\models\Type;
 use blackcube\core\models\TypeBlocType;
 use blackcube\core\validators\PasswordStrengthValidator;
-use blackcube\core\web\UrlRule;
 use blackcube\core\web\UrlMapper;
+use blackcube\core\web\UrlRule;
 use yii\base\BootstrapInterface;
 use yii\base\Module as BaseModule;
-use yii\caching\CacheInterface;
 use yii\console\Application as ConsoleApplication;
 use yii\console\controllers\MigrateController;
-use yii\db\Connection;
-use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\i18n\GettextMessageSource;
 use yii\web\Application as WebApplication;
+use yii\web\GroupUrlRule;
 use Yii;
 
 /**
@@ -103,6 +104,24 @@ class Module extends BaseModule implements BootstrapInterface
      * @var int cache duration in seconds for all cached data
      */
     public $cacheDuration = 3600;
+
+    /**
+     * @var bool if true, the sitemap.xml will be disabled and should be handled by the application
+     */
+    public $disableSitemapRoute = false;
+
+    /**
+     * If sitemap.xml is disabled, the robots.txt will also be disabled
+     * @var bool if true, the robots.txt will be disabled and must be handled by the application
+     */
+    public $disableRobotsRoute = false;
+
+    /**
+     * @var bool if true, the cache-file route will be disabled and must be handled by the application
+     */
+    public $disableCacheFileRoute = false;
+
+    public $controllerNamespace = 'blackcube\core\controllers';
 
     /**
      * @var mixed cms url rules. Set it to false to disable cms url rule management
@@ -173,6 +192,10 @@ class Module extends BaseModule implements BootstrapInterface
         TagBloc::class => TagBloc::class,
         Type::class => Type::class,
         TypeBlocType::class => TypeBlocType::class,
+        CacheAssetsAction::class => CacheAssetsAction::class,
+        CacheFileAction::class => CacheFileAction::class,
+        SitemapAction::class => SitemapAction::class,
+        RobotsTxtAction::class => RobotsTxtAction::class,
         'passwordSecurity' => [
             'class' => PasswordStrengthValidator::class,
             'preset' => PasswordStrengthValidator::PRESET_NORMAL,
@@ -182,7 +205,7 @@ class Module extends BaseModule implements BootstrapInterface
     /**
      * @var string version number
      */
-    public $version = 'v3.1.1';
+    public $version = 'v3.1-dev';
 
     /**
      * {@inheritDoc}
@@ -327,6 +350,33 @@ class Module extends BaseModule implements BootstrapInterface
      */
     protected function bootstrapWeb(WebApplication $app)
     {
+
+        $fileCacheUrl = trim(Yii::getAlias($this->fileCacheUrlAlias), '/');
+        $assetsUrl = trim(Yii::getAlias(Yii::$app->assetManager->baseUrl), '/');
+        $app->getUrlManager()->addRules([
+            [
+                'class' => GroupUrlRule::class,
+                'routePrefix' => $this->id,
+                'rules' => [
+                    [
+                        'pattern' => 'sitemap.xml',
+                        'route' => 'core/sitemap-xml',
+                    ],
+                    [
+                        'pattern' => 'robots.txt',
+                        'route' => 'core/robots-txt',
+                    ],
+                    [
+                        'pattern' => $fileCacheUrl.'/<file:(.+)>',
+                        'route' => 'core/cache-file',
+                    ],
+                    [
+                        'pattern' => $assetsUrl.'/<file:(.+)>',
+                        'route' => 'core/cache-assets',
+                    ],
+                ],
+            ],
+        ], true);
         if ($this->cmsUrlRule !== false) {
             $app->getUrlManager()->addRules([
                 $this->cmsUrlRule
