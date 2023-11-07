@@ -1,6 +1,10 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: change DI registration for `RobotsTxtAction` and `SitemapAction` to 'robots.txt' and 'sitemap.xml'
+ * Upd: Allow to disable routes
+ * Upd: Update dependencies
+
 Release 3.1.2 November, 6th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
 

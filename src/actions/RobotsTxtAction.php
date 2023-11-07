@@ -66,6 +66,12 @@ class RobotsTxtAction extends ViewAction
      */
     public $additionalLines = [];
 
+    public function init()
+    {
+        parent::init();
+        $this->sitemapRoute = 'core/sitemap-xml';
+    }
+
     /**
      * {@inheritdoc}
      */
