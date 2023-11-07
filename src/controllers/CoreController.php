@@ -16,8 +16,6 @@ namespace blackcube\core\controllers;
 
 use blackcube\core\actions\CacheAssetsAction;
 use blackcube\core\actions\CacheFileAction;
-use blackcube\core\actions\RobotsTxtAction;
-use blackcube\core\actions\SitemapAction;
 use yii\web\Controller;
 
 /**
@@ -43,7 +41,7 @@ class CoreController extends Controller {
         $actions['sitemap-xml'] = 'sitemap.xml';
         $actions['robots-txt'] = 'robots.txt';
         $actions['cache-file'] = CacheFileAction::class;
-        $actions['cache-assets'] = CacheAssetsAction::class
+        $actions['cache-assets'] = CacheAssetsAction::class;
         return $actions;
     }
 }
