@@ -45,7 +45,7 @@ class SitemapAction extends ViewAction
     /**
      * @var string alias to additional sitemap file
      */
-    public $additionalSitemap = null;
+    public $additionalSitemapAlias = null;
 
     public $addHeaderXRobotsTag = true;
 
@@ -133,8 +133,8 @@ class SitemapAction extends ViewAction
     private function extractAdditionalSitemap()
     {
         $sitemapData = [];
-        if ($this->additionalSitemap !== null) {
-            $sitemapPath = Yii::getAlias($this->additionalSitemap);
+        if ($this->additionalSitemapAlias !== null) {
+            $sitemapPath = Yii::getAlias($this->additionalSitemapAlias);
             if (file_exists($sitemapPath) && is_file($sitemapPath)) {
                 try {
                     if (version_compare(PHP_VERSION, '8.0.0', '<')) {
