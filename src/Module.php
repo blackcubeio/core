@@ -121,6 +121,11 @@ class Module extends BaseModule implements BootstrapInterface
      */
     public $disableCacheFileRoute = false;
 
+    /**
+     * @var bool if true, the cache-assets route will be disabled and must be handled by the application
+     */
+    public $disableCacheAssetsRoute = false;
+
     public $controllerNamespace = 'blackcube\core\controllers';
 
     /**
@@ -194,8 +199,8 @@ class Module extends BaseModule implements BootstrapInterface
         TypeBlocType::class => TypeBlocType::class,
         CacheAssetsAction::class => CacheAssetsAction::class,
         CacheFileAction::class => CacheFileAction::class,
-        SitemapAction::class => SitemapAction::class,
-        RobotsTxtAction::class => RobotsTxtAction::class,
+        'sitemap.xml' => SitemapAction::class,
+        'robots.txt' => RobotsTxtAction::class,
         'passwordSecurity' => [
             'class' => PasswordStrengthValidator::class,
             'preset' => PasswordStrengthValidator::PRESET_NORMAL,
@@ -248,9 +253,9 @@ class Module extends BaseModule implements BootstrapInterface
      */
     public function registerDi($app)
     {
-        foreach($this->coreSingletons as $class => $definition) {
+        foreach($this->coreSingletons as $class => $singleton) {
             if (Yii::$container->hasSingleton($class) === false) {
-                Yii::$container->setSingleton($class, $definition);
+                Yii::$container->setSingleton($class, $singleton);
             }
         }
         foreach($this->coreElements as $class => $definition) {
@@ -353,30 +358,40 @@ class Module extends BaseModule implements BootstrapInterface
 
         $fileCacheUrl = trim(Yii::getAlias($this->fileCacheUrlAlias), '/');
         $assetsUrl = trim(Yii::getAlias(Yii::$app->assetManager->baseUrl), '/');
-        $app->getUrlManager()->addRules([
-            [
-                'class' => GroupUrlRule::class,
-                'routePrefix' => $this->id,
-                'rules' => [
-                    [
-                        'pattern' => 'sitemap.xml',
-                        'route' => 'core/sitemap-xml',
-                    ],
-                    [
-                        'pattern' => 'robots.txt',
-                        'route' => 'core/robots-txt',
-                    ],
-                    [
-                        'pattern' => $fileCacheUrl.'/<file:(.+)>',
-                        'route' => 'core/cache-file',
-                    ],
-                    [
-                        'pattern' => $assetsUrl.'/<file:(.+)>',
-                        'route' => 'core/cache-assets',
-                    ],
+        $rules = [];
+        if ($this->disableSitemapRoute === false) {
+            $rules[] = [
+                'pattern' => 'sitemap.xml',
+                'route' => 'core/sitemap-xml',
+            ];
+        }
+        if ($this->disableRobotsRoute === false) {
+            $rules[] = [
+                'pattern' => 'robots.txt',
+                'route' => 'core/robots-txt',
+            ];
+        }
+        if ($this->disableCacheFileRoute === false) {
+            $rules[] = [
+                'pattern' => $fileCacheUrl.'/<file:(.+)>',
+                'route' => 'core/cache-file',
+            ];
+        }
+        if ($this->disableCacheAssetsRoute === false) {
+            $rules[] = [
+                'pattern' => $assetsUrl.'/<file:(.+)>',
+                'route' => 'core/cache-assets',
+            ];
+        }
+        if (empty($rules) === false) {
+            $app->getUrlManager()->addRules([
+                [
+                    'class' => GroupUrlRule::class,
+                    'routePrefix' => $this->id,
+                    'rules' => $rules,
                 ],
-            ],
-        ], true);
+            ], true);
+        }
         if ($this->cmsUrlRule !== false) {
             $app->getUrlManager()->addRules([
                 $this->cmsUrlRule
