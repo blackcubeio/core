@@ -1,6 +1,10 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+
+Release 3.1.4 November, 8th 2023 <pgaultier@redcat.io>
+----------------------------------------------------
+
  * Fix: Fix slugs
 
 Release 3.1.3 November, 7th 2023 <pgaultier@redcat.io>
