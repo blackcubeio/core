@@ -164,18 +164,14 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
                 }
             }],
             [['path'], 'filter', 'filter' => function($value) {
-                // if scenario redirect path cannot be empty
-                if ($this->scenario === static::SCENARIO_REDIRECT) {
-                    return null;
-                }
                 // on default scenario path can be empty (home page)
                 return ($value === null) ? '' : ltrim($value, '/');
             }],
             [['httpCode'], 'integer'],
             [['active'], 'boolean'],
-            [['path'], 'string'],
+            [['path'], 'string', 'min' => 0],
             [['targetUrl'], 'url'],
-            [['httpCode', 'targetUrl'], 'required', 'on' => [static::SCENARIO_REDIRECT]],
+            [['httpCode', 'targetUrl', 'path'], 'required', 'on' => [static::SCENARIO_REDIRECT]],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['host', 'path', 'targetUrl'], 'string', 'max' => 190],
             [['host', 'path'], 'unique', 'targetAttribute' => ['host', 'path']],
