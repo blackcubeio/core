@@ -161,7 +161,7 @@ class Module extends BaseModule implements BootstrapInterface
     public $plugins = [];
 
     /**
-     * @var string[]
+     * @var array list of singletons definitions
      */
     public $coreSingletons = [
         PluginsHandlerInterface::class => PluginsHandler::class,
@@ -210,7 +210,7 @@ class Module extends BaseModule implements BootstrapInterface
     /**
      * @var string version number
      */
-    public $version = 'v3.1.4';
+    public $version = 'v3.1-dev';
 
     /**
      * {@inheritDoc}
