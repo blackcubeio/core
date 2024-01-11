@@ -19,6 +19,7 @@ use blackcube\core\Module;
 use Imagine\Image\ManipulatorInterface;
 use yii\base\Action;
 use yii\base\Event;
+use yii\base\NotSupportedException;
 use yii\imagine\Image;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -60,10 +61,39 @@ class ResumablePreviewAction extends Action
         $name = Yii::$app->request->getQueryParam('name', null);
         $width = Yii::$app->request->getQueryParam('width', 200);
         $height = Yii::$app->request->getQueryParam('height', 200);
+        $original = Yii::$app->request->getQueryParam('original', 0);
+        $original = ($original == 1);
 
         $uploadTmpPrefix = trim(Module::getInstance()->uploadTmpPrefix, '/') . '/';
         $uploadFsPrefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
         $uploadAlias = trim(Module::getInstance()->uploadAlias, '/') . '/';
+
+        if ($original === true) {
+            if (strncmp($uploadTmpPrefix, $name, strlen($uploadTmpPrefix)) === 0) {
+                $realNameAlias = str_replace($uploadTmpPrefix, $uploadAlias, $name);
+                $realName = Yii::getAlias($realNameAlias);
+                $fileName = pathinfo($realName, PATHINFO_BASENAME);
+                if (file_exists($realName) === false) {
+                    throw new NotFoundHttpException();
+                }
+                $mimeType = mime_content_type($realName);
+                $handle = fopen($realName, 'r');
+                return Yii::$app->response->sendStreamAsFile($handle, $fileName, ['inline' => true, 'mimeType' => $mimeType]);
+            } elseif (strncmp($uploadFsPrefix, $name, strlen($uploadFsPrefix)) === 0) {
+                $realName = str_replace($uploadFsPrefix, '', $name);
+                $fileName = pathinfo($realName, PATHINFO_BASENAME);
+                if ($fs->fileExists($realName) === false) {
+                    throw new NotFoundHttpException();
+                }
+                $mimeType = $fs->mimeType($realName);
+                $handle = $fs->readStream($realName);
+                return Yii::$app->response->sendStreamAsFile($handle, $fileName, ['inline' => true, 'mimeType' => $mimeType]);
+            }
+            if (isset($handle)) {
+
+            }
+                throw new NotSupportedException();
+        }
 
 
         if (strncmp($uploadTmpPrefix, $name, strlen($uploadTmpPrefix)) === 0) {
