@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Update dependencies
+ * Upd: Update file preview system to get original file
 
 Release 3.1.4 November, 8th 2023 <pgaultier@redcat.io>
 ----------------------------------------------------
