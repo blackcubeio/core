@@ -104,6 +104,20 @@ class FilterActiveQuery extends ActiveQuery
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
+    public function orphan(): ActiveQuery
+    {
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
+        if ($modelClass === Composite::class) {
+            $this->andWhere(['NOT IN', $tableName.'.[[id]]', NodeComposite::find()->select('[[compositeId]]')]);
+        }
+        return $this;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @since XXX
+     */
     public function registered(): ActiveQuery
     {
         $modelClass = $this->modelClass;
