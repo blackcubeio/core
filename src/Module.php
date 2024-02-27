@@ -231,7 +231,7 @@ class Module extends BaseModule implements BootstrapInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function bootstrap($app)
     {
