@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Update filter query to handle orphan composites
+
 Release 3.2.0 January, 11th 2024 <pgaultier@redcat.io>
 ---------------------------------
 
