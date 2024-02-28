@@ -1,29 +1,32 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.2.1 February, 28th 2024 <pgaultier@redcat.io>
+-------------------------------------------------------
+
  * Upd: Update filter query to handle orphan composites
  * Upd: Update dependencies
 
 Release 3.2.0 January, 11th 2024 <pgaultier@redcat.io>
----------------------------------
+------------------------------------------------------
 
  * Upd: Update dependencies
  * Upd: Update file preview system to get original file
 
 Release 3.1.4 November, 8th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Fix: Fix slugs
 
 Release 3.1.3 November, 7th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Upd: change DI registration for `RobotsTxtAction` and `SitemapAction` to 'robots.txt' and 'sitemap.xml'
  * Upd: Allow to disable routes
  * Upd: Update dependencies
 
 Release 3.1.2 November, 6th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Add: Cached files management
  * Add: Assets file management
@@ -32,13 +35,13 @@ Release 3.1.2 November, 6th 2023 <pgaultier@redcat.io>
  * Upd: Update dependencies
 
 Release 3.1.1 October, 27th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Upd: Add caching during request
  * Upd: Update dependencies
 
 Release 3.1.0 October, 23th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Upd: Add type filtering
  * Upd: Update i18n
@@ -46,25 +49,25 @@ Release 3.1.0 October, 23th 2023 <pgaultier@redcat.io>
 * Upd: Update dependencies
 
 Release 3.0.10 October, 20th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+-------------------------------------------------------
 
  * Upd: Allow empty path for home page management
  * Upd: Move `cacheDuration` to `Module` config
  * Upd: Update dependencies
 
 Release 3.0.9 October, 16th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Fix: Fix category unique
  * Upd: Update dependencies
 
 Release 3.0.8 October, 16th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Fix: Fix doc
 
 Release 3.0.7 October, 16th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+------------------------------------------------------
 
  * Upd: Update dependencies
  * Upd: Add virtual columns for filtering in BLoc
@@ -72,41 +75,41 @@ Release 3.0.7 October, 16th 2023 <pgaultier@redcat.io>
  * Fix: Fix `radiolist` and `dropdownlist` typo `radioList` and `dropdownList`
 
 Release 3.0.6 October, 9th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+-----------------------------------------------------
 
  * Fix: fix image resize
 
 Release 3.0.5 October, 8th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+-----------------------------------------------------
 
  * Fix: fix cache
 
 Release 3.0.4 October, 7th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+-----------------------------------------------------
 
  * Upd: Update dependencies
  * Upd: Update `Element` to handle bloc extraction
  * Upd: Handle canonical URL in `SeoBehavior`
 
 Release 3.0.3 October, 4th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+-----------------------------------------------------
 
  * Upd: update quill cleanup regex
  * Fix: Fix elastic model for checkbox and radio
 
 Release 3.0.2 October, 1st 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+-----------------------------------------------------
 
  * Upd: Update dependencies
 
 Release 3.0.1 September, 27th 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+--------------------------------------------------------
 
  * Fix: Fix composite attach
  * Upd: Update dependencies
 
 Release 3.0.0 September, 21st 2023 <pgaultier@redcat.io>
-----------------------------------------------------
+--------------------------------------------------------
 
  * Add: Adding `Quill` helper to clean generated html
  * Add: Adding Element helper to compute `dateCreate` and `dateUpdate`
