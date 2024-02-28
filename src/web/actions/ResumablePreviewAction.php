@@ -89,10 +89,7 @@ class ResumablePreviewAction extends Action
                 $handle = $fs->readStream($realName);
                 return Yii::$app->response->sendStreamAsFile($handle, $fileName, ['inline' => true, 'mimeType' => $mimeType]);
             }
-            if (isset($handle)) {
-
-            }
-                throw new NotSupportedException();
+            throw new NotSupportedException();
         }
 
 
