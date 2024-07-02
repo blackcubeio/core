@@ -27,6 +27,7 @@ use Yii;
  * This is the model class for table "{{%menus}}".
  *
  * @property int $id
+ * @property string $host
  * @property string $name
  * @property string $languageId
  * @property bool $active
@@ -103,12 +104,19 @@ class Menu extends \yii\db\ActiveRecord
     public function rules(): array
     {
         return [
+            [['host'], 'filter', 'filter' => function($value) {
+                if ($value === null) {
+                    return $value;
+                } else {
+                    return empty(trim($value)) ? null : trim($value);
+                }
+            }],
             [['name', 'languageId'], 'required'],
             [['active'], 'boolean'],
             [['dateCreate', 'dateUpdate'], 'safe'],
             [['name'], 'string', 'max' => 190],
             [['languageId'], 'string', 'max' => 6],
-            [['name'], 'unique'],
+            [['name', 'languageId', 'host'], 'unique', 'targetAttribute' => ['name', 'languageId', 'host']],
             [['languageId'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['languageId' => 'id']],
         ];
     }
@@ -121,6 +129,7 @@ class Menu extends \yii\db\ActiveRecord
         return [
             'id' => Module::t('models/menus', 'ID'),
             'name' => Module::t('models/menus', 'Name'),
+            'host' => Module::t('models/menus', 'Host'),
             'languageId' => Module::t('models/menus', 'Language ID'),
             'active' => Module::t('models/menus', 'Active'),
             'dateCreate' => Module::t('models/menus', 'Date Create'),
