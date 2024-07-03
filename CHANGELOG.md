@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Update i18n
+ * Upd: Update filter query to handle `host`
  * Upd: Update Menus to handle `host`
  * Upd: Update filter query to handle orphan composites
  * Upd: Update dependencies
