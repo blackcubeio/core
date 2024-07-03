@@ -239,6 +239,10 @@ msgid "Date Update"
 msgstr ""
 
 msgctxt "blackcube/core/models/menus"
+msgid "Host"
+msgstr ""
+
+msgctxt "blackcube/core/models/menus"
 msgid "ID"
 msgstr ""
 
