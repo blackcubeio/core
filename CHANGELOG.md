@@ -1,6 +1,7 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Fix sitemap generation
  * Upd: Update i18n
  * Upd: Update filter query to handle `host`
  * Upd: Update Menus to handle `host`
