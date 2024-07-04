@@ -22,6 +22,7 @@ use blackcube\core\commands\InitController;
 use blackcube\core\components\PluginsHandler;
 use blackcube\core\components\PreviewManager;
 use blackcube\core\components\SlugGenerator;
+use blackcube\core\interfaces\BlackcubeControllerInterface;
 use blackcube\core\interfaces\PluginManagerBootstrapInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
 use blackcube\core\interfaces\PreviewManagerInterface;
@@ -51,6 +52,10 @@ use blackcube\core\models\TagBloc;
 use blackcube\core\models\Type;
 use blackcube\core\models\TypeBlocType;
 use blackcube\core\validators\PasswordStrengthValidator;
+use blackcube\core\web\behaviors\SeoBehavior;
+use blackcube\core\web\controllers\BlackcubeController;
+use blackcube\core\web\controllers\BlackcubeControllerEvent;
+use blackcube\core\web\controllers\RedirectController;
 use blackcube\core\web\UrlMapper;
 use blackcube\core\web\UrlRule;
 use yii\base\BootstrapInterface;
@@ -174,6 +179,8 @@ class Module extends BaseModule implements BootstrapInterface
      */
     public $coreElements = [
         BlocType::class => BlocType::class,
+        BlackcubeControllerInterface::class => BlackcubeController::class,
+        BlackcubeControllerEvent::class => BlackcubeControllerEvent::class,
         Category::class => Category::class,
         CategoryBloc::class => CategoryBloc::class,
         Composite::class => Composite::class,
@@ -190,7 +197,9 @@ class Module extends BaseModule implements BootstrapInterface
         NodeTag::class => NodeTag::class,
         Parameter::class => Parameter::class,
         Plugin::class => Plugin::class,
+        RedirectController::class => RedirectController::class,
         Seo::class => Seo::class,
+        SeoBehavior::class => SeoBehavior::class,
         Sitemap::class => Sitemap::class,
         Slug::class => Slug::class,
         Tag::class => Tag::class,
