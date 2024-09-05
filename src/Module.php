@@ -19,10 +19,12 @@ use blackcube\core\actions\CacheFileAction;
 use blackcube\core\actions\RobotsTxtAction;
 use blackcube\core\actions\SitemapAction;
 use blackcube\core\commands\InitController;
+use blackcube\core\components\BlackcubeFs;
 use blackcube\core\components\PluginsHandler;
 use blackcube\core\components\PreviewManager;
 use blackcube\core\components\SlugGenerator;
 use blackcube\core\interfaces\BlackcubeControllerInterface;
+use blackcube\core\interfaces\BlackcubeFsInterface;
 use blackcube\core\interfaces\PluginManagerBootstrapInterface;
 use blackcube\core\interfaces\PluginsHandlerInterface;
 use blackcube\core\interfaces\PreviewManagerInterface;
@@ -172,6 +174,7 @@ class Module extends BaseModule implements BootstrapInterface
         PluginsHandlerInterface::class => PluginsHandler::class,
         PreviewManagerInterface::class => PreviewManager::class,
         SlugGeneratorInterface::class => SlugGenerator::class,
+        BlackcubeFsInterface::class => BlackcubeFs::class,
     ];
 
     /**

@@ -42,13 +42,13 @@ use yii\web\UrlRuleInterface;
 class PluginsHandler implements PluginsHandlerInterface {
 
     private $pluginsAvailable;
-    private $pluginManagersConfig;
+    private $pluginManagersDefaultConfig;
     private $pluginManagers;
     private $registeredPlugins;
     private $activePlugins;
 
     /**
-     * Check if plugin system is ready
+     * Check if plugin system is ready and if we have plugins
      * @return bool
      */
     public function checkPluginsAvailable() :bool
@@ -62,33 +62,41 @@ class PluginsHandler implements PluginsHandlerInterface {
     }
 
     /**
+     * Get plugins default configuration from config file
      * @return array|null
      */
-    public function getPluginManagersConfig() :?array
+    public function getPluginManagersDefaultConfig() :?array
     {
         if ($this->checkPluginsAvailable() && $this->pluginManagers === null) {
             $definedPlugins = CoreModule::getInstance()->plugins;
-            $this->pluginManagersConfig = [];
+            $this->pluginManagersDefaultConfig = [];
             foreach($definedPlugins as $id => $pluginManager) {
                 if (is_string($id) === true) {
                     $pluginId = $id;
                 } else {
                     $pluginId = PluginHelper::generateId($pluginManager);
                 }
-                $this->pluginManagersConfig[$pluginId] = $pluginManager;
+                $this->pluginManagersDefaultConfig[$pluginId] = $pluginManager;
             }
         }
-        return $this->pluginManagersConfig;
+        return $this->pluginManagersDefaultConfig;
     }
 
+    /**
+     * Get plugin managers including db configuration
+     * @return array|null
+     */
     public function getPluginManagers() :?array
     {
         if ($this->pluginManagers === null) {
             $this->pluginManagers = [];
-            //$pluginManagersConfig = $this->getPluginManagersConfig();
-            $dbPlugins = Plugin::find()->all();
+            // $pluginManagersStaticConfig = $this->getPluginManagersConfig();
+            // $staticPluginsId = array_keys($pluginManagersStaticConfig);
+            // $dbPluginsId = ArrayHelper::getColumn($dbPlugins, 'id');
+            // $pluginsId = array_unique(array_merge($staticPluginsId, $dbPluginsId));
             // $dbPlugins = ArrayHelper::index($dbPlugins, 'id');
 
+            $dbPlugins = Plugin::find()->all();
             foreach($dbPlugins as $dbPlugin) {
                 if (isset($this->pluginManagers[$dbPlugin->id]) === false) {
                     $pluginManager = $dbPlugin->getPlugin();
