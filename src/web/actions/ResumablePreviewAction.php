@@ -127,6 +127,9 @@ class ResumablePreviewAction extends Action
             $realName = str_replace($uploadFsPrefix, '', $name);
             // file is in fly system
             // $fs =  Module::getInstance()->get('fs');
+            if ($fs->fileExists($realName) === false) {
+                throw new NotFoundHttpException();
+            }
             $mimeType = $fs->mimeType($realName);
             $fileName = pathinfo($realName, PATHINFO_BASENAME);
             $fileExt = pathinfo($realName, PATHINFO_EXTENSION);

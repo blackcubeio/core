@@ -1,11 +1,21 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
-Release 3.2.1 February, 28th 2024 <pgaultier@redcat.io>
+Release 3.3.0 September, 6th 2024 <pgaultier@redcat.io>
 -------------------------------------------------------
 
  * Upd: Update filter query to handle orphan composites
+ * Upd: Fix sitemap generation
+ * Upd: Update i18n
+ * Upd: Update filter query to handle `host`
+ * Upd: Update Menus to handle `host`
  * Upd: Update dependencies
+
+Release 3.2.1 February, 28th 2024 pgaultier@redcat.io
+----------------------------------------------------
+
+Upd: Update filter query to handle orphan composites
+Upd: Update dependencies
 
 Release 3.2.0 January, 11th 2024 <pgaultier@redcat.io>
 ------------------------------------------------------

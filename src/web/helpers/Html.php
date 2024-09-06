@@ -14,7 +14,9 @@
 
 namespace blackcube\core\web\helpers;
 
+use blackcube\core\components\BlackcubeFs;
 use blackcube\core\components\Flysystem;
+use blackcube\core\interfaces\BlackcubeFsInterface;
 use blackcube\core\Module;
 use blackcube\core\web\helpers\editorjs\DelimiterBlock;
 use blackcube\core\web\helpers\editorjs\EmbedBlock;
@@ -129,6 +131,26 @@ class Html extends YiiHtml
         return parent::img($src, $options);
     }
 
+    protected static function rebuildSvg($svg, $options = []) {
+        if (empty($options) || !preg_match('#<svg(?P<attributes>[^>]*)>(?P<content>.*)</svg>#is', $svg, $matches)) {
+            // no rebuild needed
+            return $svg;
+        }
+        $attributes = $matches['attributes'];
+        $content = $matches['content'];
+        $finalAttributes = [];
+        if (preg_match_all('#(?P<name>[a-z0-9-]+)(="(?P<value>[^"]*))?"#is', $attributes, $matches)) {
+            foreach ($matches['name'] as $index => $name) {
+                $value = $matches['value'][$index] ?? null;
+                $finalAttributes[$name] = $value;
+            }
+        }
+        foreach ($options as $name => $value) {
+            $finalAttributes[$name] = $value;
+        }
+        return static::tag('svg', $content, $finalAttributes);
+    }
+
     /**
      * Generate an image in cache
      * @param string $imageLink
@@ -138,18 +160,15 @@ class Html extends YiiHtml
      */
     public static function cacheImage($imageLink, $width = null, $height = null)
     {
-        $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
-        $fileCachePathAlias = trim(Module::getInstance()->fileCachePathAlias, '/') . '/';
-        $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
+        $blackcubeFs = Yii::createObject(BlackcubeFsInterface::class);
+        /** @var BlackcubeFsInterface $blackcubeFs */
         $resultFileUrl = $imageLink;
-        if (strncmp($prefix, $imageLink, strlen($prefix)) === 0) {
-            $fs = Module::getInstance()->get('fs');
-            /* @var $fs Flysystem */
-            $originalFilename = str_replace($prefix, '', $imageLink);
-            if ($fs->fileExists($originalFilename) === true) {
-                $mimeType = $fs->mimeType($originalFilename);
-                $fileExt = pathinfo($originalFilename, PATHINFO_EXTENSION);
-                if ((strncmp('image/', $mimeType, 6) === 0 && (strncmp('image/svg', $mimeType, 9) !== 0)) || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::IMAGES_EXTENSIONS))) {
+        if ($blackcubeFs->isFlysystem($imageLink) === true) {
+            // handle caching
+            if ($blackcubeFs->fileExists($imageLink)) {
+                $mimeType = $blackcubeFs->mimeType($imageLink);
+                if (strncmp('image/', $mimeType, 6) === 0 && strncmp('image/svg', $mimeType, 9) !== 0) {
+                    $originalFilename = $blackcubeFs->extractFilename($imageLink);
                     $fileData = pathinfo($originalFilename);
                     $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
                     if ($width !== null && $height !== null) {
@@ -159,33 +178,32 @@ class Html extends YiiHtml
                     } elseif ($height !== null) {
                         $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'-h'.$height.'.'.$fileData['extension'];
                     }
-                    $originalFileTimestamp = $fs->lastModified($originalFilename);
-                    $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
-                    $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
-                    if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
+                    $fsModified = $blackcubeFs->lastModified($imageLink);
+                    $cachedFilePath = $blackcubeFs->getCachedFilepath($targetFilename);
+                    $cachedFileUrl = $blackcubeFs->getCachedFileUrl($targetFilename);
+                    if ($blackcubeFs->fileExists($cachedFilePath) === false || $blackcubeFs->lastModified($cachedFilePath) < $fsModified) {
                         $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
                         if (is_dir($targetCachePath) === false) {
                             mkdir($targetCachePath, 0777, true);
                         }
                         if ($width !== null || $height !== null) {
-                            $sourceStream = $fs->readStream($originalFilename);
+                            $sourceStream = $blackcubeFs->readStream($imageLink);
                             $image = Image::thumbnail($sourceStream, $width, $height, ManipulatorInterface::THUMBNAIL_OUTBOUND);
                             $image->save($cachedFilePath);
-                            fclose($sourceStream);
+                            $blackcubeFs->closeStream($sourceStream);
                         } else {
-                            $sourceStream = $fs->readStream($originalFilename);
+                            $sourceStream = $blackcubeFs->readStream($imageLink);
                             $targetStream = fopen($cachedFilePath, 'w');
                             stream_copy_to_stream($sourceStream, $targetStream);
-                            fclose($sourceStream);
+                            $blackcubeFs->closeStream($sourceStream);
                             fclose($targetStream);
                         }
                     }
                     $resultFileUrl = $cachedFileUrl;
-                } elseif (strncmp('image/svg', $mimeType, 9) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::SVG_EXTENSIONS))) {
-                    return self::cacheFile($imageLink);
+                } else {
+                    $resultFileUrl = self::cacheFile($imageLink);
                 }
             }
-
         }
         return $resultFileUrl;
     }
@@ -197,34 +215,35 @@ class Html extends YiiHtml
      */
     public static function cacheFile($fileLink)
     {
+
+        $blackcubeFs = Yii::createObject(BlackcubeFsInterface::class);
+        /** @var BlackcubeFsInterface $blackcubeFs */
+        $resultFileUrl = $fileLink;
         $prefix = trim(Module::getInstance()->uploadFsPrefix, '/') . '/';
         $fileCachePathAlias = trim(Module::getInstance()->fileCachePathAlias, '/') . '/';
         $fileCacheUrlAlias = trim(Module::getInstance()->fileCacheUrlAlias, '/') . '/';
         $resultFileUrl = $fileLink;
-        if (strncmp($prefix, $fileLink, strlen($prefix)) === 0) {
-            $fs = Module::getInstance()->get('fs');
-            /* @var $fs Flysystem */
-            $originalFilename = str_replace($prefix, '', $fileLink);
-            if ($fs->fileExists($originalFilename) === true) {
-                $fileData = pathinfo($originalFilename);
-                $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
-                $originalFileTimestamp = $fs->lastModified($originalFilename);
-                $cachedFilePath = Yii::getAlias($fileCachePathAlias.$targetFilename);
-                $cachedFileUrl = Yii::getAlias($fileCacheUrlAlias.$targetFilename);
-                if (file_exists($cachedFilePath) === false || filemtime($cachedFilePath) < $originalFileTimestamp) {
-                    $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
-                    if (is_dir($targetCachePath) === false) {
-                        mkdir($targetCachePath, 0777, true);
-                    }
-                    $sourceStream = $fs->readStream($originalFilename);
-                    $targetStream = fopen($cachedFilePath, 'w');
-                    stream_copy_to_stream($sourceStream, $targetStream);
-                    fclose($sourceStream);
-                    fclose($targetStream);
+        if ($blackcubeFs->fileExists($fileLink)) {
+            $originalFilename = $blackcubeFs->extractFilename($fileLink);
+            $fileData = pathinfo($originalFilename);
+            $targetFilename = $fileData['dirname'].'/'.$fileData['filename'].'.'.$fileData['extension'];
+            $fsModified = $blackcubeFs->lastModified($fileLink);
+            $cachedFilePath = $blackcubeFs->getCachedFilepath($targetFilename);
+            $cachedFileUrl = $blackcubeFs->getCachedFileUrl($targetFilename);
+
+            if ($blackcubeFs->fileExists($cachedFilePath) || $blackcubeFs->lastModified($cachedFilePath) < $fsModified) {
+                $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
+                if (is_dir($targetCachePath) === false) {
+                    mkdir($targetCachePath, 0777, true);
                 }
-                $resultFileUrl = $cachedFileUrl;
+                $sourceStream = $blackcubeFs->readStream($fileLink);
+                $targetStream = fopen($cachedFilePath, 'w');
+                stream_copy_to_stream($sourceStream, $targetStream);
+                $blackcubeFs->closeStream($sourceStream);
+                fclose($targetStream);
             }
 
+            $resultFileUrl = $cachedFileUrl;
         }
         return $resultFileUrl;
 

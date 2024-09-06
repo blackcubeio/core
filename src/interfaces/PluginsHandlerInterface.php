@@ -38,7 +38,7 @@ interface PluginsHandlerInterface extends UrlRuleInterface {
     /**
      * @return array|null
      */
-    public function getPluginManagersConfig() :?array;
+    public function getPluginManagersDefaultConfig() :?array;
 
     public function getPluginManagers();
 

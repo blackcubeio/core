@@ -60,42 +60,46 @@ class SitemapAction extends ViewAction
         $this->dom = Yii::createObject(DOMDocument::class, ['1.0', 'UTF-8']);
         $urlSet = $this->dom->createElement('urlset');
         $urlSet->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-        $sitemaps = Sitemap::find()->active()->with('slug');
         $timeZone = Yii::createObject(DateTimeZone::class, [Yii::$app->timeZone]);
-        foreach($sitemaps->each() as $sitemap) {
-            /* @var $sitemap \blackcube\core\models\Sitemap */
-            $currentSlug = Slug::findByPathinfoAndHostname($sitemap->slug->path, $hostname)->active()->with('seo')->one();
-            if ($currentSlug !== null && $currentSlug->active) {
-                $noIndex = false;
-                if ($currentSlug->seo !== null && $currentSlug->seo->active === true) {
-                    $noIndex = (bool)$currentSlug->seo->noindex;
+        $sitemapilterQuery = Sitemap::find()->active()->select('[[slugId]]');
+        $slugsQuery = Slug::find()->active()->with(['sitemap', 'seo'])
+            ->andWhere(['in', '[[id]]', $sitemapilterQuery])
+            ->andWhere(['or',
+                ['host' => $hostname],
+                ['host' => null]
+            ]);
+        foreach ($slugsQuery->each() as $currentSlug) {
+            $sitemap = $currentSlug->sitemap;
+            $noIndex = false;
+            if ($currentSlug->seo !== null && $currentSlug->seo->active === true) {
+                $noIndex = (bool)$currentSlug->seo->noindex;
+            }
+            $element = $currentSlug->getElement()->active()->one();
+            if ($element !== null && $noIndex === false) {
+                $url = $this->dom->createElement('url');
+                $currentHost = $sitemap->slug->host;
+                if ($currentHost === null) {
+                    $currentHost = $protocol.'://'.$hostname;
+                } else {
+                    $currentHost = $protocol.'://'.$currentHost;
                 }
-                $element = $currentSlug->getElement()->active()->one();
-                if ($element !== null && $noIndex === false) {
-                    $url = $this->dom->createElement('url');
-                    $currentHost = $sitemap->slug->host;
-                    if ($currentHost === null) {
-                        $currentHost = $protocol.'://'.$hostname;
-                    } else {
-                        $currentHost = $protocol.'://'.$currentHost;
-                    }
-                    $locString = $currentHost.'/'.$sitemap->slug->path;
-                    if (isset($additionalData[$locString])) {
-                        unset($additionalData[$locString]);
-                    }
-                    $loc = $this->dom->createElement('loc', $locString);
-                    $url->appendChild($loc);
-                    $datetime = Yii::createObject(DateTime::class, [$element->dateUpdate, $timeZone]);
-                    $lastMod = $this->dom->createElement('lastmod', $datetime->format('c'));
-                    $url->appendChild($lastMod);
-                    $changeFreq = $this->dom->createElement('changefreq', $sitemap->frequency);
-                    $url->appendChild($changeFreq);
-                    $priority = $this->dom->createElement('priority', $sitemap->priority);
-                    $url->appendChild($priority);
-                    $urlSet->appendChild($url);
+                $locString = $currentHost.'/'.$sitemap->slug->path;
+                if (isset($additionalData[$locString])) {
+                    unset($additionalData[$locString]);
                 }
+                $loc = $this->dom->createElement('loc', $locString);
+                $url->appendChild($loc);
+                $datetime = Yii::createObject(DateTime::class, [$element->dateUpdate, $timeZone]);
+                $lastMod = $this->dom->createElement('lastmod', $datetime->format('c'));
+                $url->appendChild($lastMod);
+                $changeFreq = $this->dom->createElement('changefreq', $sitemap->frequency);
+                $url->appendChild($changeFreq);
+                $priority = $this->dom->createElement('priority', $sitemap->priority);
+                $url->appendChild($priority);
+                $urlSet->appendChild($url);
             }
         }
+
         foreach($additionalData as $urlData) {
             if (isset($urlData['loc']) && empty($urlData['loc']) === false) {
                 $url = $this->dom->createElement('url');

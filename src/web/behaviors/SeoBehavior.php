@@ -61,97 +61,99 @@ class SeoBehavior extends Behavior
      */
     public function registerSeo(BlackcubeControllerEvent $event) :void
     {
-        $slugId = $event->element->slugId;
-        $seo = Seo::find()->active()
-            ->with('slug', 'canonicalSlug')
-            ->andWhere(['slugId' => $slugId])
-            ->one();
-        if ($seo !== null) {
-            /* @var \blackcube\core\models\Seo $seo */
-            $metaRobots = [];
-            if ($seo->noindex) {
-                $metaRobots[] = 'noindex';
-            }
-            if ($seo->nofollow) {
-                $metaRobots[] = 'nofollow';
-            }
-            if ($seo->canonicalSlug !== null) {
-                $event->controller->view->registerLinkTag([
-                    'rel' => 'canonical',
-                    'href' => Yii::$app->request->hostInfo . '/' . ltrim($seo->canonicalSlug->path, '/')
-                ], 'canonical');
-            }
-            if (count($metaRobots) > 0) {
-                $event->controller->view->registerMetaTag([
-                    'name' => 'robots',
-                    'content' => implode(',', $metaRobots)
-                ], 'robots');
-            }
+        $slugId = $event->element?->slugId;
+        if ($slugId !== null) {
+            $seo = Seo::find()->active()
+                ->with('slug', 'canonicalSlug')
+                ->andWhere(['slugId' => $slugId])
+                ->one();
+            if ($seo !== null) {
+                /* @var \blackcube\core\models\Seo $seo */
+                $metaRobots = [];
+                if ($seo->noindex) {
+                    $metaRobots[] = 'noindex';
+                }
+                if ($seo->nofollow) {
+                    $metaRobots[] = 'nofollow';
+                }
+                if ($seo->canonicalSlug !== null) {
+                    $event->controller->view->registerLinkTag([
+                        'rel' => 'canonical',
+                        'href' => Yii::$app->request->hostInfo . '/' . ltrim($seo->canonicalSlug->path, '/')
+                    ], 'canonical');
+                }
+                if (count($metaRobots) > 0) {
+                    $event->controller->view->registerMetaTag([
+                        'name' => 'robots',
+                        'content' => implode(',', $metaRobots)
+                    ], 'robots');
+                }
 
-            if (empty($seo->title) === false) {
-                $event->controller->view->registerMetaTag([
-                    'name' => 'title',
-                    'content' => $seo->title
-                ], 'title');
-            }
-            if (empty($seo->description) === false) {
-                $event->controller->view->registerMetaTag([
-                    'name' => 'description',
-                    'content' => $seo->description
-                ], 'description');
-            }
-            if ($seo->og) {
-                $event->controller->view->registerMetaTag([
-                    'property' => 'og:type',
-                    'content' => $seo->ogType
-                ], 'og:type');
                 if (empty($seo->title) === false) {
                     $event->controller->view->registerMetaTag([
-                        'property' => 'og:title',
+                        'name' => 'title',
                         'content' => $seo->title
-                    ], 'og:title');
-                }
-                if (empty($seo->image) === false) {
-                    $event->controller->view->registerMetaTag([
-                        'property' => 'og:image',
-                        'content' => Yii::$app->request->hostInfo. '/' . ltrim(Html::cacheImage($seo->image),'/')
-                    ], 'og:image');
-                }
-                $event->controller->view->registerMetaTag([
-                    'property' => 'og:url',
-                    'content' => Yii::$app->request->absoluteUrl
-                ], 'og:url');
-                if (empty($seo->description) === false) {
-                    $event->controller->view->registerMetaTag([
-                        'property' => 'og:description',
-                        'content' => $seo->description
-                    ], 'og:description');
-                }
-            }
-            if ($seo->twitter) {
-                $event->controller->view->registerMetaTag([
-                    'name' => 'twitter:card',
-                    'content' => $seo->twitterCard
-                ], 'twitter:card');
-                if (empty($seo->image) === false) {
-                    $event->controller->view->registerMetaTag([
-                        'name' => 'twitter:image',
-                        'content' => Yii::$app->request->hostInfo. '/' . ltrim(Html::cacheImage($seo->image), '/')
-                    ], 'twitter:image');
-                }
-                if (empty($seo->title) === false) {
-                    $event->controller->view->registerMetaTag([
-                        'name' => 'twitter:title',
-                        'content' => $seo->title
-                    ], 'twitter:title');
+                    ], 'title');
                 }
                 if (empty($seo->description) === false) {
                     $event->controller->view->registerMetaTag([
-                        'name' => 'twitter:description',
+                        'name' => 'description',
                         'content' => $seo->description
-                    ], 'twitter:description');
+                    ], 'description');
                 }
+                if ($seo->og) {
+                    $event->controller->view->registerMetaTag([
+                        'property' => 'og:type',
+                        'content' => $seo->ogType
+                    ], 'og:type');
+                    if (empty($seo->title) === false) {
+                        $event->controller->view->registerMetaTag([
+                            'property' => 'og:title',
+                            'content' => $seo->title
+                        ], 'og:title');
+                    }
+                    if (empty($seo->image) === false) {
+                        $event->controller->view->registerMetaTag([
+                            'property' => 'og:image',
+                            'content' => Yii::$app->request->hostInfo . '/' . ltrim(Html::cacheImage($seo->image), '/')
+                        ], 'og:image');
+                    }
+                    $event->controller->view->registerMetaTag([
+                        'property' => 'og:url',
+                        'content' => Yii::$app->request->absoluteUrl
+                    ], 'og:url');
+                    if (empty($seo->description) === false) {
+                        $event->controller->view->registerMetaTag([
+                            'property' => 'og:description',
+                            'content' => $seo->description
+                        ], 'og:description');
+                    }
+                }
+                if ($seo->twitter) {
+                    $event->controller->view->registerMetaTag([
+                        'name' => 'twitter:card',
+                        'content' => $seo->twitterCard
+                    ], 'twitter:card');
+                    if (empty($seo->image) === false) {
+                        $event->controller->view->registerMetaTag([
+                            'name' => 'twitter:image',
+                            'content' => Yii::$app->request->hostInfo . '/' . ltrim(Html::cacheImage($seo->image), '/')
+                        ], 'twitter:image');
+                    }
+                    if (empty($seo->title) === false) {
+                        $event->controller->view->registerMetaTag([
+                            'name' => 'twitter:title',
+                            'content' => $seo->title
+                        ], 'twitter:title');
+                    }
+                    if (empty($seo->description) === false) {
+                        $event->controller->view->registerMetaTag([
+                            'name' => 'twitter:description',
+                            'content' => $seo->description
+                        ], 'twitter:description');
+                    }
 
+                }
             }
         }
 

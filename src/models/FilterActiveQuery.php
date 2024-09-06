@@ -46,6 +46,29 @@ class FilterActiveQuery extends ActiveQuery
      * @return \yii\db\ActiveQuery
      * @since XXX
      */
+    public function host(): ActiveQuery
+    {
+        $modelClass = $this->modelClass;
+        if ($modelClass === Menu::class) {
+            $tableName = $modelClass::tableName();
+            $this->andWhere(['OR',
+                [$tableName.'.[[host]]' => Yii::$app->request->getHostName()],
+                ['IS', $tableName.'.[[host]]', null]
+            ]);
+        } elseif ($modelClass === Slug::class) {
+            $tableName = $modelClass::tableName();
+            $this->andWhere(['OR',
+                [$tableName.'.[[host]]' => Yii::$app->request->getHostName()],
+                ['IS', $tableName.'.[[host]]', null]
+            ]);
+        }
+        return $this;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @since XXX
+     */
     public function active(): ActiveQuery
     {
         $modelClass = $this->modelClass;
