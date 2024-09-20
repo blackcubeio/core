@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.3.1 September, 20th 2024 <pgaultier@redcat.io>
+-------------------------------------------------------
+
  * Fix: Fix `cacheImage()` and `cacheFile()`
  * Upd: Update dependencies
 
