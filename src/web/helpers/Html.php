@@ -181,7 +181,7 @@ class Html extends YiiHtml
                     $fsModified = $blackcubeFs->lastModified($imageLink);
                     $cachedFilePath = $blackcubeFs->getCachedFilepath($targetFilename);
                     $cachedFileUrl = $blackcubeFs->getCachedFileUrl($targetFilename);
-                    if ($blackcubeFs->fileExists($cachedFilePath) === false || $blackcubeFs->lastModified($cachedFilePath) < $fsModified) {
+                    if (!file_exists($cachedFilePath) || filemtime($cachedFilePath) < $fsModified) {
                         $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
                         if (is_dir($targetCachePath) === false) {
                             mkdir($targetCachePath, 0777, true);
@@ -231,7 +231,7 @@ class Html extends YiiHtml
             $cachedFilePath = $blackcubeFs->getCachedFilepath($targetFilename);
             $cachedFileUrl = $blackcubeFs->getCachedFileUrl($targetFilename);
 
-            if ($blackcubeFs->fileExists($cachedFilePath) || $blackcubeFs->lastModified($cachedFilePath) < $fsModified) {
+            if (!file_exists($cachedFilePath) || filemtime($cachedFilePath) < $fsModified) {
                 $targetCachePath = pathinfo($cachedFilePath, PATHINFO_DIRNAME);
                 if (is_dir($targetCachePath) === false) {
                     mkdir($targetCachePath, 0777, true);
