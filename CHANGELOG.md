@@ -1,6 +1,10 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+
+* Upd: Update dependencies
+* Prepare `core` for Passkeys (webauthn)
+
 Release 3.3.1 September, 20th 2024 <pgaultier@redcat.io>
 -------------------------------------------------------
 
