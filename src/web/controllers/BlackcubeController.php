@@ -122,7 +122,8 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
      */
     public function beforeElement(string $route)
     {
-        $event = Yii::createObject(BlackcubeControllerEvent::class, [
+        $event = Yii::createObject([
+            'class' => BlackcubeControllerEvent::class,
             'route' => $route
         ]);
         $this->trigger(self::EVENT_BEFORE_ELEMENT, $event);
@@ -134,7 +135,8 @@ class BlackcubeController extends Controller implements BlackcubeControllerInter
      */
     public function afterElement(string $route, $element)
     {
-        $event = Yii::createObject(BlackcubeControllerEvent::class, [
+        $event = Yii::createObject([
+            'class' => BlackcubeControllerEvent::class,
             'route' => $route,
             'element' => $element,
             'controller' => $this,
