@@ -1,11 +1,13 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * fix `BlackcubeControllerEvent`
+
 Release 3.4.0 September, 29th 2024 <pgaultier@redcat.io>
 -------------------------------------------------------
 
-* Upd: Update dependencies
-* Prepare `core` for Passkeys (webauthn)
+ * Upd: Update dependencies
+ * Prepare `core` for Passkeys (webauthn)
 
 Release 3.3.1 September, 20th 2024 <pgaultier@redcat.io>
 -------------------------------------------------------
