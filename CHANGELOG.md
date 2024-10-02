@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.4.1 Octrober, 2nd 2024 <pgaultier@redcat.io>
+-------------------------------------------------------
+
  * fix `BlackcubeControllerEvent`
 
 Release 3.4.0 September, 29th 2024 <pgaultier@redcat.io>
