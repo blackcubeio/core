@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.5.0 Octrober, 18th 2024 <pgaultier@redcat.io>
+-------------------------------------------------------
+
  * Upd: Update dependencies
  * fix `Node` and `Composite` rules
 
