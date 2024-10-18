@@ -189,7 +189,7 @@ abstract class BaseComposite extends \yii\db\ActiveRecord implements ElementInte
             }],
             [['slugId', 'typeId'], 'integer'],
             [['active'], 'boolean'],
-            [['languageId'], 'required'],
+            [['languageId', 'name'], 'required'],
             [['dateStart', 'activeDateStart', 'dateEnd', 'activeDateEnd', 'dateCreate', 'dateUpdate'], 'safe'],
             [['name'], 'string', 'max' => 190],
             [['languageId'], 'string', 'max' => 6],

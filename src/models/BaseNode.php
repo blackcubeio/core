@@ -212,7 +212,7 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
                     return empty(trim($value)) ? null : trim($value);
                 }
             }],
-            [[/*/'path', 'left', 'right', 'level',/*/ 'languageId'], 'required'],
+            [[/*/'path', 'left', 'right', 'level',/*/'name', 'languageId'], 'required'],
             [['left', 'right'], 'number'],
             [['level', 'slugId', 'typeId'], 'integer'],
             [['active'], 'boolean'],
