@@ -1,16 +1,19 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.5.1 October, 30th 2024 <pgaultier@redcat.io>
+-------------------------------------------------------
+
  * Upd: Update dependencies
  * Fix: six svg preview
 
-Release 3.5.0 Octrober, 18th 2024 <pgaultier@redcat.io>
+Release 3.5.0 October, 18th 2024 <pgaultier@redcat.io>
 -------------------------------------------------------
 
  * Upd: Update dependencies
  * fix `Node` and `Composite` rules
 
-Release 3.4.1 Octrober, 2nd 2024 <pgaultier@redcat.io>
+Release 3.4.1 October, 2nd 2024 <pgaultier@redcat.io>
 -------------------------------------------------------
 
  * fix `BlackcubeControllerEvent`
