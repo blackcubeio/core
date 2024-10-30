@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Upd: Update dependencies
+ * Fix: six svg preview
+
 Release 3.5.0 Octrober, 18th 2024 <pgaultier@redcat.io>
 -------------------------------------------------------
 

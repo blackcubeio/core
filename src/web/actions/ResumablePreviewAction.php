@@ -96,6 +96,7 @@ class ResumablePreviewAction extends Action
         if (strncmp($uploadTmpPrefix, $name, strlen($uploadTmpPrefix)) === 0) {
             $realNameAlias = str_replace($uploadTmpPrefix, $uploadAlias, $name);
             $realName = Yii::getAlias($realNameAlias);
+            $realName = ltrim($realName, '/');
             if (file_exists($realName) === false) {
                 throw new NotFoundHttpException();
             }
@@ -125,6 +126,7 @@ class ResumablePreviewAction extends Action
 
         } elseif (strncmp($uploadFsPrefix, $name, strlen($uploadFsPrefix)) === 0) {
             $realName = str_replace($uploadFsPrefix, '', $name);
+            $realName = ltrim($realName, '/');
             // file is in fly system
             // $fs =  Module::getInstance()->get('fs');
             if ($fs->fileExists($realName) === false) {
@@ -155,9 +157,11 @@ class ResumablePreviewAction extends Action
                 });
                 $handle = fopen($realName, 'r');
             } elseif (strncmp('image/svg', $mimeType, 9) === 0 || ($mimeType === 'application/octet-stream' && in_array($fileExt, self::SVG_EXTENSIONS))) {
-                $handle = $fs->readStream($realName);
+                // sendStreamAsFile does not work with svg
+                // $handle = $fs->readStream($realName);
                 $mimeType = 'image/svg+xml'; // mime_content_type($realName);
-                // $handle = fopen($realName, 'r');
+                $svg = $fs->read($realName);
+                return Yii::$app->response->sendContentAsFile($svg, $fileName, ['inline' => true, 'mimeType' => $mimeType]);
             } else { // (strncmp('image/', $mimeType, 6) !== 0) {
                 $realName = $this->prepareImage($fileName);
                 // $mimeType = mime_content_type($realName);
@@ -167,6 +171,7 @@ class ResumablePreviewAction extends Action
             //TODO: check if really usefull.
             $name = str_replace('@web/', '@webroot/', $name);
             $realName = Yii::getAlias($name);
+            $realName = ltrim($realName, '/');
             if (file_exists($realName) === false) {
                 throw new NotFoundHttpException();
             }
