@@ -1,6 +1,9 @@
 stages:
+  - build
   - codeception
   - sonarqube
+  - deploy
+  - release
 
 codeception-check:
   stage: codeception
