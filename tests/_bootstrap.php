@@ -24,18 +24,6 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 // init autoloaders
 require dirname(__DIR__).'/vendor/autoload.php';
 
-// get current environment
-$currentEnvironment = $_ENV['YII_ENV'] ?? null;
-if ($currentEnvironment === null) {
-    // load environment from .env file
-    try {
-        $dotEnv = Dotenv::createImmutable(dirname(__DIR__));
-        $dotEnv->safeLoad();
-    } catch (Exception $e) {
-        die('Application not configured');
-    }
-}
-
 defined('YII_ENV') or define('YII_ENV', 'test');
 defined('YII_MAINTENANCE') or define('YII_MAINTENANCE', false);
 defined('YII_DEBUG') or define('YII_DEBUG', true);
