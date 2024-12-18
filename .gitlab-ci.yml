@@ -70,7 +70,7 @@ sonarqube-check:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
   script:
-    - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}" -Dsonar.projectKey="${SONAR_PROJECT_KEY}" -Dsonar.sources=src/ -Dsonar.tests=tests/ -Dsonar.php.coverage.reportPaths=tests/_output/coverage.xml
+    - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}" -Dsonar.projectKey="${SONAR_PROJECT_KEY}" -Dsonar.sources=src/ -Dsonar.tests=tests/ -Dsonar.projectCreation.mainBranchName=devel-3.x -Dsonar.php.coverage.reportPaths=tests/_output/coverage.xml
   allow_failure: true
   needs:
     - job: codeception-check
