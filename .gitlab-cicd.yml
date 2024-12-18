@@ -1,0 +1,78 @@
+stages:
+  - codeception
+  - sonarqube
+
+codeception-check:
+  stage: codeception
+  image:  webdevops/php-nginx-dev:8.3
+  variables:
+    WEB_DOCUMENT_ROOT: "/app"
+    XDEBUG_MODE: "coverage"
+    MARIADB_ROOT_HOST: $MARIADB_ROOT_HOST
+    MARIADB_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
+    MARIADB_DATABASE: $MARIADB_DATABASE
+    MARIADB_USER: $MARIADB_USER
+    MARIADB_PASSWORD: $MARIADB_PASSWORD
+    YII_ENV: test
+    DB_DRIVER: mysql
+    DB_HOST: db
+    DB_PORT: 3306
+    DB_DATABASE: $MARIADB_DATABASE
+    DB_USER: $MARIADB_USER
+    DB_PASSWORD: $MARIADB_PASSWORD
+    DB_TABLE_PREFIX: ""
+    DB_SCHEMA: "public"
+    DB_SCHEMA_CACHE: 0
+    DB_SCHEMA_CACHE_DURATION: 3600
+    FILESYSTEM_TYPE: "local"
+    FILESYSTEM_LOCAL_PATH: "@data/files"
+  services:
+    - name: mariadb:11
+      alias: db
+  cache:
+    - key:
+        files:
+          - composer.lock
+      paths:
+        - vendor/
+  allow_failure: true
+  artifacts:
+    untracked: true
+    expire_in: 1 day
+    paths:
+      - tests/_output
+    reports:
+      junit: tests/_output/coverage.clover
+  before_script:
+    - composer install
+    - export XDEBUG_MODE=coverage # Enable code coverage
+    - php vendor/bin/codecept clean
+    - php vendor/bin/codecept build
+  rules:
+    - if: $REPOSITORY == "main" && $CI_COMMIT_BRANCH == 'devel-3.x'
+  script:
+    - echo "Initializing database ..."
+    - php tests/console/yii.php migrate/up --interactive=0
+    - echo "Running Codeception ..."
+    - php vendor/bin/codecept run --coverage --coverage-xml --xml coverage.clover
+    - echo "Uninitializing database ..."
+    - php tests/console/yii.php migrate/down all --interactive=0
+
+sonarqube-check:
+  stage: sonarqube
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [ "" ]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  script:
+    - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}" -Dsonar.projectKey="${SONAR_PROJECT_KEY}" -Dsonar.sources=src/ -Dsonar.tests=tests/ -Dsonar.php.coverage.reportPaths=tests/_output/coverage.xml
+  allow_failure: true
+  needs:
+    - job: codeception-check
+      artifacts: true
+  rules:
+    # - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    # - if: $CI_COMMIT_BRANCH == 'master'
+    - if: $REPOSITORY == "main" && $CI_COMMIT_BRANCH == 'devel-3.x'
