@@ -56,6 +56,18 @@ class m000000_000008_plugins extends Migration
     public function safeDown()
     {
         $this->dropTable('{{%plugins}}');
+        $this->createTable('{{%plugins}}', [
+            'id' => $this->string(32)->notNull(),
+            'name' => $this->string(128)->notNull(),
+            'version' => $this->string(128)->notNull(),
+            'config' => $this->text(),
+            'className' => $this->string(190)->notNull(),
+            'bootstrap' => $this->boolean()->defaultValue(true)->notNull(),
+            'active' => $this->boolean()->defaultValue(true)->notNull(),
+            'dateCreate' => $this->dateTime()->notNull(),
+            'dateUpdate' => $this->dateTime(),
+            'PRIMARY KEY([[id]])'
+        ]);
         return true;
     }
 }
