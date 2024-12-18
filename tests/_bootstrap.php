@@ -24,9 +24,12 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 // init autoloaders
 require dirname(__DIR__).'/vendor/autoload.php';
 
+require 'config/bootstrap.php';
+
 defined('YII_ENV') or define('YII_ENV', 'test');
 defined('YII_MAINTENANCE') or define('YII_MAINTENANCE', false);
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+
 
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
