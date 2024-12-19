@@ -10,10 +10,10 @@ codeception-check:
     WEB_DOCUMENT_ROOT: "/app"
     XDEBUG_MODE: "coverage"
     MARIADB_ROOT_HOST: "%"
-    MARIADB_ROOT_PASSWORD: "QqANzcgENtJcE8mrdbs7"
-    MARIADB_DATABASE: "blackcubecore"
+    MARIADB_ROOT_PASSWORD: "QqANzcgENtJcE8"
+    MARIADB_DATABASE: "bcore"
     MARIADB_USER: "blackcube"
-    MARIADB_PASSWORD: "nfRfF8rChfiBfyQcchdC"
+    MARIADB_PASSWORD: "nfRfF8rChfiBf"
     YII_ENV: test
     DB_DRIVER: mysql
     DB_HOST: db
