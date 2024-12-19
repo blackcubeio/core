@@ -2,14 +2,13 @@
 /**
  * MatrixHelper.php
  *
- * PHP version 8.0+
+ * PHP Version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2022 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\helpers
+ * @link https://www.blackcube.io
  */
 
 namespace blackcube\core\helpers;
@@ -20,12 +19,11 @@ namespace blackcube\core\helpers;
  *  Matrix | a, b | is written in array [a, b, c, d]
  *         | c, d |
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2022 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\helpers
+ * @link https://www.blackcube.io
  * @since XXX
  */
 class MatrixHelper
