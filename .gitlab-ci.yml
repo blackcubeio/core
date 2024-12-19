@@ -81,8 +81,6 @@ sonarqube-check:
 release-production:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   stage: release
-  needs:
-    - job: deploy-production
   rules:
     - if: $REPOSITORY == "main" && $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+-?.*$/
   script:
