@@ -4,13 +4,12 @@
  *
  * PHP Version 8.2+
  *
- * @author Gaultier Philippe <pgaultier@redcat.fr>
- * @copyright 2010-2023 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\actions
- */
+ * @link https://www.blackcube.io
+ */ 
 
 namespace blackcube\core\actions;
 
@@ -22,12 +21,11 @@ use Yii;
 /**
  * CacheFileAction class
  *
- * @author Gaultier Philippe <pgaultier@redcat.fr>
- * @copyright 2010-2023 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\actions
+ * @link https://www.blackcube.io
  * @since XXX
  */
 class CacheFileAction extends \yii\base\Action

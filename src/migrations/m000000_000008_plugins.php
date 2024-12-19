@@ -2,14 +2,13 @@
 /**
  * m000000_000008_plugins.php
  *
- * PHP version 7.4+
+ * PHP Version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2022 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\migrations
+ * @link https://www.blackcube.io
  */
 
 namespace blackcube\core\migrations;
@@ -19,12 +18,11 @@ use yii\db\Migration;
 /**
  * Class m000000_000008_plugins
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2022 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\migrations
+ * @link https://www.blackcube.io
  */
 class m000000_000008_plugins extends Migration
 {
@@ -56,6 +54,18 @@ class m000000_000008_plugins extends Migration
     public function safeDown()
     {
         $this->dropTable('{{%plugins}}');
+        $this->createTable('{{%plugins}}', [
+            'id' => $this->string(32)->notNull(),
+            'name' => $this->string(128)->notNull(),
+            'version' => $this->string(128)->notNull(),
+            'config' => $this->text(),
+            'className' => $this->string(190)->notNull(),
+            'bootstrap' => $this->boolean()->defaultValue(true)->notNull(),
+            'active' => $this->boolean()->defaultValue(true)->notNull(),
+            'dateCreate' => $this->dateTime()->notNull(),
+            'dateUpdate' => $this->dateTime(),
+            'PRIMARY KEY([[id]])'
+        ]);
         return true;
     }
 }

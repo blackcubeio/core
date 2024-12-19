@@ -2,15 +2,14 @@
 /**
  * m000000_000000_languages.php
  *
- * PHP version 7.4+
+ * PHP Version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2022 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\migrations
- */
+ * @link https://www.blackcube.io
+ */ 
 
 namespace blackcube\core\migrations;
 
@@ -21,13 +20,12 @@ use Yii;
 /**
  * Class m000000_000000_languages
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2022 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Blackcube
+ * @license https://www.blackcube.io/license license
  * @version XXX
- * @link https://www.redcat.io
- * @package blackcube\core\migrations
- */
+ * @link https://www.blackcube.io
+ */ 
 class m000000_000000_languages extends Migration
 {
     /**

@@ -2,52 +2,78 @@
 /**
  * bootstrap.php
  *
- * PHP version 7.2+
+ * PHP version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
- * @license https://www.redcat.io/license license
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2001-2024 pgaultier
+ * @license proprietary
  * @version XXX
- * @link https://www.redcat.io
- * @package app\config
+ * @link https://gitlab.destination-musique.net
  */
 use Dotenv\Dotenv;
 
+/**
+ * @param string $name environment var
+ * @return bool
+ */
+function getboolenv($name) {
+    $value = $_ENV[$name] ?? ($_SERVER[$name] ?? false);
+    return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+}
+
+/**
+ * @param string $name environment var
+ * @param string $default default value
+ * @return string
+ */
+function getstrenv($name, $default = '') {
+    $value = $_ENV[$name] ?? ($_SERVER[$name] ?? false);
+    return $value === false ? $default : $value;
+}
+
+/**
+ * @param string $name environment var
+ * @param int $default default value
+ * @return int
+ */
+function getintenv($name, $default = 0) {
+    $value = $_ENV[$name] ?? ($_SERVER[$name] ?? false);
+    if ($value !== false) {
+        $value = filter_var($value, FILTER_VALIDATE_INT);
+    }
+    return $value === false ? (int)$default : $value;
+}
+
 try {
     $dotEnv = Dotenv::createImmutable(dirname(__DIR__, 2));
-    // $dotEnv = new Dotenv(dirname(dirname(__DIR__)));
     $dotEnv->safeLoad();
     $dotEnv->required([
         'YII_ENV',
-        'APP_ENV',
-        'APP_VERSION',
         'DB_DRIVER',
+        'DB_HOST',
+        'DB_PORT',
         'DB_DATABASE',
         'DB_USER',
-        'DB_HOST',
         'DB_PASSWORD',
         'DB_SCHEMA',
-        'DB_TABLE_PREFIX',
     ]);
-    $dotEnv->required('YII_COOKIE_VALIDATION_KEY')->notEmpty();
+    // $dotEnv->required('YII_COOKIE_VALIDATION_KEY')->notEmpty();
     $dotEnv->required('DB_DRIVER')->allowedValues(['mysql', 'pgsql']);
     $dotEnv->required('DB_SCHEMA_CACHE')->isBoolean();
     $dotEnv->required('DB_SCHEMA_CACHE_DURATION')->isInteger();
-    $dotEnv->required('FILESYSTEM_TYPE')->allowedValues(['local', 's3']);
-    $dotEnv->required('FILESYSTEM_CACHE')->isBoolean();
-    $dotEnv->required('FILESYSTEM_CACHE_DURATION')->isInteger();
-    // $dotEnv->required('SENTRY_DSN')->notEmpty();
-    // $dotEnv->required('SENTRY_ENABLED')->isBoolean();
-    // $dotEnv->required('SENTRY_CONTEXT')->isBoolean();
+    $redisEnabled = getboolenv('REDIS_ENABLED');
+    if ($redisEnabled === true) {
+        $dotEnv->required('REDIS_HOST');
+        $dotEnv->required('REDIS_PORT')->isInteger();
+        $dotEnv->required('REDIS_DATABASE')->isInteger();
+    }
+
 } catch (Exception $e) {
     die('Application not configured');
 }
 
 // get wanted debug
-$debug = $_ENV['YII_DEBUG'] ?? null;
-if ($debug === 'true' || $debug == 1) {
-    $debug = true;
-}
+$debug = getboolenv('YII_DEBUG');
 if ($debug === true) {
     defined('YII_DEBUG') or define('YII_DEBUG', true);
     ini_set('display_errors', '1');
@@ -55,12 +81,8 @@ if ($debug === true) {
 }
 
 // get if app is in maintenance mode
-$maintenance = $_ENV['YII_MAINTENANCE'] ?? null;
-if ($maintenance === 'true' || $maintenance == 1) {
-    defined('YII_MAINTENANCE') or define('YII_MAINTENANCE', true);
-} else {
-    defined('YII_MAINTENANCE') or define('YII_MAINTENANCE', false);
-}
+$maintenance = getboolenv('YII_MAINTENANCE');
+defined('YII_MAINTENANCE') or define('YII_MAINTENANCE', $maintenance);
 
-$currentEnvironment = $_ENV['YII_ENV'] ?? null;
+$currentEnvironment = getstrenv('YII_ENV');
 defined('YII_ENV') or define('YII_ENV', $currentEnvironment);

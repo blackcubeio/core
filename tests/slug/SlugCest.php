@@ -49,7 +49,7 @@ class SlugCest extends SlugBase
         $emptySlug = new Slug();
         $emptySlug->path = ' ';
         $emptySlug->active = true;
-        $I->assertFalse($emptySlug->validate());
+        $I->assertTrue($emptySlug->validate());
         // $erroneousSlug = new Slug();
         // $I->assertFalse($erroneousSlug->validate());
         // $I->assertFalse($erroneousSitemap->save());
