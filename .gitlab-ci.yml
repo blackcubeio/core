@@ -44,6 +44,7 @@ codeception-check:
       - tests/_output
     reports:
       junit: tests/_output/coverage.clover
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   before_script:
     - composer install
     - export XDEBUG_MODE=coverage # Enable code coverage
