@@ -1,6 +1,10 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+
+Release 3.5.2 December, 19th 2024 <pgaultier@gmail.com>
+-------------------------------------------------------
+
  * Fix: Fix license, doc blocks
  * Upd: Update dependencies
  * Upd: Reactivate unit tests
