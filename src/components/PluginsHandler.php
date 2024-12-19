@@ -9,7 +9,7 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */
 
 namespace blackcube\core\components;
 
@@ -36,7 +36,7 @@ use yii\web\UrlRuleInterface;
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */
 class PluginsHandler implements PluginsHandlerInterface {
 
     private $pluginsAvailable;

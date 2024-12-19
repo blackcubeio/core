@@ -8,7 +8,7 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 
 namespace blackcube\core\web;
 

@@ -9,7 +9,7 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 
 namespace blackcube\core\interfaces;
 
@@ -24,7 +24,7 @@ use yii\base\Model;
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 interface PluginHookInterface {
     /**
      * hook should return a boolean

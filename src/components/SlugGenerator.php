@@ -9,7 +9,7 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */
 
 namespace blackcube\core\components;
 
@@ -31,7 +31,7 @@ use Transliterator;
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */
 class SlugGenerator implements SlugGeneratorInterface
 {
     /**

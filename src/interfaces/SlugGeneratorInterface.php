@@ -9,7 +9,7 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 
 namespace blackcube\core\interfaces;
 
@@ -27,7 +27,7 @@ use Yii;
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 interface SlugGeneratorInterface {
     /**
      * @param Node|Composite|Category|Tag $element

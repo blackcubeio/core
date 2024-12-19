@@ -9,7 +9,7 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 
 namespace blackcube\core\components;
 
@@ -27,7 +27,7 @@ use yii\base\InvalidConfigException;
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 class BlackcubeFs extends Component implements BlackcubeFsInterface
 {
     public $mappingMimetypes = [

@@ -9,7 +9,7 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 
 namespace blackcube\core\interfaces;
 
@@ -24,7 +24,7 @@ use yii\base\Action;
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */ 
 interface PluginManagerHookInterface {
     /**
      * @param string $hook hook name
