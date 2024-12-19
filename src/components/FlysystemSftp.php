@@ -9,14 +9,14 @@
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */
 
 namespace blackcube\core\components;
 
 use League\Flysystem\FilesystemAdapter;
-use League\Flysystem\PhpseclibV2\ConnectivityChecker;
-use League\Flysystem\PhpseclibV2\SftpAdapter;
-use League\Flysystem\PhpseclibV2\SftpConnectionProvider;
+use League\Flysystem\PhpseclibV3\ConnectivityChecker;
+use League\Flysystem\PhpseclibV3\SftpAdapter;
+use League\Flysystem\PhpseclibV3\SftpConnectionProvider;
 use League\Flysystem\UnixVisibility\VisibilityConverter;
 use League\MimeTypeDetection\MimeTypeDetector;
 use Yii;
@@ -31,7 +31,7 @@ use yii\base\InvalidConfigException;
  * @license https://www.blackcube.io/license license
  * @version XXX
  * @link https://www.blackcube.io
- * /
+ */
 class FlysystemSftp extends Flysystem
 {
     public $host;
@@ -75,7 +75,7 @@ class FlysystemSftp extends Flysystem
         if ($this->host === null && $this->username === null) {
             throw new InvalidConfigException();
         }
-        $connectionProvider = new SftpConnectionProvider(
+        $this->connectivityChecker = new SftpConnectionProvider(
             $this->host,
             $this->username,
             $this->password,
