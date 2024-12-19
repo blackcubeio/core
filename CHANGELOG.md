@@ -1,6 +1,14 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Fix: Fix license, doc blocks
+ * Upd: Update dependencies
+ * Upd: Reactivate unit tests
+ * Upd: Set up gitlab-ci for automatic testing
+ * Upd: Add Sonarqube
+ * Fix: Fix tests
+ * Upd: Update poedit to 3.5
+
 Release 3.5.1 October, 30th 2024 <pgaultier@gmail.com>
 -------------------------------------------------------
 
