@@ -4,7 +4,7 @@
     "keywords": ["blackcube", "cms", "core", "yii", "yii2", "content management"],
     "homepage": "https://code.redcat.io/blackcube/core",
     "type": "yii2-extension",
-    "license": "proprietary",
+    "license": "bsd-3-clause",
     "support": {
         "issues": "https://code.redcat.io/blackcube/core/issues",
         "wiki": "https://code.redcat.io/blackcube/core/wikis/home",
@@ -13,7 +13,7 @@
     "authors": [
         {
             "name": "Philippe Gaultier",
-            "email": "pgaultier@redcat.io"
+            "email": "pgaultier@gmail.com"
         }
     ],
     "repositories": [
