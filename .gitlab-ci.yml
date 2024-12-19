@@ -51,7 +51,6 @@ codeception-check:
     - php vendor/bin/codecept build
   rules:
     - if: $REPOSITORY == "main" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $REPOSITORY == "main" && $CI_COMMIT_BRANCH == "master"
   script:
     - echo "Initializing database ..."
     - php tests/console/yii.php migrate/up --interactive=0
@@ -78,7 +77,6 @@ sonarqube-check:
     # - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     # - if: $CI_COMMIT_BRANCH == 'master'
     - if: $REPOSITORY == "main" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $REPOSITORY == "main" && $CI_COMMIT_BRANCH == "master"
 
 release-production:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
