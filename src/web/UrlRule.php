@@ -1,14 +1,16 @@
 <?php
 /**
  * UrlRule.php
- * PHP Version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
+ * PHP version 8.0+
+ *
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2022 Redcat
+ * @license https://www.redcat.io/license license
  * @version XXX
- * @link https://www.blackcube.io
- */ 
+ * @link https://www.redcat.io
+ * @package blackcube\core\web
+ */
 
 namespace blackcube\core\web;
 
@@ -28,11 +30,12 @@ use Yii;
 /**
  * This is class allow transcoding url from route to DB
  *
- * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
+ * @author Philippe Gaultier <pgaultier@redcat.io>
+ * @copyright 2010-2022 Redcat
+ * @license https://www.redcat.io/license license
  * @version XXX
- * @link https://www.blackcube.io
+ * @link https://www.redcat.io
+ * @package blackcube\core\web
  * @since XXX
  *
  */
@@ -77,7 +80,16 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             }
             $slug = static::$createdSlugs[$key];
             if ($slug !== null) {
-                $prettyUrl = $slug->path;
+                $prettyUrl = '';
+                if ($slug->host !== null && empty($slug->host) === false) {
+                    $request = Yii::$app->getRequest();
+                    $hostname = $request->getHostName();
+                    if ($hostname !== $slug->host) {
+                        $scheme = $request->getIsSecureConnection() ? 'https' : 'http';
+                        $prettyUrl .= $scheme.'://'.$slug->host.'/';
+                    }
+                }
+                $prettyUrl .= $slug->path;
                 if ($this->suffix === null) {
                     $this->suffix = $manager->suffix;
                 }
