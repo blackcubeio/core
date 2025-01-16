@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.5.3 January, 16th 2025 <pgaultier@gmail.com>
+-------------------------------------------------------
 
 * Fix: Fix host management
 * Upd: Update dependencies
