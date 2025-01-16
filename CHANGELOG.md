@@ -2,6 +2,9 @@ Blackcube Core - CHANGELOG
 ==========================
 
 
+* Fix: Fix host management
+* Upd: Update dependencies
+
 Release 3.5.2 December, 19th 2024 <pgaultier@gmail.com>
 -------------------------------------------------------
 

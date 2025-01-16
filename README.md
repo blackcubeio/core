@@ -1,11 +1,11 @@
 Blackcube Core
 ==============
 
-[![Latest Stable Version](http://poser.pugx.org/blackcube/core/v)](https://packagist.org/packages/blackcube/core) 
-[![Total Downloads](http://poser.pugx.org/blackcube/core/downloads)](https://packagist.org/packages/blackcube/core) 
-[![Latest Unstable Version](http://poser.pugx.org/blackcube/core/v/unstable)](https://packagist.org/packages/blackcube/core) 
-[![License](http://poser.pugx.org/blackcube/core/license)](https://packagist.org/packages/blackcube/core) 
-[![PHP Version Require](http://poser.pugx.org/blackcube/core/require/php)](https://packagist.org/packages/blackcube/core)
+[![Latest Stable Version](https://poser.pugx.org/blackcube/core/v)](https://packagist.org/packages/blackcube/core) 
+[![Total Downloads](https://poser.pugx.org/blackcube/core/downloads)](https://packagist.org/packages/blackcube/core) 
+[![Latest Unstable Version](https://poser.pugx.org/blackcube/core/v/unstable)](https://packagist.org/packages/blackcube/core) 
+[![License](https://poser.pugx.org/blackcube/core/license)](https://packagist.org/packages/blackcube/core) 
+[![PHP Version Require](https://poser.pugx.org/blackcube/core/require/php)](https://packagist.org/packages/blackcube/core)
 
 [![pipeline status](https://code.redcat.io/blackcube/core/badges/devel-3.x/pipeline.svg)](https://code.redcat.io/blackcube/core/commits/devel-3.x)
 [![coverage report](https://code.redcat.io/blackcube/core/badges/devel-3.x/coverage.svg)](https://code.redcat.io/blackcube/core/commits/devel-3.x)
