@@ -134,6 +134,11 @@ class Module extends BaseModule implements BootstrapInterface
     public $controllerNamespace = 'blackcube\core\controllers';
 
     /**
+     * @var bool if true, slugs will be accents sensitive
+     */
+    public $slugSensitive = false;
+
+    /**
      * @var mixed cms url rules. Set it to false to disable cms url rule management
      */
     public $cmsUrlRule = [
