@@ -411,9 +411,16 @@ class Slug extends \yii\db\ActiveRecord implements RoutableInterface
      */
     public static function findByPathinfoAndHostname($pathInfo, $hostname = null)
     {
-        $slugQuery = static::find()->where([
-            'path' => $pathInfo,
-        ])
+        if(Module::getInstance()->slugSensitive === true) {
+            $expression = new Expression('BINARY LOWER([[path]]) LIKE LOWER(:path)', [
+                ':path' => $pathInfo
+            ]);
+        } else {
+            $expression = [
+                'path' => $pathInfo,
+            ];
+        }
+        $slugQuery = static::find()->where($expression)
             ->cache(Module::getInstance()->cacheDuration, QueryCache::getSlugDependencies())
             ->andWhere(['OR',
                 ['host' => $hostname],

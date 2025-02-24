@@ -1,11 +1,14 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Fix: Add option `slugSensitive` to force `slugs.path` to be accent sensitive
+ * Upd: Update dependencies
+
 Release 3.5.3 January, 16th 2025 <pgaultier@gmail.com>
 -------------------------------------------------------
 
-* Fix: Fix host management
-* Upd: Update dependencies
+ * Fix: Fix host management
+ * Upd: Update dependencies
 
 Release 3.5.2 December, 19th 2024 <pgaultier@gmail.com>
 -------------------------------------------------------
