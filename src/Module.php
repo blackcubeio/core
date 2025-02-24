@@ -225,7 +225,7 @@ class Module extends BaseModule implements BootstrapInterface
     /**
      * @var string version number
      */
-    public $version = 'v3.x-dev';
+    public $version = 'v3.5.4';
 
     /**
      * {@inheritDoc}
