@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.5.5 March, 31st 2025 <pgaultier@gmail.com>
+----------------------------------------------------
+
  * Fix: Remove unicity on `MenuItem.name`
  * Upd: Update dependencies
 
