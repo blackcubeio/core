@@ -94,7 +94,6 @@ class ResumablePreviewAction extends Action
         if (strncmp($uploadTmpPrefix, $name, strlen($uploadTmpPrefix)) === 0) {
             $realNameAlias = str_replace($uploadTmpPrefix, $uploadAlias, $name);
             $realName = Yii::getAlias($realNameAlias);
-            $realName = ltrim($realName, '/');
             if (file_exists($realName) === false) {
                 throw new NotFoundHttpException();
             }
@@ -126,7 +125,6 @@ class ResumablePreviewAction extends Action
             $realName = str_replace($uploadFsPrefix, '', $name);
             $realName = ltrim($realName, '/');
             // file is in fly system
-            // $fs =  Module::getInstance()->get('fs');
             if ($fs->fileExists($realName) === false) {
                 throw new NotFoundHttpException();
             }
