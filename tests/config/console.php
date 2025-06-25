@@ -2,13 +2,12 @@
 /**
  * main.php
  *
- * PHP version 7.1+
+ * PHP Version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@ibitux.com>
- * @copyright 2010-2018 Ibitux
- * @license https://www.ibitux.com/license license
- * @version XXX
- * @link https://www.ibitux.com
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
+ * @link https://www.blackcube.io
  * @package console\config
  */
 

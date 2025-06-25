@@ -2,13 +2,12 @@
 /**
  * SitemapCest.php
  *
- * PHP version 5.6+
+ * PHP Version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Philippe Gaultier
- * @license https://www.redcat.io/license license
- * @version XXX
- * @link https://www.redcat.io
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
+ * @link https://www.blackcube.io
  * @package tests\unit
  */
 namespace tests\sitemap;
@@ -22,13 +21,11 @@ use yii\base\UnknownPropertyException;
 /**
  * Test sitemap
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2020 Philippe Gaultier
- * @license https://www.redcat.io/license license
- * @version XXX
- * @link https://www.redcat.io
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
+ * @link https://www.blackcube.io
  * @package tests\unit
- * @since XXX
  */
 class SitemapCest extends SitemapBase
 {
