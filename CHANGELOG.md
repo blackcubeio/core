@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Fix: Resumable Preview
+
 Release 3.5.5 March, 31st 2025 <pgaultier@gmail.com>
 ----------------------------------------------------
 
