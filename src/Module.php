@@ -247,6 +247,7 @@ class Module extends BaseModule implements BootstrapInterface
 
     /**
      * {@inheritdoc}
+     * @param WebApplication|ConsoleApplication $app
      */
     public function bootstrap($app)
     {
