@@ -5,9 +5,8 @@
  * PHP Version 8.2+
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
- * @version XXX
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
  * @link https://www.blackcube.io
  */ 
 
@@ -73,11 +72,9 @@ use Yii;
  * Class module
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
- * @version XXX
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
  * @link https://www.blackcube.io
- * @since XXX
  */
 class Module extends BaseModule implements BootstrapInterface
 {
@@ -225,7 +222,7 @@ class Module extends BaseModule implements BootstrapInterface
     /**
      * @var string version number
      */
-    public $version = 'v3.5.5';
+    public $version = 'v3.6.0';
 
     /**
      * {@inheritDoc}
@@ -247,6 +244,7 @@ class Module extends BaseModule implements BootstrapInterface
 
     /**
      * {@inheritdoc}
+     * @param WebApplication|ConsoleApplication $app
      */
     public function bootstrap($app)
     {

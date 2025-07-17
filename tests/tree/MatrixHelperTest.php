@@ -2,13 +2,12 @@
 /**
  * MatrixTest.php
  *
- * PHP version 7.2+
+ * PHP Version 8.2+
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
- * @license https://www.redcat.io/license license
- * @version XXX
- * @link https://www.redcat.io
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
+ * @link https://www.blackcube.io
  * @package tests\tree
  */
 namespace tests\tree;
@@ -19,13 +18,11 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test matrix basic functions
  *
- * @author Philippe Gaultier <pgaultier@redcat.io>
- * @copyright 2010-2019 Redcat
- * @license https://www.redcat.io/license license
- * @version XXX
- * @link https://www.redcat.io
+ * @author Philippe Gaultier <pgaultier@gmail.com>
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
+ * @link https://www.blackcube.io
  * @package tests\tree
- * @since XXX
  */
 class MatrixHelperTest extends TestCase
 {

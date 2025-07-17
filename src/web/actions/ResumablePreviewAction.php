@@ -5,9 +5,8 @@
  * PHP Version 8.2+
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
- * @version XXX
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
  * @link https://www.blackcube.io
  */
 
@@ -29,11 +28,9 @@ use Yii;
  * preview action
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
- * @version XXX
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
  * @link https://www.blackcube.io
- * @since XXX
  */
 class ResumablePreviewAction extends Action
 {
@@ -94,7 +91,6 @@ class ResumablePreviewAction extends Action
         if (strncmp($uploadTmpPrefix, $name, strlen($uploadTmpPrefix)) === 0) {
             $realNameAlias = str_replace($uploadTmpPrefix, $uploadAlias, $name);
             $realName = Yii::getAlias($realNameAlias);
-            $realName = ltrim($realName, '/');
             if (file_exists($realName) === false) {
                 throw new NotFoundHttpException();
             }
@@ -126,7 +122,6 @@ class ResumablePreviewAction extends Action
             $realName = str_replace($uploadFsPrefix, '', $name);
             $realName = ltrim($realName, '/');
             // file is in fly system
-            // $fs =  Module::getInstance()->get('fs');
             if ($fs->fileExists($realName) === false) {
                 throw new NotFoundHttpException();
             }

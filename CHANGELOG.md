@@ -1,6 +1,12 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.6.0 July, 17st 2025 <pgaultier@gmail.com>
+----------------------------------------------------
+
+ * Fix: Resumable Preview
+ * Upd: Update dependencies
+
 Release 3.5.5 March, 31st 2025 <pgaultier@gmail.com>
 ----------------------------------------------------
 
@@ -296,28 +302,28 @@ Release 2.0.0 November, 13th 2020 <pgaultier@gmail.com>
  * Fix: Fix `i18n`
  * Enh: Refactor `plugins` management
 
-Release 1.2.2 September, 5th 2020 <pgaultier@redcat.io>
+Release 1.2.2 September, 5th 2020 <pgaultier@gmail.com>
 -------------------------------------------------------
 
  * Upd: Update dependencies
 
-Release 1.2.1 June, 23th 2020 <pgaultier@redcat.io>
+Release 1.2.1 June, 23th 2020 <pgaultier@gmail.com>
 ---------------------------------------------------
 
  * Upd: Update dependencies
  
-Release 1.2.0 June, 23th 2020 <pgaultier@redcat.io>
+Release 1.2.0 June, 23th 2020 <pgaultier@gmail.com>
 ---------------------------------------------------
 
  * Enh: Adding `plugins` management
  * Fix: Fix `previewManager` in console mode
  
-Release 1.1.0 June, 10th 2020 <pgaultier@redcat.io>
+Release 1.1.0 June, 10th 2020 <pgaultier@gmail.com>
 ---------------------------------------------------
 
  * Upd: Update code to make routing not mandatory in `Type` 
 
-Release 1.0.0 May, 29th 2020 <pgaultier@redcat.io>
+Release 1.0.0 May, 29th 2020 <pgaultier@gmail.com>
 --------------------------------------------------
 
  * Create core module

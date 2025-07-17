@@ -5,9 +5,8 @@
  * PHP Version 8.2+
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
- * @version XXX
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
  * @link https://www.blackcube.io
  */ 
 
@@ -25,11 +24,9 @@ use Yii;
  * This is the elastic model class for json schema.
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
- * @copyright 2010-2025 Blackcube
- * @license https://www.blackcube.io/license license
- * @version XXX
+ * @copyright 2010-2025 Philippe Gaultier
+ * @license https://www.blackcube.io/license
  * @link https://www.blackcube.io
- * @since XXX
  *
  * @property-write string|array|\StdClass $schema
  */
