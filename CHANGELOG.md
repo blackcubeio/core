@@ -1,6 +1,9 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+Release 3.6.0 July, 17st 2025 <pgaultier@gmail.com>
+----------------------------------------------------
+
  * Fix: Resumable Preview
  * Upd: Update dependencies
 
