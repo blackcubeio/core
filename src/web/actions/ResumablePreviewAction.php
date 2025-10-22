@@ -154,6 +154,10 @@ class ResumablePreviewAction extends Action
                 // $handle = $fs->readStream($realName);
                 $mimeType = 'image/svg+xml'; // mime_content_type($realName);
                 $svg = $fs->read($realName);
+                // if xmlns is missing, svg does not display in some browsers
+                if (preg_match('/xmlns/', $svg) === 0) {
+                    $svg = str_replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ', $svg);
+                }
                 return Yii::$app->response->sendContentAsFile($svg, $fileName, ['inline' => true, 'mimeType' => $mimeType]);
             } else { // (strncmp('image/', $mimeType, 6) !== 0) {
                 $realName = $this->prepareImage($fileName);

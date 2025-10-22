@@ -1,6 +1,8 @@
 Blackcube Core - CHANGELOG 
 ==========================
 
+ * Fix: Resumable Preview for svg files
+ 
 Release 3.6.0 July, 17st 2025 <pgaultier@gmail.com>
 ----------------------------------------------------
 
