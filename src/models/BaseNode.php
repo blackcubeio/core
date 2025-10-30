@@ -204,6 +204,9 @@ abstract class BaseNode extends \yii\db\ActiveRecord implements ElementInterface
     {
         return [
             [['name', 'slugId', 'typeId', 'dateStart', 'dateEnd'], 'filter', 'filter' => function($value) {
+                if ($value === null) {
+                    return null;
+                }
                 return empty(trim($value)) ? null : trim($value);
             }],
             [[/*/'path', 'left', 'right', 'level',/*/ 'languageId'], 'required'],
